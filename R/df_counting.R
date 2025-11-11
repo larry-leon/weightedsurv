@@ -405,13 +405,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       }
       if(check.seKM){
       if(round(max(abs(se.KM-df_check$se)),8)) {
-        yymax <- max(c(se.KM, df_check$se))
-        plot(time,se.KM, type="s", lty=1, col="lightgrey", lwd=4, ylim=c(0,yymax), xlab="time", ylab="SE(KM)")
-        with(df_check, lines(time, se, type="s", lty=2, lwd=1, col="red"))
-        legend("topleft",c("Mine","Survfit"), lty=c(1,2),col=c("lightgrey","red"), lwd=c(4,1),bty="n", cex=0.8)
-        title(main=group_name)
-
-        if (verbose) {
+          if (verbose) {
           msg <- paste0(group_name, " : Discrepancy in se(KM) curve fit.")
           # Check for zero or near-zero standard errors to avoid division by zero
           if (any(abs(with(df_check, se)) < .Machine$double.eps)) {
@@ -432,13 +426,25 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
               }
       }
-    oldpar <- par(no.readonly = TRUE)
-    par(mfrow=c(1,2))
     check_km_curve(at_points[idv0.check],surv0[idv0.check], sqrt(sig2_surv0[idv0.check]), df0_check, "control", check.seKM = check.seKM)
     check_km_curve(at_points[idv1.check],surv1[idv1.check], sqrt(sig2_surv1[idv1.check]), df1_check, "treat", check.seKM = check.seKM)
-    par(oldpar)
      }
 
+  plot_km_comparison <- function(time,surv,se,dfcheck,group_name = "control"){
+  yymax <- max(c(se, dfcheck$se))
+  plot(time,se, type="s", lty=1, col="lightgrey", lwd=4, ylim=c(0,yymax), xlab="time", ylab="SE(KM)")
+  with(dfcheck, lines(time, se, type="s", lty=2, lwd=1, col="red"))
+   legend("topleft",c("Mine","Survfit"), lty=c(1,2),col=c("lightgrey","red"), lwd=c(4,1),bty="n", cex=0.8)
+   title(main=group_name)
+  }
+
+  if(check.seKM){
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
+  par(mfrow=c(1,2))
+  plot_km_comparison(time = at_points[idv0.check], surv = surv0[idv0.check], se = sqrt(sig2_surv0[idv0.check]), dfcheck = df0_check, group_name = "control")
+  plot_km_comparison(time = at_points[idv1.check], surv = surv1[idv1.check], se = sqrt(sig2_surv1[idv1.check]), dfcheck = df1_check, group_name = "treat")
+  }
 
   ans$at_points <- at_points
   ans$strata <- strata

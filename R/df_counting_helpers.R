@@ -66,15 +66,7 @@ check_results <- function(dfcount, verbose = TRUE) {
   # Calculate statistics
   zlr_sq  <- with(dfcount, lr^2 / sig2_lr)
   zCox_sq <- with(dfcount, z.score^2)
-
-  # Extract chisq from logrank_results (assumes list-column)
-
-  if (is.list(dfcount$logrank_results)) {
-    logrank_chisq <- sapply(dfcount$logrank_results, function(x) x$chisq)
-  } else {
-    logrank_chisq <- dfcount$logrank_results
-  }
-
+  logrank_chisq <- dfcount$logrank_results$chisq
 
   # Create summary data frame
   result <- data.frame(
