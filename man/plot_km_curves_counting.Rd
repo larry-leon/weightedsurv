@@ -86,11 +86,14 @@ plot_km_curves_counting(
 
 \item{censor.cex}{Numeric; censoring mark size (default 1.0).}
 
-\item{time.zero}{Numeric; time zero value for risk table alignment (default: 0).}
+\item{time.zero}{Numeric; time zero value for risk table alignment (default 0).}
 
-\item{tpoints.add}{Numeric vector; additional time points to include (default: c(0)).}
+\item{tpoints.add}{Numeric vector; additional time points to include (default c(0)).}
 
 \item{...}{Additional arguments to plot.}
+}
+\value{
+Invisibly returns NULL. Used for plotting side effects.
 }
 \description{
 Plots Kaplan-Meier survival curves for two groups, with options for confidence intervals and censoring marks.

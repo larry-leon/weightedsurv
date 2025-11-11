@@ -143,6 +143,7 @@ Key Features
 
 
 ```{r, message = FALSE, warning = FALSE}
+oldpar <- par(no.readonly = TRUE)
 library(survival)
 # to install weightedKMplots
 # library(devtools)
@@ -312,6 +313,7 @@ dfcount_rotterdam_unwtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, ev
 
 dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
                                   weight.name="sw.weights")
+
 ```
 
 ---- Plotting Weighted vs Unweighted ----
@@ -788,6 +790,9 @@ non-stratified (should be same as above results without stratification)
 ```{r}
 with(res,lr^2/sig2_lr)
 with(res,z.score^2)
+
+# Restore when done
+par(oldpar)
 ```
 
 

@@ -23,19 +23,19 @@ add_legends(
 )
 }
 \arguments{
-\item{dfcount}{List with results.}
+\item{dfcount}{List with results, typically output from a survival analysis function. Should contain elements such as \code{cox_results}, \code{z.score}, and \code{zlogrank_text}.}
 
 \item{show.cox}{Logical; show Cox legend.}
 
 \item{cox.cex}{Numeric; Cox legend size.}
 
-\item{put.legend.cox}{Character; Cox legend position.}
+\item{put.legend.cox}{Character; Cox legend position (e.g., "topright").}
 
 \item{show.logrank}{Logical; show logrank legend.}
 
 \item{logrank.cex}{Numeric; logrank legend size.}
 
-\item{put.legend.lr}{Character; logrank legend position.}
+\item{put.legend.lr}{Character; logrank legend position (e.g., "topleft").}
 
 \item{show_arm_legend}{Logical; show arm legend.}
 
@@ -51,7 +51,10 @@ add_legends(
 
 \item{arm.cex}{Numeric; arm legend size.}
 
-\item{put.legend.arms}{Character; arm legend position.}
+\item{put.legend.arms}{Character; arm legend position (e.g., "left").}
+}
+\value{
+Invisibly returns NULL. Used for plotting side effects.
 }
 \description{
 Adds legends for Cox model, log-rank test, and arms to a Kaplan-Meier plot.

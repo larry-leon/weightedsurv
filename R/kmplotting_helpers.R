@@ -6,9 +6,11 @@
 #' @param x Numeric vector of time points.
 #' @param surv Numeric vector of survival probabilities.
 #' @param se Numeric vector of standard errors of survival probabilities.
-#' @param conf_level Confidence level for interval (default 0.95).
+#' @param conf_level Numeric; confidence level for interval (default 0.95).
 #' @param col Color for the polygon.
+#'
 #' @importFrom graphics polygon
+#' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
 
 plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
@@ -51,9 +53,12 @@ plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
 #' @param conf.int Logical; show confidence intervals (default FALSE).
 #' @param conf_level Confidence level (default 0.95).
 #' @param censor.cex Numeric; censoring mark size (default 1.0).
+#' @param time.zero Numeric; time zero value for risk table alignment (default 0).
+#' @param tpoints.add Numeric vector; additional time points to include (default c(0)).
 #' @param ... Additional arguments to plot.
-#' @inheritParams KM_plot_2sample_weighted_counting
+#'
 #' @importFrom graphics plot lines legend title axis box points
+#' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
 
 plot_km_curves_counting <- function(
@@ -129,6 +134,7 @@ check_km_curve <- function(S.KM, group_name = "Group", stop_on_error = TRUE) {
 #' @param y.risk0 Numeric; y position for group 0 risk table.
 #' @param y.risk1 Numeric; y position for group 1 risk table.
 #' @importFrom graphics text axis
+#' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
 
 add_risk_table <- function(risk.points, rpoints0, rpoints1, col.0, col.1, risk.cex, ymin, risk_offset, risk_delta, y.risk0, y.risk1) {
@@ -142,13 +148,15 @@ add_risk_table <- function(risk.points, rpoints0, rpoints1, col.0, col.1, risk.c
 #'
 #' Adds median survival annotation to a Kaplan-Meier plot.
 #'
-#' @param medians_df Data frame with quantile results.
-#' @param med.digits Integer; digits for median.
-#' @param med.cex Numeric; text size for median.
-#' @param med.font Integer; font for median.
-#' @param xmed.fraction Numeric; x position fraction.
-#' @param ymed.offset Numeric; y offset.
+#' @param medians_df Data frame with quantile results. Should contain columns \code{quantile}, \code{lower}, \code{upper}, and \code{group}.
+#' @param med.digits Integer; number of digits to display for median and confidence interval.
+#' @param med.cex Numeric; text size for median annotation.
+#' @param med.font Integer; font for median annotation.
+#' @param xmed.fraction Numeric; fraction of the x-axis for annotation placement (e.g., 0.8 for 80\% to the right).
+#' @param ymed.offset Numeric; offset from the top of the plot for annotation placement.
+#'
 #' @importFrom graphics text
+#' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
 
 add_median_annotation <- function(medians_df, med.digits, med.cex, med.font, xmed.fraction, ymed.offset) {
@@ -173,13 +181,13 @@ add_median_annotation <- function(medians_df, med.digits, med.cex, med.font, xme
 #'
 #' Adds legends for Cox model, log-rank test, and arms to a Kaplan-Meier plot.
 #'
-#' @param dfcount List with results.
+#' @param dfcount List with results, typically output from a survival analysis function. Should contain elements such as \code{cox_results}, \code{z.score}, and \code{zlogrank_text}.
 #' @param show.cox Logical; show Cox legend.
 #' @param cox.cex Numeric; Cox legend size.
-#' @param put.legend.cox Character; Cox legend position.
+#' @param put.legend.cox Character; Cox legend position (e.g., "topright").
 #' @param show.logrank Logical; show logrank legend.
 #' @param logrank.cex Numeric; logrank legend size.
-#' @param put.legend.lr Character; logrank legend position.
+#' @param put.legend.lr Character; logrank legend position (e.g., "topleft").
 #' @param show_arm_legend Logical; show arm legend.
 #' @param arms Character vector of arm labels.
 #' @param col.1 Color for group 1.
@@ -187,8 +195,10 @@ add_median_annotation <- function(medians_df, med.digits, med.cex, med.font, xme
 #' @param ltys Line types.
 #' @param lwds Line widths.
 #' @param arm.cex Numeric; arm legend size.
-#' @param put.legend.arms Character; arm legend position.
+#' @param put.legend.arms Character; arm legend position (e.g., "left").
+#'
 #' @importFrom graphics legend
+#' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
 
 add_legends <- function(dfcount, show.cox, cox.cex, put.legend.cox, show.logrank, logrank.cex, put.legend.lr, show_arm_legend, arms, col.1, col.0, ltys, lwds, arm.cex, put.legend.arms) {
