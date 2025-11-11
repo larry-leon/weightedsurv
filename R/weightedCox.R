@@ -300,7 +300,6 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   i_zero <- temp$i_bhat
   K_zero <- temp$K_wt_rg
   sig2_score <- temp$sig2_score
-  rm("temp")
 
   ans$z.score <- z.score
 
@@ -309,7 +308,6 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   sig_bhat_asy <- sqrt(temp$sig2_beta_asy)
   i_bhat <- temp$i_bhat
   K_wt_rg <- temp$K_wt_rg
-  rm("temp")
 
   pval <- 1 - pnorm(z.score)
   ans$zlogrank_text <- paste0("logrank (1-sided) p = ", format_pval(pval, eps = 0.001, digits = lr.digits))
@@ -358,7 +356,6 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   ans$sig2_score_star <- sig2_score_star
   u.zero_debiased <- u.zero - mean(get_resamples$score_star_null, na.rm = TRUE)
   ans$z.score_debiased <- u.zero_debiased / sqrt(sig2_score)
-  #ans$z.score_debiased <- u.zero / sqrt(sig2_score_star)
 
   cox_text_star <- paste0("HR = ", round(hr_ci_asy$hr, lr.digits),
                           " (", round(hr_ci_star$lower, lr.digits), ", ", round(hr_ci_star$upper, lr.digits), ")")

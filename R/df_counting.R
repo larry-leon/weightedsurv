@@ -311,19 +311,15 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
   survP <- temp$S_KM
   sig2_survP <- temp$sig2_KM
-  rm("temp")
 
   # Pooled Censoring estimates
   risk_event <- calculate_risk_event_counts(time, 1- delta, wgt, at_points)
   temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
   survG <- temp$S_KM
   ans$survG <- survG
-  rm("temp")
 
   # data for weighting
   df_weights <- data.frame(at_points, nbar0, nbar1, ybar0, ybar1, surv1, surv0, survP, survG)
-
-  #get_lr <- wlr_dhat_estimates(dfwlr, scheme, scheme_params)
 
   get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)
 
@@ -407,26 +403,41 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
         msg <- paste0(group_name," : ", "Discrepancy in KM curve fit.")
         if (stop.onerror) stop(msg) else warning(msg)
       }
-
-      if(round(max(abs(se.KM-df_check$se)),8) && check.seKM) {
+      if(check.seKM){
+      if(round(max(abs(se.KM-df_check$se)),8)) {
         yymax <- max(c(se.KM, df_check$se))
         plot(time,se.KM, type="s", lty=1, col="lightgrey", lwd=4, ylim=c(0,yymax), xlab="time", ylab="SE(KM)")
         with(df_check, lines(time, se, type="s", lty=2, lwd=1, col="red"))
         legend("topleft",c("Mine","Survfit"), lty=c(1,2),col=c("lightgrey","red"), lwd=c(4,1),bty="n", cex=0.8)
         title(main=group_name)
 
+        if (verbose) {
+          msg <- paste0(group_name, " : Discrepancy in se(KM) curve fit.")
+          # Check for zero or near-zero standard errors to avoid division by zero
+          if (any(abs(with(df_check, se)) < .Machine$double.eps)) {
+            warning(paste0(group_name, " : Zero or near-zero standard error encountered in df_check$se. Ratio calculation may be invalid."))
+            ratio <- NA
+          } else {
+            ratio <- se.KM / with(df_check, se)
+            print(summary(ratio))
+          }
 
-      if(verbose){  msg <- paste0(group_name," : ", "Discrepancy in se(KM) curve fit.")
-      ratio <- se.KM / with(df_check,se)
-      print(summary(ratio))
-      if (stop.onerror) stop(msg) else warning(msg)
+          if (stop.onerror) {
+            stop(msg)
+          } else {
+            warning(msg)
+          }
+        }
+      } # checking seKM
+
+              }
       }
-      }
-    }
+    oldpar <- par(no.readonly = TRUE)
     par(mfrow=c(1,2))
     check_km_curve(at_points[idv0.check],surv0[idv0.check], sqrt(sig2_surv0[idv0.check]), df0_check, "control", check.seKM = check.seKM)
     check_km_curve(at_points[idv1.check],surv1[idv1.check], sqrt(sig2_surv1[idv1.check]), df1_check, "treat", check.seKM = check.seKM)
-  }
+    par(oldpar)
+     }
 
 
   ans$at_points <- at_points
@@ -471,7 +482,6 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
       surv1_mat[, ss] <- temp$S_KM
       sig2_surv1_mat[, ss] <- temp$sig2_KM
-      rm("temp")
 
       nbar1_s <- risk_event$nbar
       ybar1_s <- risk_event$ybar
@@ -480,7 +490,6 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
       surv0_mat[, ss] <- temp$S_KM
       sig2_surv0_mat[, ss] <- temp$sig2_KM
-      rm("temp")
 
       nbar0_s <- risk_event$nbar
       ybar0_s <- risk_event$ybar
@@ -505,12 +514,8 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       score_stratified <- score_stratified + get_score$score
       sig2_score_stratified <- sig2_score_stratified + get_score$sig2.score
 
-      # temp <- wlr_estimates(dfwlr, scheme_params, scheme)
-
       lr_stratified <- lr_stratified + get_score$score
       sig2_lr_stratified <- sig2_lr_stratified + get_score$sig2.score
-
-      rm("temp")
 
       ybar0_mat[, ss] <- ybar0_s
       nbar0_mat[, ss] <- nbar0_s
@@ -541,24 +546,34 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     }
 
   # Compare with survdiff for gamma=0 (survdiff only handles gamma=0)
-  if(is.null(weight.name) && is.null(strata.name) && scheme == "fh" && scheme_params$gamma == 0){
-    z_lr <- get_score$z.score
-    zsq_lr_check <- logrank_results$chisq
-    if(round(z_lr^2 - zsq_lr_check,8)>0){
-      warning("Discrepancy with log-rank and survdiff")
-      cat("Discrepancy with survdiff",c(z_lr^2,zsq_lr_check),"\n")
+  # Helper function for robust comparison and messaging
+  check_logrank_discrepancy <- function(z, chisq, context = "") {
+    tol <- 1e-6
+    diff <- z^2 - chisq
+    if (abs(diff) > tol) {
+      warning(sprintf("Discrepancy with log-rank and survdiff%s", context))
+      message(sprintf("Discrepancy with survdiff%s: z^2 = %.8f, chisq = %.8f, diff = %.8g",
+                      context, z^2, chisq, diff))
     }
   }
 
-  if(is.null(weight.name) && !is.null(strata.name) && scheme == "fh" && scheme_params$gamma == 0){
-    z_lr <- lr_stratified/sqrt(sig2_lr_stratified)
-    zsq_lr_check <- logrank_results$chisq
-    if(round(z_lr^2 - zsq_lr_check,8)>0){
-      warning("Discrepancy with log-rank and survdiff")
-      cat("Discrepancy with survdiff",c(z_lr^2,zsq_lr_check),"\n")
+  # Compare with survdiff for gamma=0 (survdiff only handles gamma=0)
+  if (is.null(weight.name) && is.null(strata.name) && scheme == "fh" && scheme_params$gamma == 0) {
+    if (!is.null(get_score$z.score) && !is.null(logrank_results$chisq)) {
+      check_logrank_discrepancy(get_score$z.score, logrank_results$chisq)
+    } else {
+      warning("Required elements missing in get_score or logrank_results (unstratified).")
     }
   }
 
+  if (is.null(weight.name) && !is.null(strata.name) && scheme == "fh" && scheme_params$gamma == 0) {
+    if (exists("lr_stratified") && exists("sig2_lr_stratified") && !is.null(logrank_results$chisq)) {
+      z_lr <- lr_stratified / sqrt(sig2_lr_stratified)
+      check_logrank_discrepancy(z_lr, logrank_results$chisq, " (stratified)")
+    } else {
+      warning("Required elements missing for stratified log-rank comparison.")
+    }
+  }
   ans
 }
 

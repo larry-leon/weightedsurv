@@ -2,16 +2,34 @@
 % Please edit documentation in R/df_counting_helpers.R
 \name{check_results}
 \alias{check_results}
-\title{Checking results}
+\title{Check and summarize statistical results from a data frame}
 \usage{
-check_results(dfcount)
+check_results(dfcount, verbose = TRUE)
 }
 \arguments{
-\item{dfcount}{Result object from df_counting.}
+\item{dfcount}{A data frame containing the columns \code{lr}, \code{sig2_lr}, \code{z.score},
+and a list-column \code{logrank_results} with a \code{chisq} element.}
+
+\item{verbose}{Logical; if \code{TRUE}, prints the summary results to the console. Default is \code{TRUE}.}
 }
 \value{
-None. Prints summary statistics.
+A data frame with columns \code{zlr_sq}, \code{logrank_chisq}, and \code{zCox_sq}.
+The result is returned invisibly.
 }
 \description{
-Prints summary statistics for logrank and Cox model results from dfcounting.
+This function calculates and summarizes key statistics from a data frame containing
+likelihood ratio, variance, z-score, and logrank test results. It checks for required columns,
+computes squared statistics, and extracts the chi-squared value from logrank results.
+}
+\examples{
+# Example data
+dfcount <- data.frame(
+  lr = c(2, 3),
+  sig2_lr = c(1, 2),
+  z.score = c(1.5, 2.5),
+  logrank_results = I(list(list(chisq = 4.5), list(chisq = 6.2)))
+)
+check_results(dfcount)
+check_results(dfcount, verbose = FALSE)
+
 }

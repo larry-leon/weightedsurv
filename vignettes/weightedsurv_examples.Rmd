@@ -308,7 +308,8 @@ df_rotterdam$sw.weights_trunc <- with(df_rotterdam, pmin(pmax(sw.weights, quanti
 ```
 Un-weighted and weighted analyses
 ```{r}
-dfcount_rotterdam_unwtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24)
+dfcount_rotterdam_unwtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24,
+                                          check.seKM = TRUE)
 
 dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
                                   weight.name="sw.weights")
