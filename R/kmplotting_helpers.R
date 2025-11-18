@@ -152,13 +152,12 @@ add_risk_table <- function(risk.points, rpoints0, rpoints1, col.0, col.1, risk.c
 #' @param med.digits Integer; number of digits to display for median and confidence interval.
 #' @param med.cex Numeric; text size for median annotation.
 #' @param med.font Integer; font for median annotation.
-#' @param xmed.fraction Numeric; fraction of the x-axis for annotation placement (e.g., 0.8 for 80\% to the right).
+#' @param xmed.fraction Numeric; fraction of the x-axis for annotation placement (e.g., 0.8 for 80\\% to the right).
 #' @param ymed.offset Numeric; offset from the top of the plot for annotation placement.
 #'
 #' @importFrom graphics text
 #' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
-
 add_median_annotation <- function(medians_df, med.digits, med.cex, med.font, xmed.fraction, ymed.offset) {
   medians_df$label <- paste0(
     format(medians_df$quantile, digits = med.digits), " [",
@@ -169,13 +168,12 @@ add_median_annotation <- function(medians_df, med.digits, med.cex, med.font, xme
     paste(medians_df$group, medians_df$label, sep = ": "),
     collapse = "\n"
   )
-
   usr <- par("usr")
   x_pos <- usr[2] * xmed.fraction
   y_pos <- usr[4] - ymed.offset
-
   text(x = x_pos, y = y_pos, labels = annotation_text, adj = c(0, 1), cex = med.cex, font = med.font)
 }
+
 
 #' Add legends to KM plot
 #'

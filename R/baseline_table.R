@@ -435,11 +435,21 @@ create_baseline_table <- function(data,
       title = "Baseline Characteristics by Treatment Arm"
     )
 
-    gt_table <- gt::fmt_missing(
-      gt_table,
-      columns = gt::everything(),
-      missing_text = ""
-    )
+    # Check gt version and use appropriate function
+    # sub_missing was introduced in gt v0.6.0 to replace fmt_missing
+    if (utils::packageVersion("gt") >= "0.6.0") {
+      gt_table <- gt::sub_missing(
+        gt_table,
+        columns = gt::everything(),
+        missing_text = ""
+      )
+    } else {
+      gt_table <- gt::fmt_missing(
+        gt_table,
+        columns = gt::everything(),
+        missing_text = ""
+      )
+    }
 
     gt_table <- gt::tab_style(
       gt_table,

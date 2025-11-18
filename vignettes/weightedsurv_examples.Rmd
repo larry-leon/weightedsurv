@@ -461,7 +461,7 @@ baseline_table <- create_baseline_table(
   data = df_CTC,
   treat_var = "treat",
   vars_continuous = c("age", "pgr", "er", "nodes"),
-  vars_categorical = c("size","meno","chemo","er_negative"),
+  vars_categorical = c("size","meno","er_negative"),
   show_pvalue = TRUE,
   show_smd = TRUE
 )

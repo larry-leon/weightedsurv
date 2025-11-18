@@ -22,7 +22,7 @@ add_median_annotation(
 
 \item{med.font}{Integer; font for median annotation.}
 
-\item{xmed.fraction}{Numeric; fraction of the x-axis for annotation placement (e.g., 0.8 for 80\\% to the right).}
+\item{xmed.fraction}{Numeric; fraction of the x-axis for annotation placement (e.g., 0.8 for 80\\\% to the right).}
 
 \item{ymed.offset}{Numeric; offset from the top of the plot for annotation placement.}
 }
