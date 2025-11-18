@@ -13,7 +13,7 @@ Description:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     ggplot2,
     graphics,
@@ -23,15 +23,13 @@ Imports:
     utils
 Suggests:
   adjustedCurves,
-  arsenal,
   data.table,
   DiagrammeR,
   dplyr,
   gt,
   knitr,
   pammtools,
-  rmarkdown,
-  survminer
+  rmarkdown
 URL: https://github.com/larry-leon/weightedSurv
 BugReports: https://github.com/larry-leon/weightedSurv/issues
 VignetteBuilder: knitr

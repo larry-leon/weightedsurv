@@ -35,7 +35,6 @@ KM_plot_2sample_weighted_counting(
   choose_ylim = FALSE,
   arm.cex = 0.7,
   quant = 0.5,
-  qlabel = "median =",
   med.cex = 0.725,
   ymed.offset = 0.1,
   xmed.fraction = 0.8,
@@ -125,8 +124,6 @@ KM_plot_2sample_weighted_counting(
 \item{arm.cex}{Numeric; text size for arm legend.}
 
 \item{quant}{Numeric; quantile for annotation.}
-
-\item{qlabel}{character; label for annotation.}
 
 \item{med.cex}{Median annotation settings.}
 

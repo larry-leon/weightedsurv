@@ -236,15 +236,6 @@ title(main="GBSG (trial) data un-weighted")
 ```
 
 
-
-```{r, fig.width = 8, fig.height=6, eval=FALSE}
-# Optional, chunk NOT evaluated automatically (eval=FALSE)
-library(survminer)
-km_fit <- survfit(Surv(tte,event) ~ treat, data=df_gbsg)
-ggsurvplot(km_fit,conf.int=TRUE, risk.table = TRUE, break.time.by=12, xlim=c(0,86),
-           tables.height = 0.2, tables.theme = theme_cleantable(), censor=TRUE, main = "GBSG (trial) data un-weighted")
-```
-
 # Rotterdam observational data analysis with weighting
 
 ---- Propensity Score Weighting (Rotterdam) ----
@@ -275,8 +266,7 @@ df_rotterdam <- subset(gbsg_validate, nodes > 0)
 
 Baseline demographics table
 ```{r}
-library(arsenal)
-
+library(dplyr)
 rotterdam2 <- df_rotterdam %>%
   mutate(
     meno = factor(meno, levels = c(0, 1), labels = c("Pre", "Post")),
@@ -285,12 +275,21 @@ rotterdam2 <- df_rotterdam %>%
     er_negative = factor(ifelse(er == 0, 1, 0), labels = c("ER negative","ER positive"))
   )
 
-baseline_table <- tableby(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er_negative + er, data = rotterdam2)
+
+baseline_table <- create_baseline_table(
+  data = rotterdam2,
+  treat_var = "treat",
+  vars_continuous = c("age", "pgr", "er", "nodes"),
+  vars_categorical = c("size","meno","chemo","er_negative"),
+  show_pvalue = TRUE,
+  show_smd = TRUE
+)
+
 
 ```
 
 ```{r results = 'asis'}
-summary(baseline_table, text = FALSE)
+baseline_table
 ```
 
 
@@ -453,13 +452,23 @@ df_CTC$sw.weights_trunc <- with(df_CTC, pmin(pmax(sw.weights, quantile(sw.weight
 
 Baseline demographics table
 ```{r}
-library(arsenal)
+
 df_CTC$er_negative <- ifelse(df_CTC$er == 0, 1, 0) 
-baseline_table <- tableby(treat ~ age + meno + size + grade3 + nodes + pgr + er_negative + er, data = df_CTC)
+
+baseline_table <- create_baseline_table(
+  data = df_CTC,
+  treat_var = "treat",
+  vars_continuous = c("age", "pgr", "er", "nodes"),
+  vars_categorical = c("size","meno","chemo","er_negative"),
+  show_pvalue = TRUE,
+  show_smd = TRUE
+)
+
+
 ```
 
 ```{r results = 'asis'}
-summary(baseline_table, text = FALSE)
+baseline_table
 ```
 
 ```{r}

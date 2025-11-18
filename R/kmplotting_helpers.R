@@ -242,7 +242,6 @@ add_legends <- function(dfcount, show.cox, cox.cex, put.legend.cox, show.logrank
 #' @param choose_ylim Logical; auto-select y-axis limits.
 #' @param arm.cex Numeric; text size for arm legend.
 #' @param quant Numeric; quantile for annotation.
-#' @param qlabel character; label for annotation.
 #' @param risk.cex Numeric; text size for risk table.
 #' @param ltys Integer; line types for curves.
 #' @param lwds Integer; line widths for curves.
@@ -281,7 +280,7 @@ KM_plot_2sample_weighted_counting <- function(
     Ylab = "proportion surviving", col.0 = "black", col.1 = "blue", show.med = TRUE,
     med.digits = 2, med.font = 4, conf.int = FALSE, conf_level = 0.95,
     choose_ylim = FALSE, arm.cex = 0.7,
-    quant = 0.5, qlabel = "median =", med.cex = 0.725,
+    quant = 0.5, med.cex = 0.725,
     ymed.offset = 0.10, xmed.fraction = 0.80,
     risk.cex = 0.725,
     ltys = c(1, 1), lwds = c(1, 1), censor.mark.all = TRUE, censor.cex = 0.5,
