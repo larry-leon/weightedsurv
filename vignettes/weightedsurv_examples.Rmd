@@ -12,7 +12,7 @@ vignette: >
 
 # Overview
 
-In this draft vignette of the `weightedSurv` package [@weightedSurv] we illustrate various weighted survival analyses with two breast cancer datasets available in the base R `survival` library [@survival] both evaluating hormon replacement therapy in comparison to chemotherapy.  The 
+In this draft vignette of the `weightedsurv` package [@weightedsurv] we illustrate various weighted survival analyses with two breast cancer datasets available in the base R `survival` library [@survival] both evaluating hormon replacement therapy in comparison to chemotherapy.  The 
 `gbsg` trial [@gbsg1994] was randomized, whereas the `rotterdam` study [@royston2013external] was observational; Wherein for comparisons of the non-randomized therapy, in contrast to un-adjusted comparisons, propensity-score adjustment [@cole2004adjusted] appears to suggest a stronger impact consistent with the randomized trial.
 
 # Survival Analysis and KM Plotting 
@@ -143,11 +143,12 @@ Key Features
 
 
 ```{r, message = FALSE, warning = FALSE}
+oldpar <- par(no.readonly = TRUE)
 library(survival)
 # to install weightedKMplots
 # library(devtools)
-# github_install("larry-leon/weightedSurv")
-library(weightedSurv)
+# github_install("larry-leon/weightedsurv")
+library(weightedsurv)
 library(dplyr)
 ```
 
@@ -311,6 +312,7 @@ dfcount_rotterdam_unwtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, ev
 
 dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
                                   weight.name="sw.weights")
+
 ```
 
 ---- Plotting Weighted vs Unweighted ----
@@ -797,6 +799,9 @@ non-stratified (should be same as above results without stratification)
 ```{r}
 with(res,lr^2/sig2_lr)
 with(res,z.score^2)
+
+# Restore when done
+par(oldpar)
 ```
 
 

@@ -15,7 +15,8 @@ cumulative_rmst_bands(
   xlab = "months",
   ylim_pad = 0.5,
   rmst_max_legend = "left",
-  rmst_max_cex = 0.7
+  rmst_max_cex = 0.7,
+  plot = TRUE
 )
 }
 \arguments{
@@ -40,11 +41,23 @@ cumulative_rmst_bands(
 \item{rmst_max_legend}{Position for RMST legend (default: "left").}
 
 \item{rmst_max_cex}{Text size for RMST legend (default: 0.7).}
+
+\item{plot}{Logical; if TRUE, plot the results. Default is TRUE.}
 }
 \value{
-List containing cumulative RMST estimates, pointwise and simultaneous confidence bands, and RMST at maximum time.
+A list with elements:
+\item{at_points}{Time points used for RMST calculation}
+\item{rmst_time}{Cumulative RMST estimates}
+\item{sig2_rmst_time}{Variance of RMST estimates}
+\item{rmst_time_lower}{Pointwise lower confidence interval}
+\item{rmst_time_upper}{Pointwise upper confidence interval}
+\item{rmst_maxtau_ci}{RMST and CI at maximum time}
+\item{rmst_text}{Text summary for legend}
+\item{c_alpha_band}{Critical value for simultaneous band}
+\item{rmst_time_sb_lower}{Simultaneous band lower bound}
+\item{rmst_time_sb_upper}{Simultaneous band upper bound}
 }
 \description{
 Calculates cumulative Restricted Mean Survival Time (RMST) and confidence bands for survival curves using resampling.
-Plots the cumulative RMST curve, pointwise confidence intervals, and simultaneous confidence bands.
+Optionally plots the cumulative RMST curve, pointwise confidence intervals, and simultaneous confidence bands.
 }

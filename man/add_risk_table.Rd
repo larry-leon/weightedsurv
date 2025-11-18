@@ -41,6 +41,9 @@ add_risk_table(
 
 \item{y.risk1}{Numeric; y position for group 1 risk table.}
 }
+\value{
+Invisibly returns NULL. Used for plotting side effects.
+}
 \description{
 Adds risk set counts for two groups to a Kaplan-Meier plot.
 }

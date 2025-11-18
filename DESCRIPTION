@@ -1,15 +1,8 @@
-Package: weightedSurv
+Package: weightedsurv
 Title: Survival Analysis with Subject-Specific (Case Weights) and Time-Dependent Weighting
 Version: 0.1.0
-Authors@R: 
-    person("Larry", "Leon", , "larry.leon.05@post.harvard.edu", role = c("aut", "cre"))
-Description:
-  Survival analysis functions allowing for time-dependent and subject-specific
-  (for example, propensity-scores) weighting. Weighted estimation for Cox model,
-  Kaplan-Meier treatment survival curves as well as treatment difference along
-  with point-wise and simultaneous confidence bands, and restricted mean
-  survival time comparisons where 'RMST' estimates are evaluated across all
-  potential truncation times (point-wise and simultaneous bands).
+Authors@R: person("Larry", "Leon", , "larry.leon.05@post.harvard.edu", role = c("aut", "cre"))
+Description: Survival analysis functions allowing for time-dependent and subject-specific (for example, propensity-scores) weighting. Weighted estimation for Cox model, Kaplan-Meier treatment survival curves as well as treatment difference along with point-wise and simultaneous confidence bands, and restricted mean survival time comparisons where 'RMST' estimates are evaluated across all potential truncation times (point-wise and simultaneous bands). See for example, Cole, S. R. & Hernán, M. A. (2004). Adjusted survival curves with inverse probability weights. Computer Methods and Programs in Biomedicine, 75(1), 45–49. doi:10.1016/j.cmpb.2003.10.012  
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,13 +16,15 @@ Imports:
     utils
 Suggests:
   adjustedCurves,
+  arsenal,
   data.table,
   DiagrammeR,
   dplyr,
   gt,
   knitr,
   pammtools,
-  rmarkdown
-URL: https://github.com/larry-leon/weightedSurv
-BugReports: https://github.com/larry-leon/weightedSurv/issues
+  rmarkdown,
+  survminer
+URL: https://github.com/larry-leon/weightedsurv
+BugReports: https://github.com/larry-leon/weightedsurv/issues
 VignetteBuilder: knitr

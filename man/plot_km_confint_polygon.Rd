@@ -13,9 +13,12 @@ plot_km_confint_polygon(x, surv, se, conf_level, col)
 
 \item{se}{Numeric vector of standard errors of survival probabilities.}
 
-\item{conf_level}{Confidence level for interval (default 0.95).}
+\item{conf_level}{Numeric; confidence level for interval (default 0.95).}
 
 \item{col}{Color for the polygon.}
+}
+\value{
+Invisibly returns NULL. Used for plotting side effects.
 }
 \description{
 Plots a shaded polygon representing the confidence interval for a Kaplan-Meier survival curve.

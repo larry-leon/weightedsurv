@@ -29,20 +29,57 @@ get_dfcounting <- function(...) {
   })
 }
 
-#' Checking results
+#' Check and summarize statistical results from a data frame
 #'
-#' Prints summary statistics for logrank and Cox model results from dfcounting.
+#' This function calculates and summarizes key statistics from a data frame containing
+#' likelihood ratio, variance, z-score, and logrank test results. It checks for required columns,
+#' computes squared statistics, and extracts the chi-squared value from logrank results.
 #'
-#' @param dfcount Result object from df_counting.
-#' @return None. Prints summary statistics.
+#' @param dfcount A data frame containing the columns \code{lr}, \code{sig2_lr}, \code{z.score},
+#'   and a list-column \code{logrank_results} with a \code{chisq} element.
+#' @param verbose Logical; if \code{TRUE}, prints the summary results to the console. Default is \code{TRUE}.
+#'
+#' @return A data frame with columns \code{zlr_sq}, \code{logrank_chisq}, and \code{zCox_sq}.
+#'   The result is returned invisibly.
+#'
+#' @examples
+#' # Example data
+#' dfcount <- data.frame(
+#'   lr = c(2, 3),
+#'   sig2_lr = c(1, 2),
+#'   z.score = c(1.5, 2.5),
+#'   logrank_results = I(list(list(chisq = 4.5), list(chisq = 6.2)))
+#' )
+#' check_results(dfcount)
+#' check_results(dfcount, verbose = FALSE)
+#'
 #' @export
 
-check_results <- function(dfcount){
-  zlr_sq  <- with(dfcount,lr^2/sig2_lr)
-  zCox_sq <-  with(dfcount,z.score^2)
-  cat(sprintf("zlr_sq=%.6f, logrank=%.6f, zCox_sq=%.6f\n", zlr_sq, dfcount$logrank_results$chisq, zCox_sq))
-}
+check_results <- function(dfcount, verbose = TRUE) {
+  # Check required columns
+  required_cols <- c("lr", "sig2_lr", "z.score", "logrank_results")
+  missing_cols <- setdiff(required_cols, names(dfcount))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Missing columns: %s", paste(missing_cols, collapse = ", ")))
+  }
 
+  # Calculate statistics
+  zlr_sq  <- with(dfcount, lr^2 / sig2_lr)
+  zCox_sq <- with(dfcount, z.score^2)
+  logrank_chisq <- dfcount$logrank_results$chisq
+
+  # Create summary data frame
+  result <- data.frame(
+    zlr_sq = zlr_sq,
+    logrank_chisq = logrank_chisq,
+    zCox_sq = zCox_sq
+  )
+
+  if (verbose) {
+    print(result)
+  }
+  invisible(result)
+}
 
 #' Plot Kaplan-Meier curves
 #'

@@ -4,7 +4,7 @@ library(devtools)
 # Step 1: Create the package structure
 # This will create the template directory
 # with Rproject setup
-#usethis::create_package(".. /GitHub/weightedSurv")
+#usethis::create_package(".. /GitHub/weightedsurv")
 
 # Copy functions into R directory
 # Step 3: Add README and MIT license
@@ -18,7 +18,6 @@ desc::desc_set_dep("survival", file = "DESCRIPTION")
 
 # Step 5: Generate documentation
 # Also, run this if revising R files such as @importFrom
-
 # clean up old documentation
 unlink("man/*.Rd")
 
@@ -26,7 +25,6 @@ devtools::document()
 
 devtools::load_all()
 
-# Step 6: Check the package
 devtools::check()
 
 devtools::clean_dll()
