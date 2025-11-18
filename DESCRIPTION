@@ -2,7 +2,14 @@ Package: weightedsurv
 Title: Survival Analysis with Subject-Specific (Case Weights) and Time-Dependent Weighting
 Version: 0.1.0
 Authors@R: person("Larry", "Leon", , "larry.leon.05@post.harvard.edu", role = c("aut", "cre"))
-Description: Survival analysis functions allowing for time-dependent and subject-specific (for example, propensity-scores) weighting. Weighted estimation for Cox model, Kaplan-Meier treatment survival curves as well as treatment difference along with point-wise and simultaneous confidence bands, and restricted mean survival time comparisons where 'RMST' estimates are evaluated across all potential truncation times (point-wise and simultaneous bands). See for example, Cole, S. R. & Hernán, M. A. (2004). Adjusted survival curves with inverse probability weights. Computer Methods and Programs in Biomedicine, 75(1), 45–49. doi:10.1016/j.cmpb.2003.10.012  
+Description: Provides survival analysis functions with support for time-dependent 
+    and subject-specific (e.g., propensity score) weighting. Implements weighted 
+    estimation for Cox models, Kaplan-Meier survival curves, and treatment 
+    differences with point-wise and simultaneous confidence bands. Includes 
+    restricted mean survival time (RMST) comparisons evaluated across all 
+    potential truncation times with both point-wise and simultaneous confidence 
+    bands. See Cole, S. R. & Hernán, M. A. (2004) 
+    <doi:10.1016/j.cmpb.2003.10.012> for methodological background.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
