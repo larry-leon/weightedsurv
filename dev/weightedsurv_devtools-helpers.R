@@ -29,6 +29,8 @@ devtools::check()
 
 devtools::clean_dll()
 
+devtools::build()
+
 # In terminal
 # rm -r man/
 usethis::use_git()
