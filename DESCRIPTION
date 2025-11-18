@@ -16,15 +16,13 @@ Imports:
     utils
 Suggests:
   adjustedCurves,
-  arsenal,
   data.table,
   DiagrammeR,
   dplyr,
   gt,
   knitr,
   pammtools,
-  rmarkdown,
-  survminer
+  rmarkdown
 URL: https://github.com/larry-leon/weightedsurv
 BugReports: https://github.com/larry-leon/weightedsurv/issues
 VignetteBuilder: knitr
