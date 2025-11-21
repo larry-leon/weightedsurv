@@ -9,7 +9,7 @@ Description: Provides survival analysis functions with support for time-dependen
     restricted mean survival time (RMST) comparisons evaluated across all 
     potential truncation times with both point-wise and simultaneous confidence 
     bands. See Cole, S. R. & Hernán, M. A. (2004) 
-    <doi:10.1016/j.cmpb.2003.10.012> for methodological background.
+    <doi:10.1016/j.cmpb.2003.10.004> for methodological background.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
