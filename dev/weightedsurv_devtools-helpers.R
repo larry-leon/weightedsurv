@@ -42,6 +42,9 @@ usethis::use_git()
 
 # Or  access hidden files:  mypackage::my_function
 
+# To remove file in Terminal --> git rm "file"
+
+
 # Notes
 # Every \item in a \describe{} block must have both a label and a description.
 # Do not leave a lone \item{...} without {...} after it.
