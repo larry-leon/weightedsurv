@@ -48,6 +48,9 @@ usethis::use_git()
 # Do not next \item inside another \item
 # Use plain text, dashes, or a single paragraph for subpoints.
 
+# Run these before CRAN submission
+devtools::check(cran = TRUE)     # Full CRAN validation
+#devtools::check_win_devel()       # Windows checks
 
 
 
