@@ -68,7 +68,7 @@ get_dfcounting <- function(...) {
 #'   End users typically don't need to call it directly.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # After running df_counting
 #' library(survival)
 #' data(veteran)

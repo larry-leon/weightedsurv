@@ -48,7 +48,7 @@ This function is primarily used for package development and validation.
 End users typically don't need to call it directly.
 }
 \examples{
-\dontrun{
+\donttest{
 # After running df_counting
 library(survival)
 data(veteran)

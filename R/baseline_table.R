@@ -19,7 +19,7 @@
 #' @return A gt table object (if gt package is available) or data frame
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Create sample data
 #' set.seed(123)
 #' n <- 500

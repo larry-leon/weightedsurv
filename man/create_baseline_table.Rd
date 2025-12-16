@@ -48,7 +48,7 @@ summary statistics, p-values, and standardized mean differences for
 continuous, categorical, and binary variables.
 }
 \examples{
-\dontrun{
+\donttest{
 # Create sample data
 set.seed(123)
 n <- 500
