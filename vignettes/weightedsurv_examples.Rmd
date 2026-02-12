@@ -3,7 +3,7 @@ title: "Weighted Survival Analysis Examples"
 output: 
   html_document:
          code_folding: hide
-bibliography: references.bib
+bibliography: weightedsurv_references.bib
 vignette: >
   %\VignetteIndexEntry{Weighted Survival Analysis Examples}
   %\VignetteEngine{knitr::rmarkdown}

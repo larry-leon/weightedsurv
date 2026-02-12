@@ -5,10 +5,10 @@ output:
          code_folding: hide
          toc: true
          toc_depth: 3
-bibliography: ../references.bib
+bibliography: ../weightedsurv_references.bib
 vignette: >
   %\VignetteIndexEntry{Weighted Cox Model Estimation Methodology}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

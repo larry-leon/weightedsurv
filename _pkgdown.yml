@@ -26,7 +26,7 @@ articles:
       Technical details on the statistical methods implemented in
       weightedsurv.
     contents:
-      - weightedcox_methodology
+      - articles/weightedcox_methodology
 
 reference:
   - title: "Data Preparation"

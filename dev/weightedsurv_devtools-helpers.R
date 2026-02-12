@@ -79,9 +79,7 @@ cat(readLines("NAMESPACE"), sep = "\n")
 dir.create("vignettes/articles", recursive = TRUE, showWarnings = FALSE)
 usethis::use_build_ignore("vignettes/articles")
 
-
 pkgdown::check_pkgdown()
-
 
 # Build the full site (renders all vignettes and articles)
 pkgdown::build_site()
@@ -91,12 +89,23 @@ pkgdown::build_home()              # README → index.html
 pkgdown::build_reference()         # Function reference pages
 pkgdown::build_articles()          # All vignettes and articles
 pkgdown::build_article("weightedsurv_examples")      # Just the main vignette
-pkgdown::build_article("weightedcox_methodology")     # Just the methodology article
+pkgdown::build_article("articles/weightedcox_methodology")     # Just the methodology article
 
 # Preview locally
 pkgdown::preview_site()
 
+# What files are in vignettes/articles/?
+list.files("vignettes/articles", recursive = TRUE)
+
+# What does pkgdown detect as articles?
+pkg <- pkgdown::as_pkgdown()
+pkg$vignettes
 
 
+# Keys referenced in the document
+doc <- readLines("vignettes/articles/weightedcox_methodology.Rmd")
+regmatches(doc, gregexpr("@[A-Za-z0-9_]+", doc)) |> unlist() |> unique()
 
+# Keys defined in the bib file
+grep("^@", readLines("vignettes/articles/weightedcox.bib"), value = TRUE)
 
