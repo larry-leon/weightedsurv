@@ -1,6 +1,5 @@
 # Ignore all files in vignettes/results/ and its subfolders
 .Rproj.user
-dev/working
 .DS_Store
 .Rhistory
 dev/working/
