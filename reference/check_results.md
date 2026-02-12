@@ -88,6 +88,7 @@ for generating the input object
 # After running df_counting
 library(survival)
 data(veteran)
+#> Warning: data set ‘veteran’ not found
 veteran$treat <- as.numeric(veteran$trt) - 1
 
 result <- df_counting(

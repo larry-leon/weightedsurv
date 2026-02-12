@@ -185,6 +185,7 @@ Other survival_analysis:
 
 ``` r
 library(survival)
+#> Warning: package ‘survival’ was built under R version 4.5.2
 str(veteran)
 #> 'data.frame':    137 obs. of  8 variables:
 #>  $ trt     : num  1 1 1 1 1 1 1 1 1 1 ...
