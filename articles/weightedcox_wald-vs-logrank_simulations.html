@@ -1522,7 +1522,7 @@ following tables document the full set of output variables.</p>
 <td class="gt_sourcenote" colspan="5"><span class="gt_from_md"><em>M</em> = <code>mart_draws</code> (default 300). De-biased variants use the martingale-residual bootstrap of Xu &amp; O’Quigley.</span></td>
     </tr>
 <tr class="gt_sourcenotes">
-<td class="gt_sourcenote" colspan="5"><span class="gt_from_md">Sign convention: <code>maxcombo()</code> returns z &lt; 0 for treatment benefit; reversed here (−z) so large positive z = superiority. <code>wlr()</code> already follows this convention.</span></td>
+<td class="gt_sourcenote" colspan="5"><span class="gt_from_md">Sign convention: <code><a href="https://merck.github.io/simtrial/reference/maxcombo.html" class="external-link">maxcombo()</a></code> returns z &lt; 0 for treatment benefit; reversed here (−z) so large positive z = superiority. <code><a href="https://merck.github.io/simtrial/reference/wlr.html" class="external-link">wlr()</a></code> already follows this convention.</span></td>
     </tr>
 </tfoot>
 </table>
@@ -2207,7 +2207,7 @@ returns consolidated results.</p>
 <span><span class="va">res_out</span> <span class="op">&lt;-</span> <span class="fu">run_weighted_cox_sims</span><span class="op">(</span></span>
 <span>  sim_setup    <span class="op">=</span> <span class="va">sim_setup</span>,</span>
 <span>  analysis_fn  <span class="op">=</span> <span class="va">sim_fn_analysis</span>,</span>
-<span>  n_sim        <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  n_sim        <span class="op">=</span> <span class="fl">5000</span>,</span>
 <span>  dof_approach <span class="op">=</span> <span class="st">"multisession"</span>,</span>
 <span>  num_workers  <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  seedstart    <span class="op">=</span> <span class="fl">8316951</span>,</span>
@@ -2215,10 +2215,10 @@ returns consolidated results.</p>
 <span>  save_results <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  file_togo    <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 13.989 sec elapsed</span></span>
-<span><span class="co">## Scenarios: 6 | Sims per scenario: 10 | Total tasks: 60 </span></span>
-<span><span class="co">## Completed: 60 | Failed: 0 </span></span>
-<span><span class="co">## Elapsed: 0.23 minutes</span></span></code></pre>
+<pre><code><span><span class="co">## 5008.624 sec elapsed</span></span>
+<span><span class="co">## Scenarios: 6 | Sims per scenario: 5000 | Total tasks: 30000 </span></span>
+<span><span class="co">## Completed: 30000 | Failed: 0 </span></span>
+<span><span class="co">## Elapsed: 83.48 minutes</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load pre-computed simulation results (if conducted)</span></span>
 <span><span class="co"># Note: adjust path to match your save_results directory </span></span>
@@ -2228,12 +2228,12 @@ returns consolidated results.</p>
 <div class="section level2">
 <h2 id="results">Results<a class="anchor" aria-label="anchor" href="#results"></a>
 </h2>
-<p>Simulations are based on 10 trials simulated for each scenario.
-Type-1 error upper bounds are 0.1218 and 0.1851 for
+<p>Simulations are based on 5,000 trials simulated for each scenario.
+Type-1 error upper bounds are 0.0293 and 0.056 for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2.5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">2.5\%</annotation></semantics></math>
 (1-sided) and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>
-(2-sided) alpha-levels. The computational time was 0 hours.</p>
+(2-sided) alpha-levels. The computational time was 1.39 hours.</p>
 <div class="section level3">
 <h3 id="main-3-test-comparison-under-nph-scenarios">Main 3-Test Comparison Under NPH Scenarios<a class="anchor" aria-label="anchor" href="#main-3-test-comparison-under-nph-scenarios"></a>
 </h3>
@@ -2831,57 +2831,57 @@ for log-rank).</p>
 <tbody class="gt_table_body">
 <tr>
 <td headers="Scenario" class="gt_row gt_center">PH</td>
-<td headers="Cox" class="gt_row gt_right">0.800</td>
-<td headers="Logrank" class="gt_row gt_right">0.800</td>
-<td headers="Cox01" class="gt_row gt_right">0.700</td>
-<td headers="FH01" class="gt_row gt_right">0.700</td>
-<td headers="Cox601" class="gt_row gt_right">0.700</td>
-<td headers="LR601" class="gt_row gt_right">0.700</td>
+<td headers="Cox" class="gt_row gt_right">0.865</td>
+<td headers="Logrank" class="gt_row gt_right">0.866</td>
+<td headers="Cox01" class="gt_row gt_right">0.764</td>
+<td headers="FH01" class="gt_row gt_right">0.764</td>
+<td headers="Cox601" class="gt_row gt_right">0.694</td>
+<td headers="LR601" class="gt_row gt_right">0.696</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">3m delay</td>
-<td headers="Cox" class="gt_row gt_right">0.500</td>
-<td headers="Logrank" class="gt_row gt_right">0.500</td>
-<td headers="Cox01" class="gt_row gt_right">0.700</td>
-<td headers="FH01" class="gt_row gt_right">0.700</td>
-<td headers="Cox601" class="gt_row gt_right">0.800</td>
-<td headers="LR601" class="gt_row gt_right">0.800</td>
+<td headers="Cox" class="gt_row gt_right">0.783</td>
+<td headers="Logrank" class="gt_row gt_right">0.784</td>
+<td headers="Cox01" class="gt_row gt_right">0.834</td>
+<td headers="FH01" class="gt_row gt_right">0.836</td>
+<td headers="Cox601" class="gt_row gt_right">0.804</td>
+<td headers="LR601" class="gt_row gt_right">0.805</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">6m delay</td>
-<td headers="Cox" class="gt_row gt_right">0.500</td>
-<td headers="Logrank" class="gt_row gt_right" style="background-color: #FFFF00;">0.500</td>
-<td headers="Cox01" class="gt_row gt_right">0.900</td>
-<td headers="FH01" class="gt_row gt_right">0.900</td>
-<td headers="Cox601" class="gt_row gt_right">0.900</td>
-<td headers="LR601" class="gt_row gt_right" style="background-color: #D3D3D3;">0.900</td>
+<td headers="Cox" class="gt_row gt_right">0.705</td>
+<td headers="Logrank" class="gt_row gt_right" style="background-color: #FFFF00;">0.706</td>
+<td headers="Cox01" class="gt_row gt_right">0.861</td>
+<td headers="FH01" class="gt_row gt_right">0.863</td>
+<td headers="Cox601" class="gt_row gt_right">0.915</td>
+<td headers="LR601" class="gt_row gt_right" style="background-color: #D3D3D3;">0.915</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">Crossing</td>
-<td headers="Cox" class="gt_row gt_right">0.400</td>
-<td headers="Logrank" class="gt_row gt_right">0.400</td>
+<td headers="Cox" class="gt_row gt_right">0.672</td>
+<td headers="Logrank" class="gt_row gt_right">0.672</td>
 <td headers="Cox01" class="gt_row gt_right">0.900</td>
-<td headers="FH01" class="gt_row gt_right">0.900</td>
-<td headers="Cox601" class="gt_row gt_right">0.900</td>
-<td headers="LR601" class="gt_row gt_right">0.900</td>
+<td headers="FH01" class="gt_row gt_right">0.902</td>
+<td headers="Cox601" class="gt_row gt_right">0.911</td>
+<td headers="LR601" class="gt_row gt_right">0.913</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">Weak null</td>
-<td headers="Cox" class="gt_row gt_right">0.000</td>
-<td headers="Logrank" class="gt_row gt_right">0.000</td>
-<td headers="Cox01" class="gt_row gt_right">0.000</td>
-<td headers="FH01" class="gt_row gt_right">0.000</td>
-<td headers="Cox601" class="gt_row gt_right">0.000</td>
-<td headers="LR601" class="gt_row gt_right">0.000</td>
+<td headers="Cox" class="gt_row gt_right">0.025</td>
+<td headers="Logrank" class="gt_row gt_right">0.025</td>
+<td headers="Cox01" class="gt_row gt_right">0.025</td>
+<td headers="FH01" class="gt_row gt_right">0.026</td>
+<td headers="Cox601" class="gt_row gt_right">0.025</td>
+<td headers="LR601" class="gt_row gt_right">0.025</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">Strong null</td>
-<td headers="Cox" class="gt_row gt_right">0.000</td>
-<td headers="Logrank" class="gt_row gt_right">0.000</td>
-<td headers="Cox01" class="gt_row gt_right">0.000</td>
-<td headers="FH01" class="gt_row gt_right">0.000</td>
-<td headers="Cox601" class="gt_row gt_right">0.000</td>
-<td headers="LR601" class="gt_row gt_right">0.000</td>
+<td headers="Cox" class="gt_row gt_right">0.016</td>
+<td headers="Logrank" class="gt_row gt_right">0.016</td>
+<td headers="Cox01" class="gt_row gt_right">0.047</td>
+<td headers="FH01" class="gt_row gt_right">0.049</td>
+<td headers="Cox601" class="gt_row gt_right">0.025</td>
+<td headers="LR601" class="gt_row gt_right">0.025</td>
 </tr>
 </tbody>
 </table>
@@ -3419,81 +3419,81 @@ estimates, empirical standard errors, and estimated standard errors
 <tbody class="gt_table_body">
 <tr>
 <td headers="Scenario" class="gt_row gt_center">PH</td>
-<td headers="HR" class="gt_row gt_right">0.795</td>
-<td headers="HR_db" class="gt_row gt_right">0.790</td>
-<td headers="SE" class="gt_row gt_right">0.096</td>
-<td headers="SE_est" class="gt_row gt_right">0.089</td>
-<td headers="SE_db" class="gt_row gt_right">0.084</td>
-<td headers="HR2" class="gt_row gt_right">0.814</td>
-<td headers="HR_db2" class="gt_row gt_right">0.807</td>
-<td headers="SE2" class="gt_row gt_right">0.144</td>
+<td headers="HR" class="gt_row gt_right">0.762</td>
+<td headers="HR_db" class="gt_row gt_right">0.755</td>
+<td headers="SE" class="gt_row gt_right">0.091</td>
+<td headers="SE_est" class="gt_row gt_right">0.090</td>
+<td headers="SE_db" class="gt_row gt_right">0.085</td>
+<td headers="HR2" class="gt_row gt_right">0.762</td>
+<td headers="HR_db2" class="gt_row gt_right">0.755</td>
+<td headers="SE2" class="gt_row gt_right">0.112</td>
 <td headers="SE_est2" class="gt_row gt_right">0.112</td>
-<td headers="SE_db2" class="gt_row gt_right">0.109</td>
+<td headers="SE_db2" class="gt_row gt_right">0.110</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">3m delay</td>
-<td headers="HR" class="gt_row gt_right">0.817</td>
-<td headers="HR_db" class="gt_row gt_right">0.811</td>
-<td headers="SE" class="gt_row gt_right">0.095</td>
-<td headers="SE_est" class="gt_row gt_right">0.089</td>
-<td headers="SE_db" class="gt_row gt_right">0.084</td>
-<td headers="HR2" class="gt_row gt_right">0.778</td>
-<td headers="HR_db2" class="gt_row gt_right">0.772</td>
-<td headers="SE2" class="gt_row gt_right">0.133</td>
+<td headers="HR" class="gt_row gt_right">0.782</td>
+<td headers="HR_db" class="gt_row gt_right">0.776</td>
+<td headers="SE" class="gt_row gt_right">0.091</td>
+<td headers="SE_est" class="gt_row gt_right">0.090</td>
+<td headers="SE_db" class="gt_row gt_right">0.085</td>
+<td headers="HR2" class="gt_row gt_right">0.730</td>
+<td headers="HR_db2" class="gt_row gt_right">0.723</td>
+<td headers="SE2" class="gt_row gt_right">0.114</td>
 <td headers="SE_est2" class="gt_row gt_right">0.114</td>
 <td headers="SE_db2" class="gt_row gt_right">0.112</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">6m delay</td>
-<td headers="HR" class="gt_row gt_right" style="background-color: #FFFF00;">0.837</td>
-<td headers="HR_db" class="gt_row gt_right">0.831</td>
-<td headers="SE" class="gt_row gt_right">0.095</td>
-<td headers="SE_est" class="gt_row gt_right">0.089</td>
-<td headers="SE_db" class="gt_row gt_right">0.084</td>
-<td headers="HR2" class="gt_row gt_right" style="background-color: #D3D3D3;">0.725</td>
-<td headers="HR_db2" class="gt_row gt_right">0.720</td>
-<td headers="SE2" class="gt_row gt_right">0.140</td>
+<td headers="HR" class="gt_row gt_right" style="background-color: #FFFF00;">0.801</td>
+<td headers="HR_db" class="gt_row gt_right">0.794</td>
+<td headers="SE" class="gt_row gt_right">0.091</td>
+<td headers="SE_est" class="gt_row gt_right">0.090</td>
+<td headers="SE_db" class="gt_row gt_right">0.085</td>
+<td headers="HR2" class="gt_row gt_right" style="background-color: #D3D3D3;">0.686</td>
+<td headers="HR_db2" class="gt_row gt_right">0.680</td>
+<td headers="SE2" class="gt_row gt_right">0.117</td>
 <td headers="SE_est2" class="gt_row gt_right">0.117</td>
 <td headers="SE_db2" class="gt_row gt_right">0.115</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">Crossing</td>
-<td headers="HR" class="gt_row gt_right">0.845</td>
-<td headers="HR_db" class="gt_row gt_right">0.839</td>
-<td headers="SE" class="gt_row gt_right">0.095</td>
-<td headers="SE_est" class="gt_row gt_right">0.089</td>
-<td headers="SE_db" class="gt_row gt_right">0.084</td>
-<td headers="HR2" class="gt_row gt_right">0.730</td>
-<td headers="HR_db2" class="gt_row gt_right">0.726</td>
-<td headers="SE2" class="gt_row gt_right">0.143</td>
-<td headers="SE_est2" class="gt_row gt_right">0.116</td>
+<td headers="HR" class="gt_row gt_right">0.808</td>
+<td headers="HR_db" class="gt_row gt_right">0.801</td>
+<td headers="SE" class="gt_row gt_right">0.091</td>
+<td headers="SE_est" class="gt_row gt_right">0.090</td>
+<td headers="SE_db" class="gt_row gt_right">0.085</td>
+<td headers="HR2" class="gt_row gt_right">0.689</td>
+<td headers="HR_db2" class="gt_row gt_right">0.683</td>
+<td headers="SE2" class="gt_row gt_right">0.116</td>
+<td headers="SE_est2" class="gt_row gt_right">0.117</td>
 <td headers="SE_db2" class="gt_row gt_right">0.115</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">Weak null</td>
-<td headers="HR" class="gt_row gt_right">1.048</td>
-<td headers="HR_db" class="gt_row gt_right">1.040</td>
-<td headers="SE" class="gt_row gt_right">0.094</td>
+<td headers="HR" class="gt_row gt_right">1.005</td>
+<td headers="HR_db" class="gt_row gt_right">0.997</td>
+<td headers="SE" class="gt_row gt_right">0.087</td>
 <td headers="SE_est" class="gt_row gt_right">0.086</td>
-<td headers="SE_db" class="gt_row gt_right">0.081</td>
-<td headers="HR2" class="gt_row gt_right">1.058</td>
-<td headers="HR_db2" class="gt_row gt_right">1.050</td>
-<td headers="SE2" class="gt_row gt_right">0.126</td>
+<td headers="SE_db" class="gt_row gt_right">0.082</td>
+<td headers="HR2" class="gt_row gt_right">1.006</td>
+<td headers="HR_db2" class="gt_row gt_right">0.997</td>
+<td headers="SE2" class="gt_row gt_right">0.109</td>
 <td headers="SE_est2" class="gt_row gt_right">0.110</td>
-<td headers="SE_db2" class="gt_row gt_right">0.111</td>
+<td headers="SE_db2" class="gt_row gt_right">0.110</td>
 </tr>
 <tr>
 <td headers="Scenario" class="gt_row gt_center">Strong null</td>
-<td headers="HR" class="gt_row gt_right">1.066</td>
-<td headers="HR_db" class="gt_row gt_right">1.058</td>
-<td headers="SE" class="gt_row gt_right">0.093</td>
+<td headers="HR" class="gt_row gt_right">1.022</td>
+<td headers="HR_db" class="gt_row gt_right">1.013</td>
+<td headers="SE" class="gt_row gt_right">0.087</td>
 <td headers="SE_est" class="gt_row gt_right">0.086</td>
-<td headers="SE_db" class="gt_row gt_right">0.081</td>
-<td headers="HR2" class="gt_row gt_right">1.058</td>
-<td headers="HR_db2" class="gt_row gt_right">1.050</td>
-<td headers="SE2" class="gt_row gt_right">0.126</td>
+<td headers="SE_db" class="gt_row gt_right">0.082</td>
+<td headers="HR2" class="gt_row gt_right">1.006</td>
+<td headers="HR_db2" class="gt_row gt_right">0.997</td>
+<td headers="SE2" class="gt_row gt_right">0.109</td>
 <td headers="SE_est2" class="gt_row gt_right">0.110</td>
-<td headers="SE_db2" class="gt_row gt_right">0.111</td>
+<td headers="SE_db2" class="gt_row gt_right">0.110</td>
 </tr>
 </tbody>
 </table>

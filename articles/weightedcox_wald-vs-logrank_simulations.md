@@ -645,7 +645,7 @@ full set of output variables.
 | MaxCombo |  |  |  |  |
 | maxcombop | MaxCombo | simtrial | maxcombo(rho=c(0,0), gamma=c(0,0.5)) | p-value (not a z-statistic) |
 | *M* = `mart_draws` (default 300). De-biased variants use the martingale-residual bootstrap of Xu & O’Quigley. |  |  |  |  |
-| Sign convention: `maxcombo()` returns z \< 0 for treatment benefit; reversed here (−z) so large positive z = superiority. `wlr()` already follows this convention. |  |  |  |  |
+| Sign convention: [`maxcombo()`](https://merck.github.io/simtrial/reference/maxcombo.html) returns z \< 0 for treatment benefit; reversed here (−z) so large positive z = superiority. [`wlr()`](https://merck.github.io/simtrial/reference/wlr.html) already follows this convention. |  |  |  |  |
 
 [ Code](#collapse-zstatdefinitions)
 
@@ -811,7 +811,7 @@ consolidated results.
 res_out <- run_weighted_cox_sims(
   sim_setup    = sim_setup,
   analysis_fn  = sim_fn_analysis,
-  n_sim        = 10,
+  n_sim        = 5000,
   dof_approach = "multisession",
   num_workers  = 12,
   seedstart    = 8316951,
@@ -821,10 +821,10 @@ res_out <- run_weighted_cox_sims(
 )
 ```
 
-    ## 13.989 sec elapsed
-    ## Scenarios: 6 | Sims per scenario: 10 | Total tasks: 60 
-    ## Completed: 60 | Failed: 0 
-    ## Elapsed: 0.23 minutes
+    ## 5008.624 sec elapsed
+    ## Scenarios: 6 | Sims per scenario: 5000 | Total tasks: 30000 
+    ## Completed: 30000 | Failed: 0 
+    ## Elapsed: 83.48 minutes
 
 ``` r
 # Load pre-computed simulation results (if conducted)
@@ -835,9 +835,10 @@ time_inhours <- res_out$thours
 
 ## Results
 
-Simulations are based on 10 trials simulated for each scenario. Type-1
-error upper bounds are 0.1218 and 0.1851 for $`2.5\%`$ (1-sided) and
-$`5\%`$ (2-sided) alpha-levels. The computational time was 0 hours.
+Simulations are based on 5,000 trials simulated for each scenario.
+Type-1 error upper bounds are 0.0293 and 0.056 for $`2.5\%`$ (1-sided)
+and $`5\%`$ (2-sided) alpha-levels. The computational time was 1.39
+hours.
 
 ### Main 3-Test Comparison Under NPH Scenarios
 
