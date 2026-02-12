@@ -11,6 +11,8 @@ Description: Provides survival analysis functions with support for time-dependen
     bands. See Cole, S. R. & Hernán, M. A. (2004) 
     <doi:10.1016/j.cmpb.2003.10.004> for methodological background.
 License: MIT + file LICENSE
+URL: https://larry-leon.github.io/weightedsurv/, https://github.com/larry-leon/weightedsurv
+BugReports: https://github.com/larry-leon/weightedsurv/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -28,8 +30,7 @@ Suggests:
   dplyr,
   gt,
   knitr,
+  pkgdown,
   pammtools,
   rmarkdown
-URL: https://github.com/larry-leon/weightedsurv
-BugReports: https://github.com/larry-leon/weightedsurv/issues
 VignetteBuilder: knitr

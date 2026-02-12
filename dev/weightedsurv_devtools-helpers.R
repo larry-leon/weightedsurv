@@ -68,3 +68,35 @@ git add .gitignore
 git commit -m "Stop tracking dev/working/, keep locally"
 
 
+# pkgdown initialization
+
+usethis::use_pkgdown()
+
+# update yaml via claude
+#The simplest way: run one of these in R from your package root and paste the output here.
+cat(readLines("NAMESPACE"), sep = "\n")
+
+dir.create("vignettes/articles", recursive = TRUE, showWarnings = FALSE)
+usethis::use_build_ignore("vignettes/articles")
+
+
+pkgdown::check_pkgdown()
+
+
+# Build the full site (renders all vignettes and articles)
+pkgdown::build_site()
+
+# Or build incrementally:
+pkgdown::build_home()              # README → index.html
+pkgdown::build_reference()         # Function reference pages
+pkgdown::build_articles()          # All vignettes and articles
+pkgdown::build_article("weightedsurv_examples")      # Just the main vignette
+pkgdown::build_article("weightedcox_methodology")     # Just the methodology article
+
+# Preview locally
+pkgdown::preview_site()
+
+
+
+
+

@@ -102,7 +102,6 @@ git commit -m "Stop tracking dev/working/, keep locally"
 dir.create("vignettes/articles", recursive = TRUE, showWarnings = FALSE)
 usethis::use_build_ignore("vignettes/articles")
 
-
 pkgdown::check_pkgdown()
 
 # One-time setup: creates a gh-pages branch and GitHub Actions workflow

@@ -1,0 +1,112 @@
+url: https://larry-leon.github.io/weightedsurv/
+
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/larry-leon/weightedsurv
+
+articles:
+  - title: "Getting Started"
+    desc: >
+      Comprehensive examples of weighted survival analysis with the
+      GBSG and Rotterdam datasets.
+    contents:
+      - weightedsurv_examples
+
+  - title: "Methodology"
+    desc: >
+      Technical details on the statistical methods implemented in
+      weightedsurv.
+    contents:
+      - weightedcox_methodology
+
+reference:
+  - title: "Data Preparation"
+    desc: "Create counting-process datasets for survival analysis"
+    contents:
+      - df_counting
+      - get_dfcounting
+      - extract_group_data
+      - get_event_risk_matrices
+      - get_censoring_and_events
+      - calculate_risk_event_counts
+      - count_weighted
+      - risk_weighted
+
+  - title: "Weighted Cox Models"
+    desc: "Fit weighted Cox proportional hazards models with resampling inference"
+    contents:
+      - cox_rhogamma
+      - cox_rhogamma_resample
+      - cox_score_rhogamma
+      - find_cox_root
+      - ci_cox
+      - score_calculation
+      - N_rhogamma
+
+  - title: "Weighted Log-Rank Tests"
+    desc: "Weighted log-rank statistics and diagnostics"
+    contents:
+      - wlr_dhat_estimates
+      - wlr_cumulative
+      - check_results
+
+  - title: "Kaplan-Meier Estimation"
+    desc: "Weighted KM curves, survival differences, and confidence bands"
+    contents:
+      - KM_diff
+      - KM_estimates
+      - resampling_survival
+      - km_quantile
+      - km_quantile_table
+      - kmq_calculations
+      - check_km_curve
+
+  - title: "KM Plotting"
+    desc: "Plot weighted Kaplan-Meier curves with risk tables and annotations"
+    contents:
+      - plot_weighted_km
+      - plot_km
+      - plotKM.band_subgroups
+      - plot_km_curves_counting
+      - plot_km_confint_polygon
+      - KM_plot_2sample_weighted_counting
+      - add_risk_table
+      - add_legends
+      - add_median_annotation
+      - get_riskpoints
+
+  - title: "RMST"
+    desc: "Restricted Mean Survival Time calculations with confidence bands"
+    contents:
+      - cumulative_rmst_bands
+
+  - title: "Weighting Schemes"
+    desc: "Weight function computation, validation, and visualization"
+    contents:
+      - wt.rg.S
+      - get_weights
+      - get_validated_weights
+      - extract_and_calc_weights
+      - validate_scheme_params
+      - plot_weight_schemes
+
+  - title: "Baseline Tables"
+    desc: "Publication-ready baseline characteristics tables"
+    contents:
+      - create_baseline_table
+
+  - title: "Utilities"
+    desc: "Input validation and formatting helpers"
+    contents:
+      - validate_input
+      - format_pval
+      - safe_run
