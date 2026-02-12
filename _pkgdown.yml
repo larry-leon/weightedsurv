@@ -9,7 +9,7 @@ navbar:
     left:  [intro, reference, articles]
     right: [search, github]
   components:
-    github:
+github:
       icon: fa-github
       href: https://github.com/larry-leon/weightedsurv
 
@@ -29,6 +29,13 @@ articles:
       - articles/weightedcox_methodology
       - articles/weightedkm_methodology
       - articles/weightedrmst_methodology
+
+  - title: "Simulation Studies"
+    desc: >
+      Monte Carlo simulation studies comparing weighted Cox and
+      weighted log-rank tests under non-proportional hazards scenarios.
+    contents:
+      - articles/weightedcox_wald-vs-logrank_simulations
 
   - title: "Supplementary Analysis Examples"
     desc: >

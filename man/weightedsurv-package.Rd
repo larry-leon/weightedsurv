@@ -93,6 +93,7 @@ Statistics in Medicine, 38(20), 3782-3790.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://larry-leon.github.io/weightedsurv/}
   \item \url{https://github.com/larry-leon/weightedsurv}
   \item Report bugs at \url{https://github.com/larry-leon/weightedsurv/issues}
 }

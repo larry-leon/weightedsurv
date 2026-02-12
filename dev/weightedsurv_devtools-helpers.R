@@ -91,9 +91,15 @@ pkgdown::build_articles()          # All vignettes and articles
 pkgdown::build_article("weightedsurv_examples")      # Just the main vignette
 pkgdown::build_article("articles/weightedcox_methodology")     # Just the methodology article
 
+pkgdown::build_article("articles/weightedcox_wald-vs-logrank_simulations")
+
 # Preview locally
 pkgdown::preview_site()
 
+# note: deploy_to_branch calls build_site(), so only run here if deploying
+# otherewise will duplicate the compiling of documents
+# So call this when version is ready for publication
+pkgdown::deploy_to_branch()
 
 
 # What files are in vignettes/articles/?
@@ -110,4 +116,19 @@ regmatches(doc, gregexpr("@[A-Za-z0-9_]+", doc)) |> unlist() |> unique()
 
 # Keys defined in the bib file
 grep("^@", readLines("vignettes/articles/weightedcox.bib"), value = TRUE)
+
+
+
+Reference section — once the helper functions are promoted to R/ in a future CRAN release, add:
+- title: "Simulation Infrastructure"
+desc: "Scenario builders, parallel execution, and result extraction for simulation studies"
+contents:
+  - check_required_packages
+- setup_parallel
+- is_covered
+- extract_cox_results
+- default_nph_scenarios
+- build_sim_scenarios
+- run_weighted_cox_sims
+
 
