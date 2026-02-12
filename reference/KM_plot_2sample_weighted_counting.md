@@ -1,0 +1,305 @@
+# Plot Weighted Kaplan-Meier Curves for Two Samples (Counting Process Format)
+
+Plots Kaplan-Meier survival curves for two groups using precomputed
+risk/event counts and survival estimates. Optionally displays confidence
+intervals, risk tables, median survival annotations, and statistical
+test results.
+
+## Usage
+
+``` r
+KM_plot_2sample_weighted_counting(
+  dfcount,
+  show.cox = TRUE,
+  cox.cex = 0.725,
+  show.logrank = FALSE,
+  logrank.cex = 0.725,
+  cox.eps = 0.001,
+  lr.eps = 0.001,
+  show_arm_legend = TRUE,
+  arms = c("treat", "control"),
+  put.legend.arms = "left",
+  stop.onerror = TRUE,
+  check.KM = TRUE,
+  put.legend.cox = "topright",
+  put.legend.lr = "topleft",
+  lr.digits = 2,
+  cox.digits = 2,
+  tpoints.add = c(0),
+  by.risk = NULL,
+  Xlab = "time",
+  Ylab = "proportion surviving",
+  col.0 = "black",
+  col.1 = "blue",
+  show.med = TRUE,
+  med.digits = 2,
+  med.font = 4,
+  conf.int = FALSE,
+  conf_level = 0.95,
+  choose_ylim = FALSE,
+  arm.cex = 0.7,
+  quant = 0.5,
+  med.cex = 0.725,
+  ymed.offset = 0.1,
+  xmed.fraction = 0.8,
+  risk.cex = 0.725,
+  ltys = c(1, 1),
+  lwds = c(1, 1),
+  censor.mark.all = TRUE,
+  censor.cex = 0.5,
+  show.ticks = TRUE,
+  risk.set = TRUE,
+  ymin = 0,
+  ymax = 1,
+  ymin.del = 0.035,
+  ymin2 = NULL,
+  risk_offset = 0.125,
+  risk_delta = 0.05,
+  y.risk0 = NULL,
+  show.Y.axis = TRUE,
+  cex_Yaxis = 1,
+  y.risk1 = NULL,
+  add.segment = FALSE,
+  risk.add = NULL,
+  xmin = 0,
+  xmax = NULL,
+  x.truncate = NULL,
+  time.zero = 0,
+  prob.points = NULL
+)
+```
+
+## Arguments
+
+- dfcount:
+
+  List containing precomputed survival data.
+
+- show.cox:
+
+  Logical; show Cox model results.
+
+- cox.cex:
+
+  Numeric; text size for Cox annotation.
+
+- show.logrank:
+
+  Logical; show log-rank test results.
+
+- logrank.cex:
+
+  Numeric; text size for log-rank annotation.
+
+- cox.eps:
+
+  Numeric; small values for Cox calculations.
+
+- lr.eps:
+
+  Numeric; small values for log-rank calculations.
+
+- show_arm_legend:
+
+  Logical; show arm legend.
+
+- arms:
+
+  Character vector of arm labels.
+
+- put.legend.arms:
+
+  Character; legend positions.
+
+- stop.onerror:
+
+  Logical; stop on KM curve errors.
+
+- check.KM:
+
+  Logical; check KM curve validity.
+
+- put.legend.cox:
+
+  Character; legend positions.
+
+- put.legend.lr:
+
+  Character; legend positions.
+
+- lr.digits:
+
+  Integer; digits for test results.
+
+- cox.digits:
+
+  Integer; digits for test results.
+
+- tpoints.add:
+
+  Numeric vector; additional time points to include (default: c(0)).
+
+- by.risk:
+
+  Numeric; interval for risk table time points.
+
+- Xlab:
+
+  Character; axis labels.
+
+- Ylab:
+
+  Character; axis labels.
+
+- col.0:
+
+  Color for control curve.
+
+- col.1:
+
+  Color for treatment curve.
+
+- show.med:
+
+  Logical; annotate median survival.
+
+- med.digits:
+
+  Median annotation settings.
+
+- med.font:
+
+  Median annotation settings.
+
+- conf.int:
+
+  Logical; plot confidence intervals.
+
+- conf_level:
+
+  Numeric; confidence level for intervals.
+
+- choose_ylim:
+
+  Logical; auto-select y-axis limits.
+
+- arm.cex:
+
+  Numeric; text size for arm legend.
+
+- quant:
+
+  Numeric; quantile for annotation.
+
+- med.cex:
+
+  Median annotation settings.
+
+- ymed.offset:
+
+  Median annotation settings.
+
+- xmed.fraction:
+
+  Median annotation settings.
+
+- risk.cex:
+
+  Numeric; text size for risk table.
+
+- ltys:
+
+  Integer; line types for curves.
+
+- lwds:
+
+  Integer; line widths for curves.
+
+- censor.mark.all:
+
+  Logical; mark all censored times.
+
+- censor.cex:
+
+  Numeric; size of censor marks.
+
+- show.ticks:
+
+  Logical; show axis ticks.
+
+- risk.set:
+
+  Logical; display risk table.
+
+- ymin:
+
+  Additional graphical and calculation parameters.
+
+- ymax:
+
+  Additional graphical and calculation parameters.
+
+- ymin.del:
+
+  Additional graphical and calculation parameters.
+
+- ymin2:
+
+  Additional graphical and calculation parameters.
+
+- risk_offset:
+
+  Additional graphical and calculation parameters.
+
+- risk_delta:
+
+  Additional graphical and calculation parameters.
+
+- y.risk0:
+
+  Additional graphical and calculation parameters.
+
+- show.Y.axis:
+
+  Additional graphical and calculation parameters.
+
+- cex_Yaxis:
+
+  Additional graphical and calculation parameters.
+
+- y.risk1:
+
+  Additional graphical and calculation parameters.
+
+- add.segment:
+
+  Additional graphical and calculation parameters.
+
+- risk.add:
+
+  Additional graphical and calculation parameters.
+
+- xmin:
+
+  Additional graphical and calculation parameters.
+
+- xmax:
+
+  Additional graphical and calculation parameters.
+
+- x.truncate:
+
+  Additional graphical and calculation parameters.
+
+- time.zero:
+
+  Numeric; time zero value for risk table alignment (default: 0).
+
+- prob.points:
+
+  Numeric vector; probability points for additional annotations
+  (default: NULL).
+
+## Value
+
+Invisibly returns NULL. Used for plotting side effects.

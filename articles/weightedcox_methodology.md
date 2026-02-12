@@ -1,0 +1,664 @@
+# Weighted Cox Model Estimation Methodology
+
+## Overview
+
+This article describes the weighted Cox model estimation methodology
+implemented in the `weightedsurv` package. Weighted Cox models extend
+the standard Cox proportional hazards framework by incorporating
+time-dependent weight functions into the partial likelihood. These
+weights allow the analyst to emphasize treatment effects at different
+points on the survival distribution — for example, weighting later
+time-points more heavily in late-separation scenarios common in
+immunotherapy trials.
+
+The methodological foundations draw on the work of Lin (1991) and
+Sasieni (1993) who developed the theory for weighted partial-likelihood
+estimation, and León, Lin, and Anderson (2020) who proposed companion
+weighted Cox estimators linked to weighted log-rank combination tests.
+
+The `weightedsurv` package provides a unified interface for computing
+weighted Cox model estimates across multiple weighting schemes, with
+variance estimation based on both asymptotic and synthetic-martingale
+resampling approaches.
+
+## Background: Non-Proportional Hazards and the Standard Cox Model
+
+### The Two-Sample Setting
+
+Consider the standard two-sample random censorship model used in
+clinical trials. For $`i = 1, \ldots, n`$ let $`Z_i = j`$ if observation
+$`i`$ is from group $`j \in \{0, 1\}`$ with $`n = n_0 + n_1`$. Let $`T`$
+denote the survival time and $`C`$ the censoring time. We observe
+$`X = \min(T, C)`$ and $`\Delta = I(T \le C)`$. Survival times are
+assumed independent of censoring conditional on treatment.
+
+The at-risk and counting processes are
+``` math
+Y_i(t) = I(X_i \ge t), \quad N_i(t) = I(X_i \le t,\, \Delta_i = 1).
+```
+
+The standard Cox model assumes
+$`\lambda(t \mid Z) = \lambda_0(t) \exp(\beta Z)`$, yielding a constant
+hazard ratio $`\exp(\beta)`$. The maximum partial-likelihood estimator
+$`\hat{\beta}`$ solves the score equation
+
+``` math
+U(\beta) = \sum_{i=1}^{n} \int_0^\infty \left\{ Z_i - \frac{S^{(1)}(t, \beta)}{S^{(0)}(t, \beta)} \right\} dN_i(t) = 0,
+```
+
+where
+$`S^{(p)}(t, \beta) = n^{-1} \sum_{i=1}^{n} Z_i^p\, Y_i(t)\, \exp(Z_i \beta)`$
+for $`p = 0, 1`$.
+
+### Why Weighted Cox Models?
+
+Under non-proportional hazards the true model is
+$`\lambda(t \mid Z) = \lambda_0(t) \exp(\beta(t) Z)`$ with a
+time-varying coefficient $`\beta(t)`$. In this case the standard Cox
+estimator converges to a weighted average of $`\beta(t)`$ that depends
+on the censoring distribution, risk-set composition, and the pattern of
+non-proportional hazards. The resulting “average hazard ratio” may not
+accurately reflect the treatment effect at clinically relevant time
+periods.
+
+For example, in a late-separation scenario where $`\beta(t) = 0`$ for
+$`t \le \tau_{cp}`$ and $`\beta(t) = \log(\theta)`$ for
+$`t > \tau_{cp}`$, the standard Cox estimator attenuates the true
+later-term effect toward the null because it gives substantial weight to
+the early period where there is no treatment difference.
+
+Weighted Cox models address this by introducing a time-dependent weight
+function $`w(t)`$ into the partial likelihood, allowing the analyst to
+emphasize contributions from specific time regions.
+
+## Weighted Partial Likelihood
+
+### Definition
+
+The $`w`$-weighted partial likelihood is
+
+``` math
+\ell_w(\beta) = \sum_{i=1}^{n} \int_0^\infty w(t)\, \beta\, Z_i\, dN_i(t) - \int_0^\infty w(t) \log\!\bigl(S^{(0)}(t, \beta)\bigr) \sum_{i=1}^{n} dN_i(t),
+```
+
+where $`w(t) \ge 0`$ is a predictable weight function. The weighted Cox
+estimator $`\hat{\beta}_w`$ maximizes $`\ell_w(\beta)`$ and solves
+
+``` math
+U_w(\beta) = \sum_{i=1}^{n} \int_0^\infty w(t) \left\{ Z_i - \frac{S^{(1)}(t, \beta)}{S^{(0)}(t, \beta)} \right\} dN_i(t) = 0.
+```
+
+Note that for $`w(t) \equiv 1`$ this reduces to the standard Cox score
+equation, and in the two-sample setting $`U_w(0)`$ evaluated at
+$`\beta = 0`$ is the weighted log-rank statistic.
+
+### Weighting Schemes and Their Rationale
+
+The `weightedsurv` package implements several weighting schemes through
+the
+[`wt.rg.S()`](https://larry-leon.github.io/weightedsurv/reference/wt.rg.S.md)
+function and the
+[`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md)
+interface. Each scheme corresponds to a different emphasis on the
+survival time scale:
+
+**Fleming-Harrington FH($`\rho`$, $`\gamma`$):** The weight function is
+``` math
+w(t) = \bigl[\hat{\bar{F}}(t^-)\bigr]^\rho \bigl[1 - \hat{\bar{F}}(t^-)\bigr]^\gamma,
+```
+where $`\hat{\bar{F}}(t^-)`$ is the left-continuous pooled Kaplan-Meier
+estimator and $`\rho \ge 0`$, $`\gamma \ge 0`$. The standard log-rank /
+Cox model corresponds to FH(0, 0). Increasing $`\gamma`$ (with
+$`\rho = 0`$) emphasizes late differences; increasing $`\rho`$ (with
+$`\gamma = 0`$) emphasizes early differences.
+
+**Magirr-Burman (MB):**
+``` math
+w(t) = \frac{1}{\max\bigl(\hat{\bar{F}}(t^-),\, \hat{\bar{F}}(t^\star)\bigr)},
+```
+which provides modest downweighting of early time-points relative to the
+user-specified cutoff $`t^\star`$.
+
+**Schemper:**
+``` math
+w(t) = \frac{\hat{\bar{F}}(t^-)}{\hat{\bar{G}}(t)},
+```
+where $`\hat{\bar{G}}`$ is the pooled Kaplan-Meier censoring survivor
+function. This scheme produces an “average hazard ratio” estimator that
+is approximately free of the censoring distribution.
+
+**Xu-O’Quigley (XO):**
+``` math
+w(t) = \frac{\hat{\bar{F}}(t^-)}{\bar{Y}(t)/n},
+```
+which also yields a censoring-independent average hazard ratio
+estimator.
+
+**Custom time-based:** Step-function weights of the form
+$`w(t) = w_0\, I(t \le \tau) + w_1\, I(t > \tau)`$, which allow the
+analyst to zero-out contributions before or after a pre-specified
+time-point.
+
+### Variance Estimation
+
+The variance of $`\hat{\beta}_w`$ is estimated through the weighted
+observed information and weighted score variance. The weighted
+information is
+
+``` math
+I_w(\beta) = \int_0^\infty w(t) \left\{ \frac{\bar{Y}_0(t)\, \exp(\beta)\, \bar{Y}_1(t)}{\bigl(\bar{Y}_0(t) + \exp(\beta)\, \bar{Y}_1(t)\bigr)^2} \right\} d\bar{N}(t),
+```
+
+and the score variance $`\hat{\sigma}^2(U_w(\beta))`$ is estimated
+(evaluated at $`\hat{\beta}_w`$) following the martingale-based approach
+of Fleming and Harrington (1991):
+
+``` math
+\hat{\sigma}^2(U_w(\beta)) = \int_0^\infty \left\{ \frac{K(t, \beta)^2}{\bar{Y}_0(t)} + \frac{K(t, \beta)^2}{\exp(\beta)\, \bar{Y}_1(t)} \right\} \left\{1 - \frac{\Delta\bar{N}(t) - 1}{\bar{Y}_0(t) + \exp(\beta)\bar{Y}_1(t) - 1} \right\} \frac{d\bar{N}(t)}{\bar{Y}_0(t) + \exp(\beta)\bar{Y}_1(t)},
+```
+
+where $`K(t, \beta)`$ is the FH weight kernel evaluated at $`\beta`$.
+Note that at $`\beta = 0`$ the score statistic and its variance reduce
+to the weighted log-rank statistic and its standard variance estimator.
+
+The standard error of $`\hat{\beta}_w`$ is then
+$`\hat{\sigma}_w = \hat{\sigma}(U_w(\hat{\beta}_w)) / I_w(\hat{\beta}_w)`$.
+
+### Synthetic-Martingale Resampling
+
+In addition to asymptotic standard errors, `weightedsurv` implements
+synthetic-martingale resampling for variance estimation, which can have
+improved small-sample properties. The idea (Dobler, Beyersmann, and
+Pauly (2017)) is to replace the unobservable martingale increments
+$`dM_{i,j}`$ with independent standard normal realizations multiplied by
+observable counting-process increments:
+
+``` math
+U_w^\dagger(\hat{\beta}_w) = \sum_{i=1}^{n} \int_0^\infty w(t) \left\{ Z_i - \frac{S^{(1)}(t, \hat{\beta}_w)}{S^{(0)}(t, \hat{\beta}_w)} \right\} dG_i\, N_i(t),
+```
+
+where $`G_i \stackrel{\text{iid}}{\sim} N(0, 1)`$ are independent of the
+data. The resampled distribution of
+$`I_w(\hat{\beta}_w)^{-1} U_w^\dagger(\hat{\beta}_w)`$ approximates the
+sampling distribution of $`\hat{\beta}_w - \beta_w^*`$. Repeating this
+process a large number of times (`draws` in
+[`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md))
+yields resampling-based confidence intervals.
+
+This approach extends naturally to constructing **simultaneous
+confidence intervals** across multiple weighting schemes, which is
+critical when the weighting scheme is selected via a combination test
+(see León, Lin, and Anderson (2020)).
+
+## Asymptotic Properties Under Misspecification
+
+### The Estimand: What Does $`\hat{\beta}_w`$ Estimate?
+
+Under regularity conditions (Lin (1991)), $`\hat{\beta}_w`$ converges in
+probability to $`\beta_w^*`$, the solution to $`u_w(\beta) = 0`$ where
+
+``` math
+u_w(\beta) = \int_0^\infty w^\dagger(t) \left\{ \frac{s^{(1)}(t)}{s^{(0)}(t)} - \frac{s^{(1)}(t, \beta)}{s^{(0)}(t, \beta)} \right\} s^{(0)}(t)\, dt,
+```
+
+with $`w^\dagger(t)`$ the probability limit of $`w(t)`$, and
+$`s^{(p)}(t) = E[S^{(p)}(t)]`$,
+$`s^{(p)}(t, \beta) = E[S^{(p)}(t, \beta)]`$.
+
+This shows that $`\beta_w^*`$ is a weighted average (on the log-hazard
+scale) of the time-varying $`\beta(t)`$, with weights determined jointly
+by $`w(t)`$, the censoring distribution, and the risk-set dynamics.
+
+### Late-Separation Scenario
+
+To build intuition, consider the change-point model
+$`\beta(t) = \log(\theta)\, I(t > \tau_{cp})`$ with equal randomization
+($`\Pr(Z = 1) = 1/2`$) and censoring independent of treatment. Then
+$`\beta_w^*`$ satisfies
+
+``` math
+0 = \int_0^{\tau_{cp}} w^\dagger(t) \left\{ \frac{1}{2} - \frac{\exp(\beta_w^*)}{1 + \exp(\beta_w^*)} \right\} \lambda_0(t)\, \bar{G}(t)\, \bar{F}_0(t)\, dt + \int_{\tau_{cp}}^\infty w^\dagger(t) \left\{ \exp(\beta_w^*)\, a(t, \beta_w^*) - \theta \right\} \tfrac{1}{2}\, \lambda_0(t)\, \bar{G}(t)\, \bar{F}_1(t)\, dt,
+```
+
+where
+$`a(t, \beta_w^*) = [\bar{F}_1(t)\, \theta + \bar{F}_0(t)] / [\bar{F}_1(t)\, \exp(\beta_w^*) + \bar{F}_0(t)]`$.
+
+The first integral covers the null period ($`t \le \tau_{cp}`$) where
+the contribution pushes $`\beta_w^*`$ toward zero; the second integral
+covers the treatment-effect period ($`t > \tau_{cp}`$) and pushes
+$`\beta_w^*`$ toward $`\log(\theta)`$. Weighting schemes that downweight
+the first integral (e.g., FH(0,1)) therefore produce estimands closer to
+the true treatment effect $`\theta`$.
+
+## Using `weightedsurv` for Weighted Cox Estimation
+
+### Workflow
+
+The typical workflow for weighted Cox estimation in `weightedsurv`
+involves:
+
+1.  Prepare a counting-process dataset via
+    [`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md)
+    or
+    [`get_dfcounting()`](https://larry-leon.github.io/weightedsurv/reference/get_dfcounting.md)
+2.  Fit weighted Cox models via
+    [`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md)
+    with the desired weighting scheme
+3.  Optionally, use resampling (the `draws` argument) for improved
+    inference
+
+The
+[`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md)
+function computes risk sets, event counts, Kaplan-Meier estimates, and
+the specified weighting scheme. The
+[`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md)
+function then uses this counting-process representation to solve the
+weighted score equation.
+
+### Example: GBSG Trial Data
+
+We illustrate using the GBSG randomized trial data available in the
+`survival` package.
+
+``` r
+library(survival)
+library(weightedsurv)
+library(data.table)
+
+# Prepare GBSG data
+df_gbsg <- gbsg
+df_gbsg$tte <- df_gbsg$rfstime / 30.4375  # Convert days to months
+df_gbsg$event <- df_gbsg$status
+df_gbsg$treat <- df_gbsg$hormon
+
+tte.name <- "tte"
+event.name <- "event"
+treat.name <- "treat"
+arms <- c("treat", "control")
+```
+
+#### Step 1: Counting-Process Dataset
+
+The
+[`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md)
+function computes the full counting-process representation along with
+the specified weighting scheme:
+
+``` r
+# Standard (unweighted) analysis with FH(0,0) = standard log-rank / Cox
+dfcount_gbsg <- df_counting(
+  df = df_gbsg, 
+  tte.name = tte.name, 
+  event.name = event.name, 
+  treat.name = treat.name, 
+  arms = arms,
+  by.risk = 12, 
+  scheme = "fh", 
+  scheme_params = list(rho = 0, gamma = 0)
+)
+```
+
+#### Step 2: Standard Cox Model
+
+With FH(0,0) weights the weighted Cox model reduces to the standard Cox
+model:
+
+``` r
+# Standard Cox via cox_rhogamma with FH(0,0)
+fit_cox <- cox_rhogamma(
+  dfcount = dfcount_gbsg, 
+  scheme = "fh", 
+  scheme_params = list(rho = 0, gamma = 0), 
+  draws = 1000, 
+  verbose = FALSE
+)
+
+cat("Standard Cox model\n")
+```
+
+    ## Standard Cox model
+
+``` r
+cat("  HR:", round(fit_cox$hr_ci_asy$hr, 3), "\n")
+```
+
+    ##   HR: 0.695
+
+``` r
+cat("  95% CI (asymptotic):", 
+    round(fit_cox$hr_ci_asy$lower, 3), "-", 
+    round(fit_cox$hr_ci_asy$upper, 3), "\n")
+```
+
+    ##   95% CI (asymptotic): 0.544 - 0.888
+
+``` r
+cat("  95% CI (resampling):", 
+    round(fit_cox$hr_ci_star$lower, 3), "-", 
+    round(fit_cox$hr_ci_star$upper, 3), "\n")
+```
+
+    ##   95% CI (resampling): 0.54 - 0.889
+
+``` r
+cat("  Z-score:", round(fit_cox$z.score, 3), "\n")
+```
+
+    ##   Z-score: 2.927
+
+#### Step 3: Weighted Cox Models with Different Schemes
+
+Now we fit weighted Cox models with several weighting schemes to examine
+how emphasis on different time regions affects the hazard ratio
+estimate:
+
+``` r
+# FH(0,1): Late-emphasis weighting
+fit_fh01 <- cox_rhogamma(
+  dfcount = dfcount_gbsg, 
+  scheme = "fh", 
+  scheme_params = list(rho = 0, gamma = 1), 
+  draws = 1000, 
+  verbose = FALSE
+)
+
+# FH(1,0): Early-emphasis weighting
+fit_fh10 <- cox_rhogamma(
+  dfcount = dfcount_gbsg, 
+  scheme = "fh", 
+  scheme_params = list(rho = 1, gamma = 0), 
+  draws = 1000, 
+  verbose = FALSE
+)
+
+# Magirr-Burman with 12-month cutoff
+fit_mb <- cox_rhogamma(
+  dfcount = dfcount_gbsg, 
+  scheme = "MB", 
+  scheme_params = list(mb_tstar = 12), 
+  draws = 1000, 
+  verbose = FALSE
+)
+
+# Custom: Zero weight before 6 months, unit weight after
+fit_custom <- cox_rhogamma(
+  dfcount = dfcount_gbsg, 
+  scheme = "custom_time", 
+  scheme_params = list(t.tau = 6, w0.tau = 0, w1.tau = 1), 
+  draws = 1000, 
+  verbose = FALSE
+)
+```
+
+#### Comparison of Results
+
+``` r
+library(gt)
+
+results <- data.table(
+  Scheme = c("FH(0,0) [Standard Cox]", "FH(0,1) [Late emphasis]", 
+             "FH(1,0) [Early emphasis]", "MB(12)", "Custom 0/1 at 6 months"),
+  HR = c(fit_cox$hr_ci_asy$hr, fit_fh01$hr_ci_asy$hr, 
+         fit_fh10$hr_ci_asy$hr, fit_mb$hr_ci_asy$hr, fit_custom$hr_ci_asy$hr),
+  Z = c(fit_cox$z.score, fit_fh01$z.score, 
+        fit_fh10$z.score, fit_mb$z.score, fit_custom$z.score),
+  Lower = c(fit_cox$hr_ci_star$lower, fit_fh01$hr_ci_star$lower,
+            fit_fh10$hr_ci_star$lower, fit_mb$hr_ci_star$lower, fit_custom$hr_ci_star$lower),
+  Upper = c(fit_cox$hr_ci_star$upper, fit_fh01$hr_ci_star$upper,
+            fit_fh10$hr_ci_star$upper, fit_mb$hr_ci_star$upper, fit_custom$hr_ci_star$upper)
+)
+
+results %>% 
+  gt() %>% 
+  fmt_number(columns = c(HR, Z, Lower, Upper), decimals = 3) %>%
+  cols_label(
+    Scheme = "Weighting Scheme",
+    HR = "Hazard Ratio",
+    Z = "Z-score",
+    Lower = "95% CI Lower",
+    Upper = "95% CI Upper"
+  ) %>%
+  tab_header(
+    title = "Weighted Cox Model Estimates: GBSG Trial",
+    subtitle = "Resampling-based 95% confidence intervals (1000 draws)"
+  ) %>%
+  tab_footnote(
+    footnote = "FH(rho, gamma) = Fleming-Harrington weights; MB = Magirr-Burman.",
+    locations = cells_column_labels(columns = Scheme)
+  )
+```
+
+| Weighted Cox Model Estimates: GBSG Trial |  |  |  |  |
+|----|----|----|----|----|
+| Resampling-based 95% confidence intervals (1000 draws) |  |  |  |  |
+| Weighting Scheme¹ | Hazard Ratio | Z-score | 95% CI Lower | 95% CI Upper |
+| FH(0,0) \[Standard Cox\] | 0.695 | 2.927 | 0.540 | 0.889 |
+| FH(0,1) \[Late emphasis\] | 0.721 | 2.261 | 0.540 | 0.952 |
+| FH(1,0) \[Early emphasis\] | 0.687 | 2.952 | 0.530 | 0.885 |
+| MB(12) | 0.696 | 2.918 | 0.541 | 0.890 |
+| Custom 0/1 at 6 months | 0.691 | 2.906 | 0.532 | 0.890 |
+| ¹ FH(rho, gamma) = Fleming-Harrington weights; MB = Magirr-Burman. |  |  |  |  |
+
+### Visualizing Weight Functions
+
+The
+[`plot_weight_schemes()`](https://larry-leon.github.io/weightedsurv/reference/plot_weight_schemes.md)
+function displays the weight profiles over the event time-scale,
+illustrating how different schemes emphasize different regions:
+
+``` r
+g <- plot_weight_schemes(dfcount_gbsg)
+print(g)
+```
+
+![](weightedcox_methodology_files/figure-html/weight-plot-1.png)
+
+### Weighted Cox with Propensity-Score Adjustment
+
+The `weightedsurv` package supports subject-specific (case) weights in
+combination with time-dependent weighting. This is particularly useful
+for observational studies where propensity-score weighting is used to
+adjust for confounding.
+
+``` r
+# Prepare Rotterdam data (observational study)
+gbsg_validate <- within(rotterdam, {
+  rfstime <- ifelse(recur == 1, rtime, dtime)
+  time_months <- rfstime / 30.4375
+  status2 <- ifelse(recur == 1 | (recur == 0 & death == 1 & rtime < dtime), recur, death)
+  grade3 <- ifelse(grade == "3", 1, 0)
+  treat <- hormon
+  event <- status2
+  tte <- time_months
+})
+df_rotterdam <- subset(gbsg_validate, nodes > 0)
+
+# Propensity score model
+fit.ps <- glm(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, 
+              data = df_rotterdam, family = "binomial")
+pihat <- fit.ps$fitted
+pihat.null <- glm(treat ~ 1, family = "binomial", data = df_rotterdam)$fitted
+wt.1 <- pihat.null / pihat
+wt.0 <- (1 - pihat.null) / (1 - pihat)
+df_rotterdam$sw.weights <- ifelse(df_rotterdam$treat == 1, wt.1, wt.0)
+
+# Weighted counting-process dataset (propensity-score weighted)
+dfcount_wtd <- get_dfcounting(
+  df = df_rotterdam, 
+  tte.name = "tte", event.name = "event", treat.name = "treat", 
+  arms = arms, by.risk = 24, weight.name = "sw.weights"
+)
+
+# Weighted Cox models with propensity-score adjustment
+fit_ps_cox <- cox_rhogamma(dfcount = dfcount_wtd, scheme = "fh", 
+                            scheme_params = list(rho = 0, gamma = 0), 
+                            draws = 1000, verbose = FALSE)
+
+fit_ps_fh01 <- cox_rhogamma(dfcount = dfcount_wtd, scheme = "fh", 
+                              scheme_params = list(rho = 0, gamma = 1), 
+                              draws = 1000, verbose = FALSE)
+
+cat("Rotterdam propensity-score weighted analyses:\n")
+```
+
+    ## Rotterdam propensity-score weighted analyses:
+
+``` r
+cat("  Standard Cox HR:", round(fit_ps_cox$hr_ci_asy$hr, 3), 
+    " 95% CI:", round(fit_ps_cox$hr_ci_star$lower, 3), "-", 
+    round(fit_ps_cox$hr_ci_star$upper, 3), "\n")
+```
+
+    ##   Standard Cox HR: 0.632  95% CI: 0.494 - 0.824
+
+``` r
+cat("  FH(0,1) Cox HR:", round(fit_ps_fh01$hr_ci_asy$hr, 3), 
+    " 95% CI:", round(fit_ps_fh01$hr_ci_star$lower, 3), "-", 
+    round(fit_ps_fh01$hr_ci_star$upper, 3), "\n")
+```
+
+    ##   FH(0,1) Cox HR: 0.693  95% CI: 0.513 - 0.954
+
+## Connection to Weighted Log-Rank Tests
+
+### Score-Test Equivalence
+
+The weighted Cox score statistic evaluated at $`\beta = 0`$ is
+algebraically equivalent to the weighted log-rank statistic. That is,
+$`U_w(0) = W_K`$ where
+
+``` math
+W_K = \int_0^\infty \left\{ \frac{K(t)}{\bar{Y}_0(t)}\, d\bar{N}_0(t) - \frac{K(t)}{\bar{Y}_1(t)}\, d\bar{N}_1(t) \right\},
+```
+
+with
+$`K(t) = \sqrt{\frac{n_0 + n_1}{n_0\, n_1}}\, w(t) \frac{\bar{Y}_0(t)\, \bar{Y}_1(t)}{\bar{Y}(t)}`$.
+
+This duality connects hypothesis testing (via the weighted log-rank
+test) and estimation (via the weighted Cox model) under the same
+weighting scheme, and justifies referring to the weighted Cox estimator
+as the “companion” to the weighted log-rank test. In `weightedsurv`, the
+[`check_results()`](https://larry-leon.github.io/weightedsurv/reference/check_results.md)
+function verifies this equivalence numerically.
+
+### Companion Estimators and Combination Tests
+
+When multiple weighted log-rank tests are combined in a max-combo test
+$`Z_{\max} = \max(Z_1, \ldots, Z_q)`$ (León, Lin, and Anderson (2020)),
+the “companion” Cox estimator $`\hat{\beta}_{\max}`$ is the weighted Cox
+estimate corresponding to the weighting scheme that yielded the largest
+test statistic. Since $`\hat{\beta}_{\max}`$ is selected via a
+data-dependent process, valid inference requires simultaneous confidence
+intervals that hold across all $`q`$ weighting schemes.
+
+The critical value $`c_{\max}`$ is determined such that
+
+``` math
+\Pr\!\left\{\max\!\left(\left|\frac{\hat{\beta}_{w_1}}{\hat{\sigma}_{w_1}}\right|, \ldots, \left|\frac{\hat{\beta}_{w_q}}{\hat{\sigma}_{w_q}}\right|\right) \le c_{\max}\right\} \approx 1 - \alpha,
+```
+
+which is computed via the same synthetic-martingale resampling using
+common $`G_i`$ draws across all $`q`$ weighting schemes, thereby
+preserving the correlation structure.
+
+## Interpretation and Estimands
+
+### What Does the Weighted Hazard Ratio Mean?
+
+Under non-proportional hazards each weighted Cox estimator converges to
+a different estimand $`\exp(\beta_w^*)`$ that reflects the
+weighting-specific average of the time-varying hazard ratio. The
+following interpretive principles apply:
+
+- **FH(0,0)** (standard Cox): Estimates an overall average hazard ratio.
+  Under proportional hazards it estimates the true constant HR.
+- **FH(0, $`\gamma`$) with $`\gamma > 0`$** (late emphasis): Estimates a
+  hazard ratio that more heavily reflects later-term treatment effects.
+  Under late-separation, this is closer to the true treatment benefit
+  after the change-point.
+- **FH($`\rho`$, 0) with $`\rho > 0`$** (early emphasis): Estimates a
+  hazard ratio reflecting early treatment effects. Under
+  early-separation, this captures the initial treatment benefit.
+- **Schemper / XO**: Estimate “average hazard ratios” that are
+  approximately independent of the censoring distribution.
+
+### Censoring Dependence
+
+In general, the estimand $`\beta_w^*`$ depends on the censoring
+distribution through its influence on the risk-set dynamics and the
+probability limit of the weights. The Schemper and XO weighting schemes
+were specifically designed to yield estimands that are (asymptotically)
+free of the censoring distribution $`G`$. For FH weights, the degree of
+censoring dependence can be evaluated numerically using the limiting
+equation described above.
+
+### Cautions
+
+As discussed by Hernán (2010), Aalen, Cook, and Røysland (2015), and
+Stensrud, Røysland, and Ryalen (2019), hazard ratios — even under
+randomization and ideal proportional hazards conditions — are subject to
+potential selection bias through temporal conditioning on risk sets.
+Weighted Cox estimators may further complicate these dynamics through
+the additional time-dependent weighting. The weighted hazard ratio
+should therefore be interpreted as a complementary summary of treatment
+effect with careful attention to what the specific weighting pattern
+emphasizes.
+
+## Summary
+
+The weighted Cox model estimation framework in `weightedsurv` provides:
+
+- **Flexible weighting** via multiple schemes (FH, MB, Schemper, XO,
+  custom) through a unified
+  [`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md)
+  interface
+- **Dual inference**: Both asymptotic and resampling-based standard
+  errors and confidence intervals
+- **Score-test duality**: Direct connection between weighted Cox
+  estimation and weighted log-rank testing
+- **Propensity-score compatibility**: Subject-specific case weights can
+  be combined with time-dependent weighting
+- **Simultaneous inference**: Support for simultaneous confidence
+  intervals needed when the weighting scheme is selected via a
+  combination test
+
+The key functions are:
+
+| Function | Role |
+|----|----|
+| [`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md) / [`get_dfcounting()`](https://larry-leon.github.io/weightedsurv/reference/get_dfcounting.md) | Prepare counting-process data with weights |
+| [`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md) | Fit weighted Cox models with asymptotic and resampling inference |
+| [`wt.rg.S()`](https://larry-leon.github.io/weightedsurv/reference/wt.rg.S.md) | Compute time-dependent weight functions |
+| [`plot_weight_schemes()`](https://larry-leon.github.io/weightedsurv/reference/plot_weight_schemes.md) | Visualize weight profiles |
+| [`check_results()`](https://larry-leon.github.io/weightedsurv/reference/check_results.md) | Verify score-test equivalence |
+| [`wlr_dhat_estimates()`](https://larry-leon.github.io/weightedsurv/reference/wlr_dhat_estimates.md) | Weighted log-rank with survival-difference estimates |
+
+## References
+
+Aalen, Odd O., Richard J. Cook, and Kjetil Røysland. 2015. “Does Cox
+Analysis of a Randomized Survival Study Yield a Causal Treatment
+Effect?” *Lifetime Data Analysis* 21 (4): 579–93.
+
+Dobler, D., J. Beyersmann, and M. Pauly. 2017. “Non-Strange Weird
+Resampling for Complex Survival Data.” *Biometrika* 104 (3): 699–711.
+
+Fleming, T. R., and D. P. Harrington. 1991. *Counting Processes and
+Survival Analysis*. Wiley Series in Probability and Statistics. Wiley.
+
+Hernán, Miguel A. 2010. “The Hazards of Hazard Ratios.” *Epidemiology*
+22 (1): 13–15.
+
+León, Larry F., Ray Lin, and Keaven M. Anderson. 2020. “On Weighted
+Log-Rank Combination Tests and Companion Cox Model Estimators.”
+*Statistics in Biopharmaceutical Research* 12 (4): 467–84.
+
+Lin, D. Y. 1991. “Goodness-of-Fit Analysis for the Cox Regression Model
+Based on a Class of Parameter Estimators.” *Journal of the American
+Statistical Association* 86 (415): 725–28.
+
+Sasieni, Peter. 1993. “Maximum Weighted Partial Likelihood Estimators
+for the Cox Model.” *Journal of the American Statistical Association* 88
+(421): 144–52.
+
+Stensrud, Mats J., Kjetil Røysland, and Pål C. Ryalen. 2019. “On Null
+Hypotheses in Survival Analysis.” *Biometrics* 75 (4): 1276–87.

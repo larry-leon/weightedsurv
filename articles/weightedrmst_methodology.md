@@ -1,0 +1,599 @@
+# Restricted Mean Survival Time Estimation Methodology
+
+## Introduction
+
+In clinical trials comparing two treatments on a time-to-event endpoint,
+the hazard ratio (HR) from a Cox proportional hazards model is the most
+commonly reported summary measure. However, the HR has well-known
+limitations: it requires the proportional hazards (PH) assumption for
+straightforward interpretation, and even when PH holds, the HR does not
+have a direct clinical interpretation in units of time (Uno et al.
+2014). When PH is violated—as is increasingly recognized in, for
+example, immuno-oncology trials with delayed treatment effects or
+crossing survival curves—the estimated HR depends on the censoring
+distribution and may not converge to a meaningful population parameter
+(Royston and Parmar 2013).
+
+The **restricted mean survival time** (RMST) provides an attractive
+alternative. The RMST up to a truncation time $`\tau`$ is defined as:
+
+``` math
+\mu(\tau) = E[\min(T, \tau)] = \int_0^{\tau} S(t)\, dt,
+```
+
+that is, the area under the survival curve from $`0`$ to $`\tau`$. This
+quantity has a clear clinical interpretation as the average time alive
+(or event-free) during the first $`\tau`$ units of follow-up. The RMST
+is model-free, requires no proportional hazards assumption, and is
+estimable directly from the Kaplan–Meier (KM) curve (Irwin 1949; Kaplan
+and Meier 1958).
+
+Rather than evaluating the RMST at a single fixed $`\tau`$, Zhao et al.
+(2016) proposed studying the **RMST curve** $`\mu(\tau)`$ as a function
+of $`\tau`$ across the range of follow-up, along with inference
+procedures—including simultaneous confidence bands—for a single RMST
+curve and for the difference of two RMST curves. This approach provides
+a comprehensive, temporally resolved picture of how the treatment
+benefit (or harm) accumulates over time.
+
+This vignette reviews the RMST methodology as implemented in the
+`weightedsurv` package, emphasizing the cumulative RMST curve approach
+and its extension to weighted (propensity-score-adjusted) settings via
+the `cumulative_rmst_bands` function.
+
+## RMST: Definition and Motivation
+
+### Definition and Relationship to the Survival Function
+
+Let $`T`$ denote a non-negative random variable representing the time to
+an event of interest, with survival function $`S(t) = P(T > t)`$. The
+restricted mean survival time up to a truncation time $`\tau > 0`$ is:
+
+``` math
+\mu(\tau) = E[\min(T, \tau)] = \int_0^{\tau} S(t)\, dt.
+```
+
+Geometrically, $`\mu(\tau)`$ is the area under the survival curve
+$`S(\cdot)`$ on the interval $`[0, \tau]`$.
+
+The complementary quantity is the **restricted mean time lost** (RMTL):
+
+``` math
+\text{RMTL}(\tau) = \tau - \mu(\tau) = \int_0^{\tau} [1 - S(t)]\, dt,
+```
+
+which is the area above the survival curve up to $`\tau`$. The RMTL
+represents the average time lost to the event during the interval
+$`[0, \tau]`$.
+
+### Advantages Over the Hazard Ratio
+
+The RMST has several advantages as a measure of treatment effect (Uno et
+al. 2014; Royston and Parmar 2013):
+
+- **Model-free:** No parametric or semi-parametric model is required.
+- **Time-scale interpretation:** Expressed in units of time, making the
+  clinical significance transparent (e.g., “patients on treatment live
+  on average 2.1 months longer during the first 40 months of
+  follow-up”).
+- **Valid under non-proportional hazards:** Unlike the HR, the RMST
+  difference retains a clear interpretation regardless of the shape of
+  the underlying hazard functions.
+- **Sensitivity to overall separation:** When two survival curves
+  separate for an extended period but eventually converge (e.g.,
+  crossing hazards), the HR-based test may fail to detect the
+  difference, whereas the RMST captures the integrated separation of the
+  curves.
+
+As demonstrated by Uno et al. (2014), scenarios with crossing hazards
+can produce a non-significant logrank test and wide confidence interval
+for the HR, yet the RMST difference is statistically significant and
+clinically meaningful because it captures the cumulative separation of
+the survival curves.
+
+### Contrast Measures Based on RMST
+
+For comparing two groups with survival functions $`S_1(t)`$ and
+$`S_0(t)`$ and corresponding RMSTs $`\mu_1(\tau)`$ and $`\mu_0(\tau)`$,
+three natural contrast measures can be defined:
+
+- **RMST difference:** $`\Delta(\tau) = \mu_1(\tau) - \mu_0(\tau)`$,
+  representing the gain (or loss) in mean event-free time.
+- **RMST ratio:** $`\mu_1(\tau) / \mu_0(\tau)`$.
+- **RMTL ratio:** $`[\tau - \mu_1(\tau)] / [\tau - \mu_0(\tau)]`$, which
+  has an interpretation analogous to a risk ratio for the time lost.
+
+The RMST difference $`\Delta(\tau)`$ equals
+$`\int_0^{\tau} [S_1(t) - S_0(t)]\, dt`$, the integrated area between
+the two survival curves up to $`\tau`$. This makes it geometrically
+intuitive: a positive $`\Delta(\tau)`$ means the experimental group
+survives longer on average during the first $`\tau`$ units.
+
+## Estimation
+
+### Nonparametric RMST Estimation via the Kaplan–Meier Curve
+
+The RMST is estimated by the area under the KM estimator $`\hat{S}(t)`$
+up to $`\tau`$:
+
+``` math
+\hat{\mu}(\tau) = \int_0^{\tau} \hat{S}(t)\, dt.
+```
+
+Since $`\hat{S}(t)`$ is a step function, $`\hat{\mu}(\tau)`$ reduces to
+a sum of rectangular areas:
+
+``` math
+\hat{\mu}(\tau) = \sum_{k: t_k \leq \tau} \hat{S}(t_{k-1})(t_k - t_{k-1}) + \hat{S}(t_K)(\tau - t_K),
+```
+
+where $`t_1 < t_2 < \cdots < t_K`$ are the distinct event times up to
+$`\tau`$, with the convention $`t_0 = 0`$ and $`\hat{S}(t_0) = 1`$.
+
+By the uniform consistency of the KM estimator (Gill 1983),
+$`\hat{\mu}(\tau)`$ is uniformly consistent for $`\mu(\tau)`$ over the
+interval $`[0, \tau]`$ where $`P(X > \tau) > 0`$.
+
+### Variance Estimation
+
+The variance of $`\hat{\mu}(\tau)`$ is obtained by recognizing that the
+RMST estimator is a smooth functional of the KM estimator. By the
+counting process representation:
+
+``` math
+\sqrt{n}[\hat{S}(t) - S(t)] = -\sqrt{n}\, S(t) \frac{1}{n} \sum_{i=1}^n \int_0^t \frac{dM_i(u)}{Y(u)/n} + o_p(1),
+```
+
+where $`M_i(t) = N_i(t) - \int_0^t Y_i(s)\lambda(s)\, ds`$ is the
+counting process martingale, $`N_i(t) = I(X_i \leq t, \Delta_i = 1)`$,
+$`Y_i(t) = I(X_i \geq t)`$, and $`Y(t) = \sum_{i=1}^n Y_i(t)`$(Fleming
+and Harrington 1991, 98).
+
+Applying the functional $`\delta`$-method via integration over
+$`[0, \tau]`$, the asymptotic variance of $`\hat{\mu}(\tau)`$ can be
+estimated by:
+
+``` math
+\widehat{\text{Var}}[\hat{\mu}(\tau)] = \sum_{t_k \leq \tau} \frac{d_k}{n_k(n_k - d_k)} \left[\int_{t_k}^{\tau} \hat{S}(u)\, du\right]^2,
+```
+
+where $`d_k`$ is the number of events at time $`t_k`$ and $`n_k`$ is the
+number at risk just prior to $`t_k`$.
+
+This formula follows from the same martingale central limit theorem that
+underpins Greenwood’s formula for $`\hat{S}(t)`$, and is the standard
+variance estimator for RMST implemented in the `survRM2` package and in
+`weightedsurv`.
+
+## The Cumulative RMST Curve
+
+### Motivation
+
+While the RMST at a fixed $`\tau`$ is useful for study design and
+overall summarization, the choice of $`\tau`$ is often somewhat
+arbitrary. Zhao et al. (2016) proposed studying the entire **RMST
+curve** $`\hat{\mu}(\tau)`$ as a function of $`\tau`$, rather than
+evaluating it at a single time point. The corresponding **RMST
+difference curve**:
+
+``` math
+\hat{\Delta}(\tau) = \hat{\mu}_1(\tau) - \hat{\mu}_0(\tau)
+```
+
+reveals how the treatment benefit accumulates over follow-up. This
+temporal profile is clinically informative:
+
+- An RMST difference that grows linearly suggests a sustained, constant
+  survival advantage.
+- An RMST difference that flattens indicates that the benefit was
+  concentrated in an early period.
+- An RMST difference that accelerates indicates a late-emerging benefit,
+  as in delayed treatment effects.
+
+This approach avoids the need to pre-specify a single $`\tau`$ and
+provides a richer characterization of the treatment effect trajectory
+than any single summary statistic.
+
+### Asymptotic Theory for the RMST Curve
+
+By the functional $`\delta`$-method applied to the uniform consistency
+and weak convergence of the KM process,
+$`\sqrt{n}\,[\hat{\mu}(\cdot) - \mu(\cdot)]`$ converges weakly to a
+zero-mean Gaussian process $`G(\cdot)`$ on $`[0, \tau_{\max}]`$, where
+$`P(X > \tau_{\max}) > 0`$(Zhao et al. 2016).
+
+For the two-sample case, let $`D(\tau) = \mu_1(\tau) - \mu_0(\tau)`$ and
+$`\hat{D}(\tau) = \hat{\mu}_1(\tau) - \hat{\mu}_0(\tau)`$. Then:
+
+``` math
+n^{-1/2}\bigl[\hat{D}(\cdot) - D(\cdot)\bigr] \xrightarrow{d} G_1(\cdot) - G_0(\cdot),
+```
+
+a zero-mean Gaussian process whose distribution can be approximated by
+the perturbation-resampling (martingale resampling) method.
+
+## Simultaneous Confidence Bands via Martingale Resampling
+
+### The Perturbation-Resampling Principle
+
+The key to constructing simultaneous confidence bands for the RMST curve
+is to approximate the distribution of the limiting Gaussian process.
+Following Lin, Wei, and Ying (1993), Parzen, Wei, and Ying (1994), and
+Zhao et al. (2016), the perturbation-resampling method proceeds as
+follows.
+
+The distribution of $`\sqrt{n}[\hat{S}(t) - S(t)]`$ is approximated,
+conditional on the data, by:
+
+``` math
+L^*(t) = \sqrt{n}\, \hat{S}(t) \sum_{i=1}^n Z_i \int_0^t \frac{dN_i(u)}{Y(u)},
+```
+
+where $`\{Z_i,\, i = 1, \ldots, n\}`$ are i.i.d. $`N(0,1)`$ random
+variables independent of the data, and $`\hat{S}(\cdot)`$, $`Y(\cdot)`$,
+$`N_i(\cdot)`$ denote the observed quantities.
+
+The critical insight formalized by Dobler, Beyersmann, and Pauly (2017),
+is that the martingale increments $`dM_{i,j}`$ are represented by
+independent $`N(0,1)`$ random variables multiplied by the observable
+counting process increments, with unknown parameters replaced by
+consistent estimators.
+
+For the RMST curve, one then considers the random process over
+$`\tau \in [0, \tau_{\max}]`$:
+
+``` math
+\int_0^{\tau} L^*(s)\, ds,
+```
+
+whose conditional distribution (given the data) approximates that of
+$`G(\cdot)`$(Zhao et al. 2016, equation (1)).
+
+### Pointwise Confidence Intervals
+
+Let $`\hat{\sigma}_R(\tau)`$ denote the standard deviation estimate for
+the distribution of $`G(\tau)`$, obtained as the empirical standard
+deviation across $`M`$ independent realizations of $`\{Z_i\}`$. For any
+$`\alpha \in (0,1)`$, a two-sided $`(1-\alpha)`$ pointwise confidence
+interval for $`\mu(\tau)`$ is:
+
+``` math
+\hat{\mu}(\tau) \pm z_{1-\alpha/2}\, n^{-1/2}\, \hat{\sigma}_R(\tau).
+```
+
+### Simultaneous Confidence Bands
+
+The simultaneous, equal-precision confidence band for $`\mu(\tau)`$ over
+$`[\eta, \tau_{\max}]`$ is:
+
+``` math
+\hat{\mu}(\tau) \pm c_{\alpha}\, n^{-1/2}\, \hat{\sigma}_R(\tau), \qquad \tau \in [\eta, \tau_{\max}],
+```
+
+where the critical value $`c_{\alpha}`$ is chosen such that:
+
+``` math
+P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} L^*(s)\, ds}{\hat{\sigma}_R(\tau)} \right| \leq c_{\alpha}\right) \geq 1 - \alpha.
+```
+
+This is estimated empirically from $`M`$ independent realizations of the
+perturbation weights. The time interval $`[\eta, \tau_{\max}]`$ is
+chosen such that $`P(T < \eta) > 0`$ and $`P(X > \tau_{\max}) > 0`$,
+ensuring statistical validity. In practice, the `weightedsurv` package
+determines this interval from the observed quantiles of the event times
+(via the `qtau` parameter).
+
+### Two-Sample Simultaneous Bands
+
+For the RMST difference curve $`D(\tau) = \mu_1(\tau) - \mu_0(\tau)`$,
+the procedure is analogous. Let $`\hat{\sigma}_D(\tau)`$ denote the
+standard deviation estimate for $`G_1(\tau) - G_0(\tau)`$, obtained from
+$`M`$ independent realizations of the perturbation weights
+$`\{Z_{1i},\, i = 1, \ldots, n_1;\; Z_{2j},\, j = 1, \ldots, n_2\}`$.
+The simultaneous confidence band is:
+
+``` math
+\hat{D}(\tau) \pm \tilde{c}_{\alpha}\, n^{-1/2}\, \hat{\sigma}_D(\tau), \qquad \tau \in [\eta, \tau_{\max}],
+```
+
+where $`\tilde{c}_{\alpha}`$ satisfies:
+
+``` math
+P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} [L_1^*(s) - L_0^*(s)]\, ds}{\hat{\sigma}_D(\tau)} \right| \leq \tilde{c}_{\alpha}\right) \geq 1 - \alpha.
+```
+
+This band provides uniform coverage: if the band excludes zero for an
+interval $`[\tau_a, \tau_b]`$, one can conclude that the treatment
+difference is significant over that entire range, simultaneously, at the
+$`(1-\alpha)`$ level. This is particularly useful for
+equivalence/noninferiority assessment, as demonstrated by Zhao et al.
+(2016) using the VALIANT cardiovascular trial.
+
+## Extension to Weighted RMST Estimation
+
+### Causal Framework
+
+In observational studies where treatment assignment depends on baseline
+covariates, the RMST must be estimated for counterfactual survival
+functions. Under the potential outcomes framework with treatment
+$`A \in \{0,1\}`$ and potential survival time $`T^a`$, the
+population-level RMST is:
+
+``` math
+\mu^a(\tau) = \int_0^{\tau} S^a(t)\, dt = E[\min(T^a, \tau)],
+```
+
+where $`S^a(t) = P(T^a > t)`$ is the counterfactual survival function.
+
+Identification of $`\mu^a(\tau)`$ from observed data requires the same
+causal assumptions as for the weighted KM estimator: ignorability,
+random censoring, positivity, and consistency (see the companion
+vignette `weightedkm_methodology` for details).
+
+### Inverse Probability of Treatment Weighting
+
+Given a propensity score $`e(X) = P(A = 1 \mid X)`$, the IPTW approach
+constructs weighted KM curves using stabilized weights:
+
+``` math
+w_i = \begin{cases} \hat{P}(A=1) / \hat{e}(X_i) & \text{if } A_i = 1, \\ [1 - \hat{P}(A=1)] / [1 - \hat{e}(X_i)] & \text{if } A_i = 0. \end{cases}
+```
+
+The weighted RMST estimator is simply the area under the weighted KM
+curve:
+
+``` math
+\hat{\mu}^a_w(\tau) = \int_0^{\tau} \hat{S}^a_w(t)\, dt,
+```
+
+where $`\hat{S}^a_w(t)`$ is the weighted KM estimator as described in
+the `weightedkm_methodology` vignette. The weighted RMST difference
+$`\hat{\mu}^1_w(\tau) - \hat{\mu}^0_w(\tau)`$ estimates the causal RMST
+contrast $`\mu^1(\tau) - \mu^0(\tau)`$.
+
+### Weighted Resampling for Simultaneous Bands
+
+The martingale resampling procedure extends naturally to the weighted
+setting. The weighted version of the resampled statistic for group $`j`$
+replaces unweighted counting processes with their weighted counterparts:
+
+``` math
+W^{\dagger} = \sum_{i=1}^{n_0} \int_0^{\infty} \left\{\frac{K(t)}{\bar{Y}_0^w(t)} dN_{i,0}(t)\right\} G_{i,0} - \sum_{i=1}^{n_1} \int_0^{\infty} \left\{\frac{K(t)}{\bar{Y}_1^w(t)} dN_{i,1}(t)\right\} G_{i,1},
+```
+
+where $`G_{i,j}`$ are i.i.d. $`N(0,1)`$ random variables,
+$`\bar{Y}_j^w(t) = \sum_{i: A_i = j} w_i Y_i(t)`$ is the weighted risk
+set, and $`K(t)`$ is the kernel function appropriate for the integrated
+RMST functional.
+
+The `weightedsurv` package implements this weighted resampling directly
+in the `cumulative_rmst_bands` function when a `weight.name` argument is
+supplied, enabling propensity-score-adjusted RMST curves with
+simultaneous confidence bands.
+
+## Connection to Weighted KM Survival Differences
+
+### Complementary Perspectives
+
+The simultaneous confidence bands for **KM survival differences**
+$`\hat{S}_1(t) - \hat{S}_0(t)`$ (computed by `plotKM.band_subgroups`)
+and the RMST difference curve $`\hat{\mu}_1(\tau) - \hat{\mu}_0(\tau)`$
+(computed by `cumulative_rmst_bands`) provide complementary
+perspectives:
+
+- The **survival difference** at time $`t`$ captures the instantaneous
+  gap in the probability of surviving beyond $`t`$.
+- The **RMST difference** at time $`\tau`$ captures the cumulative,
+  integrated gap in mean survival over $`[0, \tau]`$.
+
+The RMST curve smooths the survival difference process through
+integration, which can make the treatment effect trajectory more stable
+and interpretable. When the survival difference fluctuates around zero
+(e.g., crossing survival curves), the RMST difference may still
+accumulate in one direction, providing a clearer signal.
+
+As demonstrated in the `weightedsurv_examples` vignette the typical
+workflow is to display both the survival difference bands and the
+cumulative RMST bands side-by-side: the former from
+`plotKM.band_subgroups` and the latter from `cumulative_rmst_bands`,
+using the shared `fit` object returned by `plotKM.band_subgroups`.
+
+### Testing Based on Weighted KM Differences
+
+The WKM test statistic of Uno et al. (2015) provides a formal testing
+framework that directly compares two survival functions via weighted
+integration of the standardized KM difference:
+
+``` math
+V = \int_0^{\zeta} \hat{W}(t)\, Z(t)\, dt,
+```
+
+where $`Z(t) = \hat{D}(t) / \hat{\sigma}(t)`$ is the standardized
+difference of two KM curves at each time point, and $`\hat{W}(t)`$ is a
+data-adaptive weight function. Uno et al. (2015) showed that their
+automatically-weighted tests outperform the logrank and other classical
+tests under many non-PH alternatives—including early, middle, late, and
+crossing differences—while maintaining competitive power under PH. The
+null distribution is obtained via the same perturbation-resampling
+framework used for RMST inference.
+
+This testing approach is the natural companion to RMST estimation: the
+test provides formal evidence of a survival difference, while the RMST
+curve quantifies the magnitude and temporal profile of that difference.
+
+## Implementation in `weightedsurv`
+
+The cumulative RMST methodology is implemented through the
+`cumulative_rmst_bands` function, which works in concert with the other
+analysis functions in the package.
+
+### `cumulative_rmst_bands`
+
+**Purpose.** Computes cumulative RMST difference curves with pointwise
+and simultaneous confidence bands for two treatment groups, optionally
+incorporating subject-specific weights.
+
+**Key arguments:**
+
+- `df`: Data frame with survival data.
+- `fit`: A fitted model object (typically the `$fit_itt` component
+  returned by `plotKM.band_subgroups`).
+- `tte.name`, `event.name`, `treat.name`: Column names for
+  time-to-event, event indicator, and treatment indicator.
+- `weight.name`: (Optional) Column name for subject-specific weights
+  (e.g., stabilized propensity-score weights).
+- `draws_sb`: Number of perturbation-resampling draws for simultaneous
+  confidence bands (e.g., 1000).
+- `xlab`: Label for the x-axis (typically `"months"`).
+- `rmst_max_cex`: Character expansion factor for annotation of the RMST
+  at the maximum truncation time.
+
+**Output.** The function returns the estimated RMST difference curve
+along with pointwise and simultaneous confidence bands, and produces a
+publication-quality plot. The plot displays the estimated RMST
+difference as a solid line, pointwise 95% confidence intervals as dashed
+lines, and the simultaneous confidence band as a shaded region.
+
+### Typical Workflow
+
+The standard analysis pipeline, as demonstrated in the
+`weightedsurv_examples` vignette, follows this pattern:
+
+1.  **Prepare data** via `df_counting` or `get_dfcounting`, optionally
+    with a `weight.name` for propensity-score-weighted analyses.
+2.  **Compute survival difference bands** via `plotKM.band_subgroups`,
+    which returns a `fit` object alongside the KM difference plot.
+3.  **Compute cumulative RMST bands** via `cumulative_rmst_bands`,
+    passing the `fit` object from step 2.
+
+``` r
+# Step 1: Compute survival difference bands
+temp <- plotKM.band_subgroups(
+  df = df, tte.name = "tte", treat.name = "treat",
+  event.name = "event", weight.name = "sw.weights",
+  draws.band = 1000, qtau = 0.025
+)
+
+# Step 2: Compute cumulative RMST bands
+get_bands <- cumulative_rmst_bands(
+  df = df, fit = temp$fit_itt,
+  tte.name = "tte", event.name = "event",
+  treat.name = "treat", weight.name = "sw.weights",
+  draws_sb = 1000, xlab = "months"
+)
+```
+
+This two-step workflow ensures that the KM difference analysis and the
+RMST analysis share the same underlying fitted model and resampling
+framework, providing internally consistent inference.
+
+## Applications
+
+### RMST Under Non-Proportional Hazards
+
+The RMST framework is especially valuable in clinical trials where the
+PH assumption is questionable. Royston and Parmar (2011) advocated for
+the RMST difference as a primary analysis measure when PH is in doubt,
+and Uno et al. (2014) demonstrated its practical advantages in oncology
+trials.
+
+The cumulative RMST curve adds further diagnostic power: by visualizing
+$`\hat{\Delta}(\tau)`$ as a function of $`\tau`$, investigators can
+directly observe whether the treatment effect is immediate, delayed, or
+transient—information that is obscured by a single HR or even a
+single-$`\tau`$ RMST.
+
+### Equivalence and Noninferiority Assessment
+
+Zhao et al. (2016) highlighted the utility of simultaneous RMST bands
+for equivalence and noninferiority trials. If the simultaneous band for
+$`\hat{D}(\tau)`$ lies within a pre-specified margin
+$`[-\delta, \delta]`$ over the clinically relevant time interval, one
+can conclude equivalence at the $`(1-\alpha)`$ level—simultaneously for
+all $`\tau`$ in the interval. This is more informative than evaluating
+equivalence at a single pre-specified $`\tau`$.
+
+### Observational Studies with Propensity-Score Weighting
+
+The weighted RMST analysis enables causal inference from observational
+data when combined with IPTW. The `weightedsurv_examples` vignette
+demonstrates this with the Rotterdam breast cancer dataset, where
+propensity-score-weighted RMST curves are compared to those from the
+randomized GBSG trial as a form of external validation.
+
+## Summary
+
+The restricted mean survival time provides a clinically interpretable,
+model-free, and robust summary of treatment effects in survival
+analysis. The key methodological elements are:
+
+1.  **RMST definition** as the area under the survival curve, estimable
+    from the KM estimator without parametric assumptions.
+2.  **Cumulative RMST curves** that reveal the temporal profile of the
+    treatment effect across all truncation times $`\tau`$, rather than
+    at a single pre-specified point.
+3.  **Simultaneous confidence bands** via the perturbation-resampling
+    (martingale resampling) method, providing uniform inference over the
+    entire time range of interest.
+4.  **Weighted extension** for propensity-score-adjusted RMST estimation
+    from observational data, using the same IPTW framework as the
+    weighted KM estimator.
+
+The `weightedsurv` package implements this methodology through the
+`cumulative_rmst_bands` function, which integrates seamlessly with the
+survival difference analysis provided by `plotKM.band_subgroups` and the
+broader counting-process infrastructure of the package.
+
+## References
+
+Dobler, D., J. Beyersmann, and M. Pauly. 2017. “Non-Strange Weird
+Resampling for Complex Survival Data.” *Biometrika* 104 (3): 699–711.
+
+Fleming, T. R., and D. P. Harrington. 1991. *Counting Processes and
+Survival Analysis*. Wiley Series in Probability and Statistics. Wiley.
+
+Gill, Richard. 1983. “Large Sample Behaviour of the Product-Limit
+Estimator on the Whole Line.” *The Annals of Statistics* 11 (1): 49–58.
+
+Irwin, J. O. 1949. “The Standard Error of an Estimate of Expectation of
+Life, with Special Reference to Expectation of Tumourless Life in
+Experiments with Mice.” *Journal of Hygiene* 47: 188–89.
+
+Kaplan, E. L., and Paul Meier. 1958. “Nonparametric Estimation from
+Incomplete Observations.” *Journal of the American Statistical
+Association* 53 (282): 457–81.
+
+Lin, Dan-Yu, L. J. Wei, and Zhiliang Ying. 1993. “Checking the Cox Model
+with Cumulative Sums of Martingale-Based Residuals.” *Biometrika* 80
+(3): 557–72.
+
+Parzen, Michael I., L. J. Wei, and Zhiliang Ying. 1994. “Simultaneous
+Confidence Intervals for the Difference of Two Survival Functions.”
+*Scandinavian Journal of Statistics* 24: 309–14.
+
+Royston, Patrick, and Mahesh K. B. Parmar. 2011. “The Use of Restricted
+Mean Survival Time to Estimate the Treatment Effect in Randomized
+Clinical Trials When the Proportional Hazards Assumption Is in Doubt.”
+*Statistics in Medicine* 30: 2409–21.
+<https://doi.org/10.1002/sim.4274>.
+
+———. 2013. “Restricted Mean Survival Time: An Alternative to the Hazard
+Ratio for the Design and Analysis of Randomized Trials with a
+Time-to-Event Outcome.” *BMC Medical Research Methodology* 13: 152.
+<https://doi.org/10.1186/1471-2288-13-152>.
+
+Uno, Hajime, Brian Claggett, Lu Tian, Eisuke Inoue, Paul Gallo, Tomohiro
+Miyata, Deborah Schrag, et al. 2014. “Moving Beyond the Hazard Ratio in
+Quantifying the Between-Group Difference in Survival Analysis.” *Journal
+of Clinical Oncology* 32 (22): 2380–85.
+<https://doi.org/10.1200/JCO.2014.55.2208>.
+
+Uno, Hajime, Lu Tian, Brian Claggett, and L. J. Wei. 2015. “A Versatile
+Test for Equality of Two Survival Functions Based on Weighted
+Differences of Kaplan–Meier Curves.” *Statistics in Medicine* 34 (28):
+3680–95. <https://doi.org/10.1002/sim.6591>.
+
+Zhao, Lihui, Brian Claggett, Lu Tian, Hajime Uno, Marc A. Pfeffer, Scott
+D. Solomon, Lorenzo Trippa, and L. J. Wei. 2016. “On the Restricted Mean
+Survival Time Curve in Survival Analysis.” *Biometrics* 72 (1): 215–21.
+<https://doi.org/10.1111/biom.12384>.
