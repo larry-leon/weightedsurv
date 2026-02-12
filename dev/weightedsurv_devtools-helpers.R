@@ -56,5 +56,15 @@ devtools::check(cran = TRUE)     # Full CRAN validation
 #devtools::check_win_devel()       # Windows checks
 
 
+# Retain dev/working locally
+# Remove from Git's index only (keeps local files intact)
+#git rm -r --cached dev/working/
+# Then commit
+#git add .gitignore
+
+echo "dev/working/" >> .gitignore
+git rm -r --cached dev/working/
+git add .gitignore
+git commit -m "Stop tracking dev/working/, keep locally"
 
 
