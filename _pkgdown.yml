@@ -27,6 +27,15 @@ articles:
       weightedsurv.
     contents:
       - articles/weightedcox_methodology
+      - articles/weightedkm_methodology
+      - articles/weightedrmst_methodology
+
+  - title: "Supplementary Analysis Examples"
+    desc: >
+      Extended worked examples illustrating resampling-based inference
+      and advanced applications.
+    contents:
+      - articles/martingale_resampling_applications
 
 reference:
   - title: "Data Preparation"

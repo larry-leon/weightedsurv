@@ -94,6 +94,8 @@ pkgdown::build_article("articles/weightedcox_methodology")     # Just the method
 # Preview locally
 pkgdown::preview_site()
 
+
+
 # What files are in vignettes/articles/?
 list.files("vignettes/articles", recursive = TRUE)
 
