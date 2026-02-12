@@ -733,7 +733,7 @@ The `run_weighted_cox_sims()` driver accepts the scenario setup and analysis fun
 res_out <- run_weighted_cox_sims(
   sim_setup    = sim_setup,
   analysis_fn  = sim_fn_analysis,
-  n_sim        = 10,
+  n_sim        = 5000,
   dof_approach = "multisession",
   num_workers  = 12,
   seedstart    = 8316951,
