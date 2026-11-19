@@ -1,0 +1,74 @@
+diff of the local tree (HEAD at audit start = edd61a2) against CRAN weightedsurv 0.1.0
+source: download.packages('weightedsurv', type='source') from https://cloud.r-project.org on 2026-11-19 -> weightedsurv_0.1.0.tar.gz (Date/Publication: 2025-12-22 17:10:02 UTC)
+
+SUMMARY
+- R/: identical (diff -r R/: no differences).
+- NAMESPACE: identical.
+- DESCRIPTION: same Version (0.1.0). Field layout reformatted (multi-line Imports/Suggests); URL gains https://larry-leon.github.io/weightedsurv/; adds 'Roxygen: list(markdown = TRUE)'; Suggests gains pkgdown. CRAN-added fields (Packaged, Author, Maintainer, Repository, Date/Publication, NeedsCompilation) absent from the source tree as expected.
+- vignettes/: weightedsurv_examples.Rmd differs in one line (bibliography: references.bib -> weightedsurv_references.bib). references.bib (186 lines) replaced by weightedsurv_references.bib (2920 lines, merged bibliography). vignettes/articles/ (5 Rmd, excluded by .Rbuildignore) added. Tree also has vignettes/.DS_Store, vignettes/.Rhistory (tracked in git) and vignettes/.gitignore.
+
+Reverse dependencies: tools::package_dependencies('weightedsurv', reverse = TRUE, which = 'all') -> forestsearch
+Version : 0.5.0 
+Depends : R (>= 4.1.0) 
+Imports : data.table, doFuture, dplyr, foreach, future, future.apply, future.callr, ggplot2, glmnet (>= 5.0), grf, gt, Matrix, mvtnorm, parallel, patchwork, policytree, progressr, randomForest, rlang, stats, survival (>= 3.5-8), utils, weightedsurv (>= 0.1.0) 
+Suggests : DiagrammeR, doRNG, htmltools, MASS, sandwich, tidyr, forestploter (>= 1.2.0), cubature, svglite, knitr, rmarkdown, katex, latentcor, quarto, speff2trial, testthat (>= 3.0.0) 
+forestsearch 0.5.0 source: importFrom(weightedsurv, ...) in NAMESPACE; calls weightedsurv::df_counting (7), weightedsurv::plot_weighted_km (5), weightedsurv::plotKM.band_subgroups (1).
+
+===== diff -rq =====
+Files CRAN-0.1.0/DESCRIPTION and tree/DESCRIPTION differ
+Only in tree/vignettes: .DS_Store
+Only in tree/vignettes: .Rhistory
+Only in tree/vignettes: .gitignore
+Only in tree/vignettes: articles
+Only in CRAN-0.1.0/vignettes: references.bib
+Files CRAN-0.1.0/vignettes/weightedsurv_examples.Rmd and tree/vignettes/weightedsurv_examples.Rmd differ
+Only in tree/vignettes: weightedsurv_references.bib
+
+===== diff DESCRIPTION =====
+2,3c2
+< Title: Survival Analysis with Subject-Specific (Case Weights) and
+<         Time-Dependent Weighting
+---
+> Title: Survival Analysis with Subject-Specific (Case Weights) and Time-Dependent Weighting
+14a14,15
+> URL: https://larry-leon.github.io/weightedsurv/, https://github.com/larry-leon/weightedsurv
+> BugReports: https://github.com/larry-leon/weightedsurv/issues
+15a17
+> Roxygen: list(markdown = TRUE)
+17,21c19,35
+< Imports: ggplot2, graphics, rlang, stats, survival, utils
+< Suggests: adjustedCurves, data.table, DiagrammeR, dplyr, gt, knitr,
+<         pammtools, rmarkdown
+< URL: https://github.com/larry-leon/weightedsurv
+< BugReports: https://github.com/larry-leon/weightedsurv/issues
+---
+> Imports: 
+>     ggplot2,
+>     graphics,
+>     rlang,
+>     stats,
+>     survival,
+>     utils
+> Suggests:
+>   adjustedCurves,
+>   data.table,
+>   DiagrammeR,
+>   dplyr,
+>   gt,
+>   knitr,
+>   pkgdown,
+>   pammtools,
+>   rmarkdown
+23,28d36
+< NeedsCompilation: no
+< Packaged: 2025-12-16 22:36:01 UTC; larryleon
+< Author: Larry Leon [aut, cre]
+< Maintainer: Larry Leon <larry.leon.05@post.harvard.edu>
+< Repository: CRAN
+< Date/Publication: 2025-12-22 17:10:02 UTC
+
+===== diff vignettes/weightedsurv_examples.Rmd =====
+6c6
+< bibliography: references.bib
+---
+> bibliography: weightedsurv_references.bib

@@ -1,0 +1,15 @@
+[S1] mb_tstar == max(tpoints): unique weights = 1 | mb_tstar > max(tpoints) with S reaching 0: weights = 1.538, 1.667, 1.818 (last S_left = 0.55)
+[S1] S_left = 0 inside the grid, mb_tstar beyond: any infinite weight = TRUE
+[S2] wlr_dhat_estimates(scheme='schemper') without survG -> error: arguments imply differing number of rows: 125, 120
+[S2] note: dfcounting$survG partially matches dfcounting$survG_all (length 120) once survG is removed
+[S2] wlr_cumulative(scheme='schemper') without survG -> error: arguments imply differing number of rows: 125, 0
+[S3] near-tie pair raw times differ by 9.44e-12; fixed times differ by 0; KM_diff at_points contains both raw values: TRUE
+[S3] S0 at the two raw points: 0.501164861123 vs 0.501164861123
+[S7] stdout: 'Missing mb_tstar argument in scheme_params you have:  '; then error: For MB weights, provide mb_tstar (cutoff time) in scheme_params.
+[S8] df_counting(strata.name = 'no_such_column') -> error: object 'no_such_column' not found
+[S8] df_counting with an event coded 3 -> error: missing value where TRUE/FALSE needed
+[S9] calculate_risk_event_counts(draws=50) identical across calls regardless of caller seed: TRUE (set.seed(seedstart) at R/df_counting_helpers.R:261; df_counting passes the same seedstart to every arm/stratum call)
+[N2] n = 1 per arm, unweighted: missing value where TRUE/FALSE needed | call stack tail: tryCatchOne(expr, names, parentenv, handlers[[1L]]) <- doTryCatch(return(expr), name, parentenv, handler) <- withCallingHandlers(expr, error = function(e) { <- df_counting(d1, "time", "status", "treat", check.KM = FALSE,  <- check_logrank_discrepancy(get_score$z.score, logrank_results$chisq) <- .handleSimpleError(function (e) 
+[N2] all censored, check.KM = FALSE: missing value where TRUE/FALSE needed
+[N3] n = 1 per arm, tied event times: Lapack routine dgesv: system is exactly singular: U[1,1] = 0 | call stack tail: withCallingHandlers(expr, error = function(e) { <- df_counting(dh, "time", "status", "treat", check.KM = FALSE,  <- survival::survdiff(surv_obj ~ group, rho = lr_rho) <- solve(vv, temp2) <- solve.default(vv, temp2) <- .handleSimpleError(function (e) 
+[N5] cox_rhogamma with no events in arm 1 -> no error; bhat = -1243.65
