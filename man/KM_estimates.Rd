@@ -18,4 +18,6 @@ List with survival estimates and variances.
 }
 \description{
 Computes Kaplan-Meier survival estimates and their variances given risk and event counts.
+Survival is returned in [0, 1]; when everything still at risk fails at a time point, survival
+is exactly 0 from there on and so is its variance.
 }

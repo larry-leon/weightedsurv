@@ -2,6 +2,8 @@
 #' Plot confidence interval polygon for KM curve
 #'
 #' Plots a shaded polygon representing the confidence interval for a Kaplan-Meier survival curve.
+#' Limits use the log transform; the upper limit is capped at 1 and, where survival is 0, the band
+#' closes onto the curve.
 #'
 #' @param x Numeric vector of time points.
 #' @param surv Numeric vector of survival probabilities.
@@ -15,8 +17,11 @@
 
 plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
   z <- qnorm(1 - (1 - conf_level) / 2)
-  lower <- exp(log(surv) - z * se / surv)
-  upper <- exp(log(surv) + z * se / surv)
+  # log-transform limits, upper capped at 1; where S = 0 the band closes onto the curve
+  lower <- upper <- surv
+  ok <- !is.na(surv) & surv > 0
+  lower[ok] <- exp(log(surv[ok]) - z * se[ok] / surv[ok])
+  upper[ok] <- pmin(exp(log(surv[ok]) + z * se[ok] / surv[ok]), 1)
   polygon(
     c(x[order(x)], rev(x[order(x)])),
     c(lower[order(x)], rev(upper[order(x)])),

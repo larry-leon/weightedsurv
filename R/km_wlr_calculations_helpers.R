@@ -107,9 +107,11 @@ km_quantile <- function(time_points, survival_probs, se_probs = NULL, qprob = 0.
   qhat[is.infinite(qhat)] <- NA
   qhat_lower <- qhat_upper <- NA
   if (!is.null(se_probs)) {
-    # log transform for CI
-    lower_probs <- exp(log(survival_probs) - z * se_probs / survival_probs)
-    upper_probs <- exp(log(survival_probs) + z * se_probs / survival_probs)
+    # log transform for CI; where S = 0 the limits are NA (as in survfit)
+    lower_probs <- upper_probs <- rep(NA_real_, length(survival_probs))
+    ok <- !is.na(survival_probs) & survival_probs > 0
+    lower_probs[ok] <- exp(log(survival_probs[ok]) - z * se_probs[ok] / survival_probs[ok])
+    upper_probs[ok] <- exp(log(survival_probs[ok]) + z * se_probs[ok] / survival_probs[ok])
     qhat_lower <- kmq_calculations(time_points = time_points, survival_probs = lower_probs, qprob = qprob, type = type)
     qhat_lower[is.infinite(qhat_lower)] <- NA
     qhat_upper <- kmq_calculations(time_points = time_points, survival_probs = upper_probs, qprob = qprob, type = type)
@@ -252,6 +254,8 @@ wlr_dhat_estimates <- function(dfcounting,
 #' Kaplan-Meier Survival Estimates and Variance
 #'
 #' Computes Kaplan-Meier survival estimates and their variances given risk and event counts.
+#' Survival is returned in \[0, 1\]; when everything still at risk fails at a time point, survival
+#' is exactly 0 from there on and so is its variance.
 #'
 #' @param ybar Vector of risk set sizes at each time point.
 #' @param nbar Vector of event counts at each time point.
@@ -262,11 +266,16 @@ wlr_dhat_estimates <- function(dfcounting,
 KM_estimates <- function(ybar, nbar, sig2w_multiplier = NULL){
   dN <- diff(c(0, nbar))
   dN_risk <- ifelse(ybar > 0, dN / ybar, 0.0)
-  S_KM <- cumprod(1 - dN_risk)
+  # Everything still at risk fails (dN equals ybar up to relative tolerance 1e-10): the
+  # factor is exactly 0, so S is exactly 0 from there on (no floating-point residue).
+  all_fail <- ybar > 0 & abs(dN - ybar) <= 1e-10 * ybar
+  dN_risk[all_fail] <- 1
+  S_KM <- pmin(pmax(cumprod(1 - dN_risk), 0), 1)
   if(is.null(sig2w_multiplier)){
     sig2w_multiplier  <- ifelse(ybar > 0 & ybar > dN, dN / (ybar * (ybar - dN)), 0.0)
   }
   var_KM <- (S_KM^2) * cumsum(sig2w_multiplier)
+  var_KM[S_KM == 0] <- 0
   list(S_KM = S_KM, sig2_KM = var_KM)
 }
 

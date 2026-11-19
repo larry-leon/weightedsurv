@@ -22,4 +22,6 @@ Invisibly returns NULL. Used for plotting side effects.
 }
 \description{
 Plots a shaded polygon representing the confidence interval for a Kaplan-Meier survival curve.
+Limits use the log transform; the upper limit is capped at 1 and, where survival is 0, the band
+closes onto the curve.
 }
