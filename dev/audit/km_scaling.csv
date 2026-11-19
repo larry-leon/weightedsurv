@@ -1,0 +1,4 @@
+"fn","n","elapsed_s","peak_mb","note"
+"df_counting",500,0.02,219,""
+"KM_diff(draws.band=1000)",500,0.05,280,""
+"cox_rhogamma(draws=0)",500,0.05,295,""

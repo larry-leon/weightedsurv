@@ -1,0 +1,63 @@
+cell ties=continuous weights=none done, 3s elapsed
+cell ties=continuous weights=U(0.3,3) done, 8s elapsed
+cell ties=continuous weights=U(0.3,3)/sum done, 12s elapsed
+cell ties=ceiling 0.5 weights=none done, 14s elapsed
+cell ties=ceiling 0.5 weights=U(0.3,3) done, 16s elapsed
+cell ties=ceiling 0.5 weights=U(0.3,3)/sum done, 18s elapsed
+        ties      weights      estimator  t    truth mean_S emp_sd mean_se se_over_sd coverage
+  continuous         none        package  5 0.670320 0.6712 0.0345  0.0347     1.0060   0.9475
+  continuous         none        package 10 0.449329 0.4488 0.0401  0.0392     0.9777   0.9415
+  continuous         none        package 15 0.301194 0.3005 0.0393  0.0393     1.0008   0.9425
+  continuous         none survfit robust  5 0.670320 0.6712 0.0345  0.0347     1.0060   0.9475
+  continuous         none survfit robust 10 0.449329 0.4488 0.0401  0.0392     0.9777   0.9415
+  continuous         none survfit robust 15 0.301194 0.3005 0.0393  0.0393     1.0008   0.9425
+  continuous         none     documented  5 0.670320 0.6712 0.0345  0.0346     1.0025   0.9470
+  continuous         none     documented 10 0.449329 0.4488 0.0401  0.0390     0.9725   0.9415
+  continuous         none     documented 15 0.301194 0.3005 0.0393  0.0390     0.9914   0.9390
+  continuous     U(0.3,3)        package  5 0.670320 0.6705 0.0385  0.0380     0.9881   0.9410
+  continuous     U(0.3,3)        package 10 0.449329 0.4482 0.0443  0.0427     0.9646   0.9400
+  continuous     U(0.3,3)        package 15 0.301194 0.2997 0.0436  0.0423     0.9719   0.9370
+  continuous     U(0.3,3) survfit robust  5 0.670320 0.6705 0.0385  0.0384     0.9967   0.9440
+  continuous     U(0.3,3) survfit robust 10 0.449329 0.4482 0.0443  0.0433     0.9777   0.9450
+  continuous     U(0.3,3) survfit robust 15 0.301194 0.2997 0.0436  0.0433     0.9946   0.9425
+  continuous     U(0.3,3)     documented  5 0.670320 0.6705 0.0385  0.0382     0.9923   0.9430
+  continuous     U(0.3,3)     documented 10 0.449329 0.4482 0.0443  0.0430     0.9709   0.9415
+  continuous     U(0.3,3)     documented 15 0.301194 0.2997 0.0436  0.0428     0.9830   0.9390
+  continuous U(0.3,3)/sum        package  5 0.670320 0.6705 0.0385  0.0172     0.4471   0.6280
+  continuous U(0.3,3)/sum        package 10 0.449329 0.4482 0.0443  0.0573     1.2949   0.9735
+  continuous U(0.3,3)/sum        package 15 0.301194 0.2997 0.0436  0.1361     3.1244   1.0000
+  continuous U(0.3,3)/sum survfit robust  5 0.670320 0.6705 0.0385  0.0384     0.9967   0.9440
+  continuous U(0.3,3)/sum survfit robust 10 0.449329 0.4482 0.0443  0.0433     0.9777   0.9450
+  continuous U(0.3,3)/sum survfit robust 15 0.301194 0.2997 0.0436  0.0433     0.9946   0.9425
+  continuous U(0.3,3)/sum     documented  5 0.670320 0.6705 0.0385  0.0382     0.9923   0.9430
+  continuous U(0.3,3)/sum     documented 10 0.449329 0.4482 0.0443  0.0430     0.9709   0.9415
+  continuous U(0.3,3)/sum     documented 15 0.301194 0.2997 0.0436  0.0428     0.9830   0.9390
+ ceiling 0.5         none        package  5 0.670320 0.6737 0.0343  0.0345     1.0058   0.9445
+ ceiling 0.5         none        package 10 0.449329 0.4525 0.0400  0.0391     0.9776   0.9450
+ ceiling 0.5         none        package 15 0.301194 0.3047 0.0394  0.0394     1.0008   0.9465
+ ceiling 0.5         none survfit robust  5 0.670320 0.6737 0.0343  0.0345     1.0058   0.9445
+ ceiling 0.5         none survfit robust 10 0.449329 0.4525 0.0400  0.0391     0.9776   0.9450
+ ceiling 0.5         none survfit robust 15 0.301194 0.3047 0.0394  0.0394     1.0008   0.9465
+ ceiling 0.5         none     documented  5 0.670320 0.6737 0.0343  0.0338     0.9830   0.9395
+ ceiling 0.5         none     documented 10 0.449329 0.4525 0.0400  0.0382     0.9536   0.9370
+ ceiling 0.5         none     documented 15 0.301194 0.3047 0.0394  0.0383     0.9726   0.9375
+ ceiling 0.5     U(0.3,3)        package  5 0.670320 0.6729 0.0383  0.0886     2.3131   0.9985
+ ceiling 0.5     U(0.3,3)        package 10 0.449329 0.4519 0.0442  0.0869     1.9688   1.0000
+ ceiling 0.5     U(0.3,3)        package 15 0.301194 0.3039 0.0436  0.0747     1.7127   1.0000
+ ceiling 0.5     U(0.3,3) survfit robust  5 0.670320 0.6729 0.0383  0.0382     0.9966   0.9415
+ ceiling 0.5     U(0.3,3) survfit robust 10 0.449329 0.4519 0.0442  0.0432     0.9774   0.9455
+ ceiling 0.5     U(0.3,3) survfit robust 15 0.301194 0.3039 0.0436  0.0434     0.9944   0.9440
+ ceiling 0.5     U(0.3,3)     documented  5 0.670320 0.6729 0.0383  0.0373     0.9732   0.9340
+ ceiling 0.5     U(0.3,3)     documented 10 0.449329 0.4519 0.0442  0.0420     0.9521   0.9400
+ ceiling 0.5     U(0.3,3)     documented 15 0.301194 0.3039 0.0436  0.0421     0.9644   0.9340
+ ceiling 0.5 U(0.3,3)/sum        package  5 0.670320 0.6729 0.0383  0.0338     0.8839   0.8865
+ ceiling 0.5 U(0.3,3)/sum        package 10 0.449329 0.4519 0.0442  0.0962     2.1789   0.9925
+ ceiling 0.5 U(0.3,3)/sum        package 15 0.301194 0.3039 0.0436  0.1884     4.3193   1.0000
+ ceiling 0.5 U(0.3,3)/sum survfit robust  5 0.670320 0.6729 0.0383  0.0382     0.9966   0.9415
+ ceiling 0.5 U(0.3,3)/sum survfit robust 10 0.449329 0.4519 0.0442  0.0432     0.9774   0.9455
+ ceiling 0.5 U(0.3,3)/sum survfit robust 15 0.301194 0.3039 0.0436  0.0434     0.9944   0.9440
+ ceiling 0.5 U(0.3,3)/sum     documented  5 0.670320 0.6729 0.0383  0.0373     0.9732   0.9340
+ ceiling 0.5 U(0.3,3)/sum     documented 10 0.449329 0.4519 0.0442  0.0420     0.9521   0.9400
+ ceiling 0.5 U(0.3,3)/sum     documented 15 0.301194 0.3039 0.0436  0.0421     0.9644   0.9340
+
+M1: 2000 replicates per cell, n = 200; elapsed 18s
