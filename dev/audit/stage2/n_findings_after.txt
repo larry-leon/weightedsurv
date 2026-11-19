@@ -1,0 +1,11 @@
+[N1] result returned | warnings: 1 (df_counting(): some quantities could not be computed and are NA: Cox model: no events in the control arm and treatment arm; the hazard ratio is not identified; log-rank test (survdiff): no events; weighted log-rank z: its variance is 0 (no event with both arms at risk)) -- all censored, defaults (check.KM = TRUE, get.cox = TRUE)
+[N2] result returned | warnings: 1 (df_counting(): some quantities could not be computed and are NA: weighted log-rank z: its variance is 0 (no event with both arms at risk)) -- n = 1 per arm, unweighted; z.score = NA
+[N3] result returned | warnings: 1 (df_counting(): some quantities could not be computed and are NA: log-rank test (survdiff) failed: Lapack routine dgesv: system is exactly singular: U[1,1] = 0; weighted log-rank z: its variance is 0 (no event with both arms at risk)) -- n = 1 per arm, tied event times; logrank chisq = NA
+[N5] result returned | warnings: 1 (cox_rhogamma(): no events in the treatment arm (z = 1); the hazard-ratio estimate is not finite / not identified.) -- no events in arm 1; bhat = -1243.65
+[N6] result returned | warnings: 0 -- zero weights, get.cox = TRUE; HR = 1.104011
+[N7] error: max_tau is undefined: the control arm has no events (max_tau is the smaller of the two arms' last event times). Supply Maxtau to set the time range. | warnings: 0 -- arm without events, Maxtau = NULL
+[N7] result returned | warnings: 0 -- same, Maxtau = 20
+[N8] weighted df_counting: logrank_results$chisq = 0.047342; unweighted survdiff chisq = 0.047342 (unchanged: survdiff takes no case weights)
+[N9] error: Column 'time' (time to event) has negative values; times must be >= 0. | warnings: 0 -- KM_diff with a negative time
+[N9] error: Column 'time' (time to event) has negative values; times must be >= 0. | warnings: 0 -- df_counting with a negative time
+[N9] error: Column 'time' (time to event) has negative values; times must be >= 0. | warnings: 0 -- plotKM.band_subgroups with a negative time

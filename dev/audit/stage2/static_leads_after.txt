@@ -1,0 +1,15 @@
+[S1] mb_tstar == max(tpoints): unique weights = 1,1.05263157894737,1.11111111111111,1.17647058823529,1.25,1.33333333333333,1.42857142857143,1.53846153846154,1.66666666666667,1.81818181818182 | mb_tstar > max(tpoints) with S reaching 0: weights = 1.538, 1.667, 1.818 (last S_left = 0.55)
+[S1] S_left = 0 inside the grid, mb_tstar beyond: any infinite weight = FALSE
+[S2] wlr_dhat_estimates(scheme='schemper') without survG -> error: dfcounting is missing required elements: survG (scheme = 'schemper' needs the censoring curve survG at at_points)
+[S2] note: dfcounting$survG partially matches dfcounting$survG_all (length 120) once survG is removed
+[S2] wlr_cumulative(scheme='schemper') without survG -> error: df_weights is missing required columns: survG (scheme = 'schemper' needs the censoring curve survG at at_points)
+[S3] near-tie pair raw times differ by 9.44e-12; fixed times differ by 0; KM_diff at_points contains both raw values: TRUE
+[S3] S0 at the two raw points: 0.501164861123 vs 0.501164861123
+[S7] stdout: ''; then error: For MB weights, provide mb_tstar (cutoff time) in scheme_params; scheme_params has: (nothing)
+[S8] df_counting(strata.name = 'no_such_column') -> error: Missing required column(s) in df: no_such_column
+[S8] df_counting with an event coded 3 -> error: Column 'status' (event) must be coded 0/1 (1 = event), logical, or 1/2 (2 = event, as survival::Surv reads it); found: 3.
+[S9] calculate_risk_event_counts(draws=50) identical across calls regardless of caller seed: TRUE (set.seed(seedstart) at R/df_counting_helpers.R:261; df_counting passes the same seedstart to every arm/stratum call)
+Warning message:
+df_counting(): some quantities could not be computed and are NA: weighted log-rank z: its variance is 0 (no event with both arms at risk) 
+Error: object '.last_calls' not found
+Execution halted
