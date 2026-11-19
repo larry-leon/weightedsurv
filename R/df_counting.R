@@ -491,7 +491,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
   plot_km_comparison <- function(time,surv,se,dfcheck,group_name = "control"){
   if (length(time) == 0 || nrow(dfcheck) == 0) {
-    plot.new(); title(main = paste(group_name, "(no events)")); return(invisible(NULL))
+    graphics::plot.new(); title(main = paste(group_name, "(no events)")); return(invisible(NULL))
   }
   yymax <- max(c(se, dfcheck$se))
   plot(time,se, type="s", lty=1, col="lightgrey", lwd=4, ylim=c(0,yymax), xlab="time", ylab="SE(KM)")
