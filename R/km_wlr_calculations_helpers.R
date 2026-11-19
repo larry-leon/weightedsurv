@@ -258,7 +258,10 @@ wlr_dhat_estimates <- function(dfcounting,
 #' is exactly 0 from there on and so is its variance.
 #'
 #' @param ybar Vector of risk set sizes at each time point.
-#' @param nbar Vector of event counts at each time point.
+#' @param nbar Vector of cumulative event counts at each time point.
+#' @details The result is the Kaplan-Meier estimate only when the time points behind \code{ybar}
+#'   and \code{nbar} include every event time of the group (see \code{\link{KM_diff}}, which
+#'   arranges this for any \code{at_points}).
 #' @param sig2w_multiplier Optional vector for variance calculation. If NULL, calculated internally.
 #' @return List with survival estimates and variances.
 #' @export
@@ -332,7 +335,10 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #'   Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads it) are also accepted.
 #' @param treat.name Character; name of treatment group variable in \code{df} (0=control, 1=treatment).
 #' @param weight.name Character or NULL; name of weights variable in \code{df}.
-#' @param at_points Numeric vector; time points for calculation. Default: sorted unique event times.
+#' @param at_points Numeric vector; time points at which the curves are returned: finite and
+#'   non-decreasing (duplicates are allowed and returned as given). The Kaplan-Meier value at each
+#'   point is right-continuous, whether or not the points include the event times.
+#'   Default: the sorted observed times.
 #' @param alpha Numeric; significance level for confidence intervals. Default: 0.05.
 #' @param seedstart Integer; random seed for reproducibility. Default: 8316951.
 #' @param draws Integer; number of draws for pointwise variance estimation. Default: 0.
@@ -448,24 +454,28 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
     riskp <- risk.points[which(risk.points <= taus[2])]
     at_points <- sort(unique(c(at_points, riskp)))
   }
+  if (!is.numeric(at_points) || anyNA(at_points) || any(!is.finite(at_points))) {
+    stop("at_points must be numeric and finite.", call. = FALSE)
+  }
+  if (is.unsorted(at_points)) {
+    stop("at_points must be non-decreasing (sorted); duplicates are allowed.", call. = FALSE)
+  }
 
+  # Each arm is estimated on its own grid G = (its observed times) U at_points, so that the
+  # values returned at at_points are the Kaplan-Meier curve whatever at_points holds.
   # Treatment arm
   group_data <- extract_group_data(time, delta, wgt, z, group = 1)
-  risk_event <- calculate_risk_event_counts(group_data$U, group_data$D, group_data$W, at_points = at_points, draws = draws, seedstart = seedstart)
-  temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
-  risk_event1 <- risk_event
+  km1 <- km_arm_on_grid(group_data$U, group_data$D, group_data$W, at_points, draws = draws, seedstart = seedstart)
   group_data1 <- group_data
-  surv1 <- temp$S_KM
-  sig2_surv1 <- temp$sig2_KM
+  surv1 <- km1$surv
+  sig2_surv1 <- km1$sig2
 
-  # Treatment arm
+  # Control arm
   group_data <- extract_group_data(time, delta, wgt, z, group = 0)
-  risk_event <- calculate_risk_event_counts(group_data$U, group_data$D, group_data$W, at_points = at_points, draws = draws, seedstart = seedstart)
-  temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
-  risk_event0 <- risk_event
+  km0 <- km_arm_on_grid(group_data$U, group_data$D, group_data$W, at_points, draws = draws, seedstart = seedstart)
   group_data0 <- group_data
-  surv0 <- temp$S_KM
-  sig2_surv0 <- temp$sig2_KM
+  surv0 <- km0$surv
+  sig2_surv0 <- km0$sig2
 
   dhat <- surv1 - surv0
   sig2_dhat <- sig2_surv0 + sig2_surv1
@@ -484,10 +494,10 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
     G0.draws <- G_draws$G0
     G1.draws <- G_draws$G1
 
-    # Control group
-    surv0_star <- resampling_survival(group_data0$U, group_data0$W, group_data0$D, at_points, draws.band, surv0, G0.draws)
+    # Control group (resampled on the arm's grid, read off at at_points)
+    surv0_star <- resampling_survival(group_data0$U, group_data0$W, group_data0$D, km0$grid, draws.band, km0$S_grid, G0.draws)[km0$idx, , drop = FALSE]
     # Treatment group
-    surv1_star <- resampling_survival(group_data1$U, group_data1$W, group_data1$D, at_points, draws.band, surv1, G1.draws)
+    surv1_star <- resampling_survival(group_data1$U, group_data1$W, group_data1$D, km1$grid, draws.band, km1$S_grid, G1.draws)[km1$idx, , drop = FALSE]
 
     dhat_star <- (surv1_star - surv0_star)
 

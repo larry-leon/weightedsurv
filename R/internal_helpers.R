@@ -80,3 +80,16 @@ ws_validate_survdata <- function(df, tte.name, event.name, treat.name, weight.na
   list(time = time, event = event, treat = treat, weight = weight,
        strata = if (is.null(strata.name)) NULL else df[[strata.name]])
 }
+
+# Kaplan-Meier for one arm at arbitrary time points. The calculations run on the grid
+# G = sort(unique(c(U, at_points))), which holds every event time of the arm, and the rows at
+# match(at_points, G) are returned (duplicates in at_points are returned as given). On a grid
+# that already holds every event time the values are those of the direct calculation.
+#' @noRd
+km_arm_on_grid <- function(U, D, W, at_points, draws = 0, seedstart = 816951) {
+  G <- sort(unique(c(U, at_points)))
+  re <- calculate_risk_event_counts(U, D, W, at_points = G, draws = draws, seedstart = seedstart)
+  km <- KM_estimates(ybar = re$ybar, nbar = re$nbar, sig2w_multiplier = re$sig2w_multiplier)
+  idx <- match(at_points, G)
+  list(grid = G, idx = idx, S_grid = km$S_KM, surv = km$S_KM[idx], sig2 = km$sig2_KM[idx])
+}

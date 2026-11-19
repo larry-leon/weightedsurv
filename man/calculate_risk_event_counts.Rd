@@ -24,4 +24,6 @@ List with ybar (risk set counts), nbar (event counts), sig2w_multiplier (varianc
 }
 \description{
 Calculates risk set and event counts for a group at specified time points, with variance estimation.
+Passed to \code{\link{KM_estimates}}, these give the Kaplan-Meier estimate only when
+\code{at_points} holds every event time of the group.
 }

@@ -34,7 +34,10 @@ Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads
 
 \item{weight.name}{Character or NULL; name of weights variable in \code{df}.}
 
-\item{at_points}{Numeric vector; time points for calculation. Default: sorted unique event times.}
+\item{at_points}{Numeric vector; time points at which the curves are returned: finite and
+non-decreasing (duplicates are allowed and returned as given). The Kaplan-Meier value at each
+point is right-continuous, whether or not the points include the event times.
+Default: the sorted observed times.}
 
 \item{alpha}{Numeric; significance level for confidence intervals. Default: 0.05.}
 

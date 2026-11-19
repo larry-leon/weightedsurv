@@ -219,6 +219,8 @@ extract_group_data <- function(time, delta, wgt, z, group = 1) {
 #' Calculate risk set and event counts at time points
 #'
 #' Calculates risk set and event counts for a group at specified time points, with variance estimation.
+#' Passed to \code{\link{KM_estimates}}, these give the Kaplan-Meier estimate only when
+#' \code{at_points} holds every event time of the group.
 #'
 #' @param U Numeric vector of times for group.
 #' @param D Numeric vector of event indicators for group.

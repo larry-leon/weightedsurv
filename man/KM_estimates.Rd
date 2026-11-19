@@ -9,7 +9,7 @@ KM_estimates(ybar, nbar, sig2w_multiplier = NULL)
 \arguments{
 \item{ybar}{Vector of risk set sizes at each time point.}
 
-\item{nbar}{Vector of event counts at each time point.}
+\item{nbar}{Vector of cumulative event counts at each time point.}
 
 \item{sig2w_multiplier}{Optional vector for variance calculation. If NULL, calculated internally.}
 }
@@ -20,4 +20,9 @@ List with survival estimates and variances.
 Computes Kaplan-Meier survival estimates and their variances given risk and event counts.
 Survival is returned in [0, 1]; when everything still at risk fails at a time point, survival
 is exactly 0 from there on and so is its variance.
+}
+\details{
+The result is the Kaplan-Meier estimate only when the time points behind \code{ybar}
+and \code{nbar} include every event time of the group (see \code{\link{KM_diff}}, which
+arranges this for any \code{at_points}).
 }
