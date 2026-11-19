@@ -357,7 +357,7 @@ KM_plot_2sample_weighted_counting <- function(
 #'
 #' @param df Data frame containing survival data.
 #' @param tte.name Name of the time-to-event column.
-#' @param event.name Name of the event indicator column (0/1).
+#' @param event.name Name of the event indicator column (0/1; logical and 1/2 coding as in \code{survival::Surv} are also accepted).
 #' @param treat.name Name of the treatment group column (0/1).
 #' @param weight.name Optional name of the weights column.
 #' @param sg_labels Character vector of subgroup definitions (as logical expressions).
@@ -390,7 +390,8 @@ KM_plot_2sample_weighted_counting <- function(
 #' @param time.zero.label Additional graphical and calculation parameters.
 #' @param xlabel Additional graphical and calculation parameters.
 #' @param ylabel Additional graphical and calculation parameters.
-#' @param Maxtau Additional graphical and calculation parameters.
+#' @param Maxtau Upper end of the time range. By default the smaller of the two arms' last event
+#'   times; it must be supplied when an arm has no events.
 #' @param seedstart Additional graphical and calculation parameters.
 #' @param ylim Additional graphical and calculation parameters.
 #' @param draws.band Number of draws for simultaneous confidence bands (default: 20).
@@ -416,29 +417,30 @@ plotKM.band_subgroups <- function(
 ) {
   # Input checks
 
-  required_cols <- c(tte.name, event.name, treat.name, weight.name)
-  missing_cols <- setdiff(required_cols, names(df))
-  if (length(missing_cols) > 0) {
-    stop(paste("Missing required columns in df:", paste(missing_cols, collapse = ", ")))
-  }
+  # Columns present; no NA; times finite and >= 0; event 0/1, logical or 1/2; weights >= 0;
+  # both arms non-empty (errors name the column and the problem)
+  vin <- ws_validate_survdata(df, tte.name, event.name, treat.name, weight.name)
+  # 1/2 event coding: use the 0/1 recoding, so that subgroup subsets cannot be misread
+  if (any(vin$event != df[[event.name]])) df[[event.name]] <- vin$event
 
   if (length(sg_labels) != length(sg_colors)) stop("SG labels and colors do not match")
   if (is.null(risk_offset)) risk_offset <- (1 + length(sg_labels)) * risk_delta
   if (is.null(ylabel)) ylabel <- expression(delta(t) == hat(S)[1](t) - hat(S)[0](t))
   if (is.null(xlabel)) xlabel <- "Months"
 
-  if (!is.numeric(df[[tte.name]])) stop("Time-to-event column must be numeric.")
-  if (!all(df[[event.name]] %in% c(0, 1))) stop("Event column must be binary (0/1).")
-  if (!all(df[[treat.name]] %in% c(0, 1))) stop("Treatment column must be binary (0/1).")
-  if (!is.null(weight.name) && !all(df[[weight.name]] >= 0)) stop("Weights must be non-negative.")
-
-
   # ITT
   Y <- df[[tte.name]]
-  E <- df[[event.name]]
+  E <- vin$event
   Treat <- df[[treat.name]]
-  maxe_0 <- max(Y[E == 1 & Treat == 0])
-  maxe_1 <- max(Y[E == 1 & Treat == 1])
+  no_ev <- c(!any(E == 1 & Treat == 0), !any(E == 1 & Treat == 1))
+  if (is.null(Maxtau) && any(no_ev)) {
+    stop(sprintf(paste0("max_tau is undefined: the %s no events (max_tau is the smaller of the two arms' last event times). ",
+                        "Supply Maxtau to set the time range."),
+                 if (all(no_ev)) "control and treatment arms have" else if (no_ev[1]) "control arm has" else "treatment arm has"),
+         call. = FALSE)
+  }
+  maxe_0 <- suppressWarnings(max(Y[E == 1 & Treat == 0]))  # -Inf only when Maxtau is supplied
+  maxe_1 <- suppressWarnings(max(Y[E == 1 & Treat == 1]))
   max_tau <- min(c(maxe_0, maxe_1))
   if (!is.null(Maxtau)) max_tau <- Maxtau
   if (!is.null(tau_add)){
@@ -506,6 +508,8 @@ plotKM.band_subgroups <- function(
   # Here we only want point estimates (SE's not considered for subgroup plot)
   for (i in seq_along(sg_flags)) {
     df_sg <- df[sg_flags[[i]], ]
+    ws_validate_survdata(df_sg, tte.name, event.name, treat.name, weight.name,
+                         context = sprintf("Subgroup '%s'", sg_labels[i]))
     Y_sg <- df_sg[[tte.name]]
     E_sg <- df_sg[[event.name]]
     Treat_sg <- df_sg[[treat.name]]

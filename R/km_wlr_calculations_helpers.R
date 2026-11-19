@@ -320,6 +320,7 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' @param df Data frame containing survival data.
 #' @param tte.name Character; name of time-to-event variable in \code{df}.
 #' @param event.name Character; name of event indicator variable in \code{df} (1=event, 0=censored).
+#'   Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads it) are also accepted.
 #' @param treat.name Character; name of treatment group variable in \code{df} (0=control, 1=treatment).
 #' @param weight.name Character or NULL; name of weights variable in \code{df}.
 #' @param at_points Numeric vector; time points for calculation. Default: sorted unique event times.
@@ -365,7 +366,9 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #'   \item Simultaneous bands (\code{sb_lower}, \code{sb_upper}): Cover the entire difference curve with probability 1-alpha
 #' }
 #'
-#' @note Treatment must be coded as 0=control, 1=experimental. Event must be binary (0/1).
+#' @note Treatment must be coded as 0=control, 1=experimental, and both arms must have observations.
+#'   Missing values, non-finite or negative times and negative weights are errors (rows are never
+#'   dropped silently); zero weights are allowed and those rows contribute nothing.
 #'
 #' @examples
 #' library(survival)
@@ -409,32 +412,15 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "treat", weight.name=NULL, at_points = sort(df[[tte.name]]), alpha = 0.05, seedstart = 8316951, draws = 0,
                     risk.points = NULL, draws.band = 0, tau.seq = 0.25, qtau = 0.025, show_resamples = TRUE, modify_tau = FALSE) {
 
-  required_cols <- c(tte.name, event.name, treat.name)
-  missing_cols <- setdiff(required_cols, names(df))
-  if (length(missing_cols) > 0) {
-    stop(paste("Missing required columns in df:", paste(missing_cols, collapse = ", ")))
-  }
+  # Columns present; no NA; times finite and >= 0; event 0/1, logical or 1/2; weights >= 0;
+  # both arms non-empty (errors name the column and the problem)
+  vin <- ws_validate_survdata(df, tte.name, event.name, treat.name, weight.name)
 
-  # Check treatment coding
-  if (!all(df[[treat.name]] %in% c(0, 1))) {
-    stop("Treatment must be numerical indicator: 0=control, 1=experimental")
-  }
-
-  # Check event coding
-  if (!all(df[[event.name]] %in% c(0, 1))) {
-    stop("Event must be binary (0/1).")
-  }
-
-  # Check for NA values
-  if (any(is.na(df[[tte.name]]))) warning("NA values found in time-to-event column.")
-  if (any(is.na(df[[event.name]]))) warning("NA values found in event column.")
-  if (any(is.na(df[[treat.name]]))) warning("NA values found in treatment column.")
-
-  tfixed <- aeqSurv(Surv(df[[tte.name]],df[[event.name]]))
+  tfixed <- aeqSurv(Surv(vin$time, vin$event))
   time<- tfixed[,"time"]
   delta <- tfixed[,"status"]
   z <- df[[treat.name]]
-  wgt <- if (!is.null(weight.name)) df[[weight.name]] else rep(1, length(time))
+  wgt <- if (!is.null(weight.name)) vin$weight else rep(1, length(time))
 
   if (!all(z %in% c(0, 1))) stop("Treatment must be numerical indicator: 0=control, 1=experimental")
 
@@ -501,9 +487,10 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
     # simultaneous band
     sups <- apply(abs(Zdhat_star), 2, max, na.rm = TRUE)
     c_alpha_band <- quantile(sups,c(0.95))
-    # Show first 20
+    # Show first 20 (or all of them when draws.band < 20)
     if(show_resamples){
-      matplot(at_points, Zdhat_star[,c(1:20)], type="s", lty=2, lwd = 1, xlab="time", ylab = "Normalized survival differences (1st 20)",
+      matplot(at_points, Zdhat_star[, seq_len(min(20, draws.band)), drop = FALSE], type="s", lty=2, lwd = 1, xlab="time",
+              ylab = sprintf("Normalized survival differences (1st %d)", min(20, draws.band)),
               main = sprintf("c_alpha (simul. band): %.2f", c_alpha_band)
       )
     }

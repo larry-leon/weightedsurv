@@ -40,7 +40,8 @@ df_counting(
 
 \item{tte.name}{Character; name of the time-to-event column in \code{df}.}
 
-\item{event.name}{Character; name of the event indicator column in \code{df} (1=event, 0=censored).}
+\item{event.name}{Character; name of the event indicator column in \code{df} (1=event, 0=censored).
+Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads it) are also accepted.}
 
 \item{treat.name}{Character; name of the treatment/group column in \code{df} (must be coded as 0=control, 1=experimental).}
 
@@ -131,6 +132,14 @@ This function implements a comprehensive survival analysis framework supporting:
 }
 
 The function performs time-fixing using \code{survival::aeqSurv} to handle tied event times.
+
+Input checks: missing values (in any named column, including \code{strata.name}), non-finite or
+negative times, negative weights and an empty arm are errors; rows are never dropped silently.
+Zero weights are allowed: those rows contribute nothing, and the Cox model and log-rank test are
+fitted on the positive-weight rows. A stratum in which one arm is empty contributes nothing to the
+stratified statistics. On degenerate data (an arm without events, no events at all, one subject
+per arm) a result is still returned; quantities that cannot be computed are \code{NA}, with one
+warning that says why.
 For stratified analyses, stratum-specific estimates are computed and combined appropriately.
 }
 \section{Weighting Schemes}{

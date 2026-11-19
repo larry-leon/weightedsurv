@@ -7,6 +7,7 @@
 #' @param df Data frame containing survival data.
 #' @param tte.name Character; name of the time-to-event column in \code{df}.
 #' @param event.name Character; name of the event indicator column in \code{df} (1=event, 0=censored).
+#'   Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads it) are also accepted.
 #' @param treat.name Character; name of the treatment/group column in \code{df} (must be coded as 0=control, 1=experimental).
 #' @param weight.name Character or NULL; name of the weights column in \code{df}. If NULL, equal weights are used.
 #' @param strata.name Character or NULL; name of the strata column in \code{df} for stratified analysis.
@@ -66,6 +67,14 @@
 #' }
 #'
 #' The function performs time-fixing using \code{survival::aeqSurv} to handle tied event times.
+#'
+#' Input checks: missing values (in any named column, including \code{strata.name}), non-finite or
+#' negative times, negative weights and an empty arm are errors; rows are never dropped silently.
+#' Zero weights are allowed: those rows contribute nothing, and the Cox model and log-rank test are
+#' fitted on the positive-weight rows. A stratum in which one arm is empty contributes nothing to the
+#' stratified statistics. On degenerate data (an arm without events, no events at all, one subject
+#' per arm) a result is still returned; quantities that cannot be computed are \code{NA}, with one
+#' warning that says why.
 #' For stratified analyses, stratum-specific estimates are computed and combined appropriately.
 #'
 #' @section Weighting Schemes:
@@ -139,8 +148,19 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
                         conf_level = 0.95, check.KM = TRUE, check.seKM = FALSE, draws = 0, seedstart = 8316951,
                         stop.onerror=FALSE,censoring_allmarks=TRUE) {
 
-  validate_input(df, c(tte.name, event.name, treat.name, weight.name))
-
+  # Columns present (strata too); no NA; times finite and >= 0; event 0/1, logical or 1/2;
+  # weights >= 0; both arms non-empty. Errors name the column and the problem.
+  vin <- ws_validate_survdata(df, tte.name, event.name, treat.name, weight.name, strata.name)
+  # 1/2 event coding: use the 0/1 recoding everywhere, so that subsets cannot be misread
+  if (any(vin$event != df[[event.name]])) df[[event.name]] <- vin$event
+  # Zero weights are accepted: those rows contribute nothing. Cox and log-rank are fitted on the
+  # positive-weight rows; per-observation output keeps every row.
+  pos_w <- if (is.null(weight.name)) rep(TRUE, nrow(df)) else vin$weight > 0
+  df_fit <- if (all(pos_w)) df else df[which(pos_w), ]
+  events_by_arm <- c(sum(vin$event[vin$treat == 0 & pos_w]), sum(vin$event[vin$treat == 1 & pos_w]))
+  # Quantities that cannot be computed on degenerate data are set to NA; the reasons are
+  # collected here and reported in one warning at the end.
+  na_reasons <- character(0)
 
   # Validate scheme and parameters
   supported_schemes <- c("fh", "schemper", "XO", "MB", "custom_time", "fh_exp1", "fh_exp2")
@@ -151,17 +171,31 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   ans <- list()
 
   cox_results <- NULL
-  if (get.cox) {
+  cox_na <- list(cox_fit = NA, hr = NA_real_, hr_ci = c(NA_real_, NA_real_), pval = NA_real_, score = NA_real_,
+                 cox_text = "HR = NA")
+  if (get.cox && any(events_by_arm == 0)) {
+    na_reasons <- c(na_reasons, sprintf("Cox model: no events in the %s; the hazard ratio is not identified",
+                                        paste(c("control arm", "treatment arm")[events_by_arm == 0], collapse = " and ")))
+    cox_results <- cox_na
+  } else if (get.cox) {
     treat.name.strata <- treat.name
     if (!is.null(strata.name)) {
       treat.name.strata <- paste(treat.name,"+",paste("strata(",eval(strata.name),")"))
     }
     cox_formula <- as.formula(paste0("survival::Surv(", tte.name, ",", event.name, ") ~ ", treat.name.strata))
-    if (!is.null(weight.name)) {
-      cox_fit <- survival::coxph(cox_formula, data = df, weights = df[[weight.name]], robust = TRUE)
-    } else {
-      cox_fit <- survival::coxph(cox_formula, data = df, robust=TRUE)
-    }
+    cox_fit <- tryCatch({
+      if (!is.null(weight.name)) {
+        survival::coxph(cox_formula, data = df_fit, weights = df_fit[[weight.name]], robust = TRUE)
+      } else {
+        survival::coxph(cox_formula, data = df_fit, robust=TRUE)
+      }
+    }, error = function(e) {
+      na_reasons <<- c(na_reasons, paste("Cox model failed:", conditionMessage(e)))
+      NULL
+    })
+  }
+  if (get.cox && is.null(cox_results) && is.null(cox_fit)) cox_results <- cox_na
+  if (get.cox && is.null(cox_results)) {
     cox_summary <- summary(cox_fit)
     cox_score <- cox_summary$sctest[1]
     hr <- exp(cox_fit$coef)
@@ -181,18 +215,28 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   }
   ans$cox_results <- cox_results
   logrank_results <- NULL
-  surv_obj <- survival::Surv(df[[tte.name]], df[[event.name]])
-  group <- df[[treat.name]]
+  surv_obj <- survival::Surv(df_fit[[tte.name]], df_fit[[event.name]])
+  group <- df_fit[[treat.name]]
  # survdiff does not support case weights
 
   lr_rho <- 0
   if(scheme == "fh") lr_rho <- scheme_params$rho
 
-  if (!is.null(strata.name)) {
-    strata_var <- df[[strata.name]]
-    logrank_fit <- survival::survdiff(surv_obj ~ group + strata(strata_var), rho = lr_rho)
+  if (sum(events_by_arm) == 0) {
+    na_reasons <- c(na_reasons, "log-rank test (survdiff): no events")
+    logrank_fit <- list(chisq = NA_real_)
   } else {
-    logrank_fit <- survival::survdiff(surv_obj ~ group, rho = lr_rho)
+    logrank_fit <- tryCatch({
+      if (!is.null(strata.name)) {
+        strata_var <- df_fit[[strata.name]]
+        survival::survdiff(surv_obj ~ group + strata(strata_var), rho = lr_rho)
+      } else {
+        survival::survdiff(surv_obj ~ group, rho = lr_rho)
+      }
+    }, error = function(e) {
+      na_reasons <<- c(na_reasons, paste("log-rank test (survdiff) failed:", conditionMessage(e)))
+      list(chisq = NA_real_)
+    })
   }
 
   chisq <- logrank_fit$chisq
@@ -322,6 +366,10 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)
 
   z.score <- get_score$z.score
+  if (!is.finite(z.score)) {
+    na_reasons <- c(na_reasons, "weighted log-rank z: its variance is 0 (no event with both arms at risk)")
+    z.score <- NA_real_
+  }
   ans$z.score <- z.score
   ans$get_score <- get_score
   pval <- 1 - pnorm(z.score)
@@ -333,17 +381,17 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
   # KM curve checks
   if (check.KM) {
+    # survfit on the positive-weight rows (zero-weight rows contribute nothing);
     # control arm will be first stratum
-    check_fit <- survfit(Surv(time,delta) ~ z, weights = wgt)
-    check_sfit <- summary(check_fit)
-    strata_names <- as.character(check_sfit$strata)
-    strata_lengths <- rle(strata_names)$lengths
-    strata_labels <- rle(strata_names)$values
-    split_times <- split(check_sfit$time, rep(strata_labels, strata_lengths))
-    split_surv  <- split(check_sfit$surv, rep(strata_labels, strata_lengths))
-    split_se  <- split(check_sfit$std.err, rep(strata_labels, strata_lengths))
-    df0_check <- data.frame(time=split_times[[1]], surv=split_surv[[1]], se = split_se[[1]])
-    df1_check <- data.frame(time=split_times[[2]], surv=split_surv[[2]], se = split_se[[2]])
+    cd <- data.frame(time = time, delta = delta, z = z, wgt = wgt)[wgt > 0, , drop = FALSE]
+    check_fit <- survfit(Surv(time, delta) ~ z, data = cd, weights = wgt)
+    # survfit per arm, at that arm's event times (an arm without events has no rows)
+    arm_check <- function(a) {
+      s <- summary(survfit(Surv(time, delta) ~ 1, data = cd[cd$z == a, , drop = FALSE], weights = wgt))
+      data.frame(time = as.numeric(s$time), surv = as.numeric(s$surv), se = as.numeric(s$std.err))
+    }
+    df0_check <- arm_check(0)
+    df1_check <- arm_check(1)
 
     # Note: the quantile() function can yield different results than median table
     # The median table calculations appear more stable ...
@@ -373,7 +421,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     aa <- c(unlist(qcheck_0))
     bb <- c(unlist(get_kmq[2,c("quantile","lower","upper")]))
     dcheck <- round(abs(aa-bb),6)
-    if(max(dcheck,na.rm=TRUE) > 1e-6){
+    if(any(dcheck > 1e-6, na.rm = TRUE)){
       msg <- paste0(arms[2]," : ", "Control: discrepancy in quantile calculations")
     if(verbose){  if (stop.onerror) stop(msg) else warning(msg)
     }
@@ -382,7 +430,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     aa <- c(unlist(qcheck_1))
     bb <- c(unlist(get_kmq[1,c("quantile","lower","upper")]))
     dcheck <- round(abs(aa-bb),6)
-    if(max(dcheck,na.rm=TRUE) > 1e-6){
+    if(any(dcheck > 1e-6, na.rm = TRUE)){
       msg <- paste0(arms[1]," : ", "Treatment: discrepancy in quantile calculations")
     if(verbose){  if (stop.onerror) stop(msg) else warning(msg)
     }
@@ -398,11 +446,11 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
         if (stop.onerror) stop(msg) else warning(msg)
       }
 
-      if(round(max(abs(S.KM-df_check$surv)),8)) {
+      if(nrow(df_check) > 0 && round(max(abs(S.KM-df_check$surv)),8)) {
         msg <- paste0(group_name," : ", "Discrepancy in KM curve fit.")
         if (stop.onerror) stop(msg) else warning(msg)
       }
-      if(check.seKM){
+      if(check.seKM && nrow(df_check) > 0){
       if(round(max(abs(se.KM-df_check$se)),8)) {
           if (verbose) {
           msg <- paste0(group_name, " : Discrepancy in se(KM) curve fit.")
@@ -425,11 +473,17 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
               }
       }
-    check_km_fit(at_points[idv0.check],surv0[idv0.check], sqrt(sig2_surv0[idv0.check]), df0_check, "control", check.seKM = check.seKM)
-    check_km_fit(at_points[idv1.check],surv1[idv1.check], sqrt(sig2_surv1[idv1.check]), df1_check, "treat", check.seKM = check.seKM)
+    # the package curve is read at survfit's event times
+    idc0 <- match(df0_check$time, at_points)
+    idc1 <- match(df1_check$time, at_points)
+    check_km_fit(df0_check$time, surv0[idc0], sqrt(sig2_surv0[idc0]), df0_check, "control", check.seKM = check.seKM)
+    check_km_fit(df1_check$time, surv1[idc1], sqrt(sig2_surv1[idc1]), df1_check, "treat", check.seKM = check.seKM)
      }
 
   plot_km_comparison <- function(time,surv,se,dfcheck,group_name = "control"){
+  if (length(time) == 0 || nrow(dfcheck) == 0) {
+    plot.new(); title(main = paste(group_name, "(no events)")); return(invisible(NULL))
+  }
   yymax <- max(c(se, dfcheck$se))
   plot(time,se, type="s", lty=1, col="lightgrey", lwd=4, ylim=c(0,yymax), xlab="time", ylab="SE(KM)")
   with(dfcheck, lines(time, se, type="s", lty=2, lwd=1, col="red"))
@@ -553,6 +607,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   # Helper function for robust comparison and messaging
   check_logrank_discrepancy <- function(z, chisq, context = "") {
     tol <- 1e-6
+    if (!is.finite(z) || !is.finite(chisq)) return(invisible(NULL))  # NA already reported
     diff <- z^2 - chisq
     if (abs(diff) > tol) {
       warning(sprintf("Discrepancy with log-rank and survdiff%s", context))
@@ -577,6 +632,10 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     } else {
       warning("Required elements missing for stratified log-rank comparison.")
     }
+  }
+  if (length(na_reasons)) {
+    warning("df_counting(): some quantities could not be computed and are NA: ",
+            paste(unique(na_reasons), collapse = "; "), call. = FALSE)
   }
   ans
 }

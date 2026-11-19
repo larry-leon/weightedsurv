@@ -234,7 +234,8 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
   nbar <- colSums(outer(U[D == 1], at_points, FUN = "<=") * W[D == 1])
   dN <- diff(c(0, nbar))
   # For un-weighted (all weights equal) return standard variance term
-  if(length(unique(W)) == 1){
+  # (an empty group, e.g. an arm absent from a stratum, also takes this branch: all zeros)
+  if(length(unique(W)) <= 1){
     # Greenwood
     sig2w_multiplier <- ifelse(ybar > 0 & ybar > dN, dN / (ybar * (ybar-dN)), 0.0)
     # Alternative with dN / (ybar^2)

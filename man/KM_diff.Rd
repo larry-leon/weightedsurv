@@ -27,7 +27,8 @@ KM_diff(
 
 \item{tte.name}{Character; name of time-to-event variable in \code{df}.}
 
-\item{event.name}{Character; name of event indicator variable in \code{df} (1=event, 0=censored).}
+\item{event.name}{Character; name of event indicator variable in \code{df} (1=event, 0=censored).
+Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads it) are also accepted.}
 
 \item{treat.name}{Character; name of treatment group variable in \code{df} (0=control, 1=treatment).}
 
@@ -85,7 +86,9 @@ The variance is estimated using Greenwood's formula for unweighted data, or
 resampling-based methods when \code{draws > 0}.
 }
 \note{
-Treatment must be coded as 0=control, 1=experimental. Event must be binary (0/1).
+Treatment must be coded as 0=control, 1=experimental, and both arms must have observations.
+Missing values, non-finite or negative times and negative weights are errors (rows are never
+dropped silently); zero weights are allowed and those rows contribute nothing.
 }
 \section{Confidence Intervals vs Bands}{
 

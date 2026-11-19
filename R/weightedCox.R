@@ -283,10 +283,18 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   if (n0 + n1 != n) stop("z must be a (0/1) treatment group indicator")
 
 
+  # An arm without (positive-weight) events: the score equation has no finite root.
+  # The value returned is unchanged; the user is told the estimate is not identified.
+  no_ev <- c(sum(w_hat[z == 0 & delta == 1]) == 0, sum(w_hat[z == 1 & delta == 1]) == 0)
+  if (any(no_ev)) {
+    warning(sprintf("cox_rhogamma(): no events in the %s; the hazard-ratio estimate is not finite / not identified.",
+                    paste(c("control arm (z = 0)", "treatment arm (z = 1)")[no_ev], collapse = " and ")), call. = FALSE)
+  }
+
   # Find root of score function
   get_Cox <- find_cox_root(time, delta, z, w_hat, wt_rg)
 
-  if (is.na(get_Cox$root)) {
+  if (!is.list(get_Cox) || is.na(get_Cox$root)) {
     warning("Root finding failed.")
     return(list(bhat = NA, u.beta = NA, u.zero = NA, status = "fail"))
   }

@@ -54,7 +54,7 @@ plotKM.band_subgroups(
 
 \item{tte.name}{Name of the time-to-event column.}
 
-\item{event.name}{Name of the event indicator column (0/1).}
+\item{event.name}{Name of the event indicator column (0/1; logical and 1/2 coding as in \code{survival::Surv} are also accepted).}
 
 \item{treat.name}{Name of the treatment group column (0/1).}
 
@@ -120,7 +120,8 @@ plotKM.band_subgroups(
 
 \item{ylabel}{Additional graphical and calculation parameters.}
 
-\item{Maxtau}{Additional graphical and calculation parameters.}
+\item{Maxtau}{Upper end of the time range. By default the smaller of the two arms' last event
+times; it must be supplied when an arm has no events.}
 
 \item{seedstart}{Additional graphical and calculation parameters.}
 
