@@ -71,6 +71,9 @@ test_that("df_counting(): quantile_check is survfit at probs = 1 - qprob and con
 test_that("df_counting(): a real quantile discrepancy is a warning whatever verbose is", {
   d <- ws_sim(120, 43)
   local_mocked_bindings(km_quantile = function(...) list(qhat = 999, lower = NA, upper = NA))
-  expect_warning(df_counting(d, "time", "status", "treat", verbose = FALSE), "discrepancy in quantile")
+  ws <- character(0)
+  withCallingHandlers(df_counting(d, "time", "status", "treat", verbose = FALSE),
+                      warning = function(w) { ws <<- c(ws, conditionMessage(w)); invokeRestart("muffleWarning") })
+  expect_equal(sum(grepl("discrepancy in quantile", ws)), 2)
   expect_error(df_counting(d, "time", "status", "treat", stop.onerror = TRUE), "discrepancy in quantile")
 })

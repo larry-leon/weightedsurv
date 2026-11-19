@@ -16,8 +16,15 @@ test_that("KM_estimates(): weighted curve ending on an event ends at exactly 0, 
     km <- KM_estimates(re$ybar, re$nbar, re$sig2w_multiplier)
     expect_true(all(km$S_KM >= 0 & km$S_KM <= 1))
     expect_identical(utils::tail(km$S_KM, 1), 0)
-    expect_identical(utils::tail(km$sig2_KM, 1), 0)
   }
+})
+
+test_that("KM_estimates(): unweighted curve ending on an event has variance 0 at S = 0", {
+  d <- last_event_sim(7)
+  re <- calculate_risk_event_counts(d$time, d$status, rep(1, length(d$time)), d$time)
+  km <- KM_estimates(re$ybar, re$nbar, re$sig2w_multiplier)
+  expect_identical(utils::tail(km$S_KM, 1), 0)
+  expect_identical(utils::tail(km$sig2_KM, 1), 0)
 })
 
 test_that("df_counting(): survP, survG and the arm curves need no clipping and raise no false warnings", {

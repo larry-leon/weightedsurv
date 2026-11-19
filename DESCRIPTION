@@ -1,6 +1,6 @@
 Package: weightedsurv
 Title: Survival Analysis with Subject-Specific (Case Weights) and Time-Dependent Weighting
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Larry", "Leon", , "larry.leon.05@post.harvard.edu", role = c("aut", "cre"))
 Description: Provides survival analysis functions with support for time-dependent 
     and subject-specific (e.g., propensity score) weighting. Implements weighted 
@@ -29,8 +29,9 @@ Suggests:
   dplyr,
   gt,
   knitr,
-  pkgdown,
   pammtools,
-  rmarkdown
+  rmarkdown,
+  testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.0
