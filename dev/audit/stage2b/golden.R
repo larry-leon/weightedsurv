@@ -18,7 +18,8 @@
 #                                                             whitelist is identical and the contract checks pass
 #
 # Identical means: numeric tolerance 1e-12 absolute; NA pattern, names, lengths and strings exact.
-# Fields present only in the new run are allowed (elements may be added) and are listed.
+# Fields present only in the new run are allowed (elements may be added) and are listed; a list's
+# @names may grow when its old names are an unchanged prefix of the new ones.
 # M contract check: every sig2_surv0 / sig2_surv1 / sig2_survP that moved equals
 #   S(t)^2 * sum_{s <= t} [sum_i w_i^2 dN_i(s)] / [Y_w(s) (Y_w(s) - dN_w(s))]
 # computed here independently (term 0 where Y_w - dN_w <= 1e-10 Y_w or Y_w = 0), 1e-9 relative.
@@ -223,7 +224,7 @@ if (mode == "compare") {
   s <- snapshot(); new <- s$values
   if (length(s$errors)) { cat("ERRORS:\n", paste(s$errors, collapse = "\n"), "\n"); quit(status = 1) }
   in_wl <- function(p) length(wl) > 0 && any(vapply(wl, grepl, logical(1), x = p))
-  diffs <- character(0); moved_wl <- character(0); moved_paths <- character(0); contract_fail <- character(0)
+  diffs <- character(0); moved_wl <- character(0); moved_paths <- character(0); contract_fail <- character(0); names_grown <- character(0)
   for (p in names(gold)) {
     if (!p %in% names(new)) {
       msg <- sprintf("REMOVED %s", p)
@@ -232,6 +233,12 @@ if (mode == "compare") {
     }
     r <- same(gold[[p]], new[[p]])
     if (is.null(r)) next
+    # a list that gains elements: its old names are an unchanged prefix of the new names (allowed)
+    if (grepl("@names$", p) && is.character(gold[[p]]) && length(new[[p]]) > length(gold[[p]]) &&
+        identical(new[[p]][seq_along(gold[[p]])], gold[[p]])) {
+      names_grown <- c(names_grown, sprintf("%s: + %s", p, paste(new[[p]][-seq_along(gold[[p]])], collapse = ", ")))
+      next
+    }
     if (in_wl(p)) { moved_wl <- c(moved_wl, sprintf("%s: %s", p, r)); moved_paths <- c(moved_paths, p) }
     else diffs <- c(diffs, sprintf("%s: %s", p, r))
   }
@@ -262,6 +269,7 @@ if (mode == "compare") {
   }
   cat(sprintf("golden compare, whitelist '%s': %d fields in golden, %d in new run, %d added\n", w, length(gold), length(new), length(added)))
   if (length(added)) cat("ADDED (allowed):\n", paste0("  ", added, collapse = "\n"), "\n", sep = "")
+  if (length(names_grown)) cat(sprintf("LISTS THAT GAINED ELEMENTS (allowed, %d):\n", length(names_grown)), paste0("  ", names_grown, collapse = "\n"), "\n", sep = "")
   if (length(moved_wl)) cat(sprintf("WHITELISTED fields that moved (%d):\n", length(moved_wl)), paste0("  ", moved_wl, collapse = "\n"), "\n", sep = "")
   if (m_checked) cat(sprintf("M formula check: %d moved sig2_surv* fields checked against the weighted Greenwood formula\n", m_checked))
   if (length(new_warn)) cat(sprintf("NEW WARNINGS (%d):\n", length(new_warn)), paste0("  ", new_warn, collapse = "\n"), "\n", sep = "")

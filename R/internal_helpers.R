@@ -152,3 +152,15 @@ km_step_vertices <- function(at_points, S, idv, se = NULL, conf_level = 0.95, ti
   }
   out
 }
+
+# Cumulative integral of a curve d over a time grid with increments dt = diff(at_points), as
+# used by cumulative_rmst_bands() for the estimate and for every resampled curve (B8).
+# "trapezoid": R(t_j) = sum_{k <= j} (d(t_{k-1}) + d(t_k)) / 2 * (t_k - t_{k-1});
+# "rectangle": R(t_j) = sum_{k <= j} d(t_{k-1}) * (t_k - t_{k-1}) (left rectangles: the exact area
+# under the right-continuous step function d). R = 0 at the first grid point.
+#' @noRd
+ws_cumulative_mean <- function(d, dt, rule = c("trapezoid", "rectangle")) {
+  rule <- match.arg(rule)
+  h <- if (rule == "trapezoid") (utils::head(d, -1) + utils::tail(d, -1)) / 2 else utils::head(d, -1)
+  c(0, cumsum(h * dt))
+}

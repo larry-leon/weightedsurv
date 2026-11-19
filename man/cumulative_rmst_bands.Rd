@@ -16,7 +16,8 @@ cumulative_rmst_bands(
   ylim_pad = 0.5,
   rmst_max_legend = "left",
   rmst_max_cex = 0.7,
-  plot = TRUE
+  plot = TRUE,
+  mean_rule = c("trapezoid", "rectangle")
 )
 }
 \arguments{
@@ -43,6 +44,17 @@ cumulative_rmst_bands(
 \item{rmst_max_cex}{Text size for RMST legend (default: 0.7).}
 
 \item{plot}{Logical; if TRUE, plot the results. Default is TRUE.}
+
+\item{mean_rule}{Character; how the survival difference is integrated over the time grid of
+\code{fit} (\code{fit$at_points}). \code{"trapezoid"} (default) averages the difference at
+consecutive grid points: \eqn{R(t_j) = \sum_{k \le j} \{d(t_{k-1}) + d(t_k)\}/2 \, (t_k - t_{k-1})}.
+\code{"rectangle"} is the left-rectangle sum
+\eqn{R(t_j) = \sum_{k \le j} d(t_{k-1}) (t_k - t_{k-1})}, the exact area under the step
+function. In both, \eqn{R = 0} at the first grid point. \code{"rectangle"} equals the
+difference of \code{survfit()}'s restricted means (\code{summary(fit, rmean = tau)}) when the
+time grid holds every event time, which it does for the default \code{KM_diff()} grid; it does
+not when the fit was made with \code{modify_tau = TRUE}. The rule applies to the estimate and
+to both sets of resampled curves; nothing else changes.}
 }
 \value{
 A list with elements:
@@ -56,6 +68,7 @@ A list with elements:
 \item{c_alpha_band}{Critical value for simultaneous band}
 \item{rmst_time_sb_lower}{Simultaneous band lower bound}
 \item{rmst_time_sb_upper}{Simultaneous band upper bound}
+\item{mean_rule}{The integration rule used}
 }
 \description{
 Calculates cumulative Restricted Mean Survival Time (RMST) and confidence bands for survival curves using resampling.

@@ -15,6 +15,16 @@
 #' @param rmst_max_legend Position for RMST legend (default: "left").
 #' @param rmst_max_cex Text size for RMST legend (default: 0.7).
 #' @param plot Logical; if TRUE, plot the results. Default is TRUE.
+#' @param mean_rule Character; how the survival difference is integrated over the time grid of
+#'   \code{fit} (\code{fit$at_points}). \code{"trapezoid"} (default) averages the difference at
+#'   consecutive grid points: \eqn{R(t_j) = \sum_{k \le j} \{d(t_{k-1}) + d(t_k)\}/2 \, (t_k - t_{k-1})}.
+#'   \code{"rectangle"} is the left-rectangle sum
+#'   \eqn{R(t_j) = \sum_{k \le j} d(t_{k-1}) (t_k - t_{k-1})}, the exact area under the step
+#'   function. In both, \eqn{R = 0} at the first grid point. \code{"rectangle"} equals the
+#'   difference of \code{survfit()}'s restricted means (\code{summary(fit, rmean = tau)}) when the
+#'   time grid holds every event time, which it does for the default \code{KM_diff()} grid; it does
+#'   not when the fit was made with \code{modify_tau = TRUE}. The rule applies to the estimate and
+#'   to both sets of resampled curves; nothing else changes.
 #'
 #' @return A list with elements:
 #'   \item{at_points}{Time points used for RMST calculation}
@@ -27,6 +37,7 @@
 #'   \item{c_alpha_band}{Critical value for simultaneous band}
 #'   \item{rmst_time_sb_lower}{Simultaneous band lower bound}
 #'   \item{rmst_time_sb_upper}{Simultaneous band upper bound}
+#'   \item{mean_rule}{The integration rule used}
 #'
 #' @importFrom stats quantile rnorm
 #' @importFrom utils head tail
@@ -34,7 +45,9 @@
 #' @export
 
 cumulative_rmst_bands <- function(df, fit, tte.name, event.name, treat.name, weight.name = NULL, draws_sb = 1000, xlab="months", ylim_pad = 0.5,
-                                  rmst_max_legend = "left", rmst_max_cex = 0.7, plot = TRUE) {
+                                  rmst_max_legend = "left", rmst_max_cex = 0.7, plot = TRUE,
+                                  mean_rule = c("trapezoid", "rectangle")) {
+  mean_rule <- match.arg(mean_rule)
   # Input validation
   if (!is.data.frame(df)) stop("df must be a data frame.")
   required_names <- c(tte.name, event.name, treat.name, weight.name)
@@ -54,17 +67,13 @@ risk.points <- fit$risk.points
 ans$at_points <- at_points
 
 dt <- diff(at_points)
-mid_dhat <- (head(dhat, -1) + tail(dhat, -1)) / 2
 
-rmst_time <- c(0, cumsum(mid_dhat * dt))
+rmst_time <- ws_cumulative_mean(dhat, dt, mean_rule)
 
 ans$rmst_time <- rmst_time
 
 # For multiple draws (matrix: rows=time, cols=draws)
-cum_rmst_stars <- apply(dhat_star_mat, 2, function(dhat_star) {
-  mid_dhat <- (head(dhat_star, -1) + tail(dhat_star, -1)) / 2
-  c(0, cumsum(mid_dhat * dt))
-})
+cum_rmst_stars <- apply(dhat_star_mat, 2, ws_cumulative_mean, dt = dt, rule = mean_rule)
 sig2_rmst_time <- apply(cum_rmst_stars, 1, var, na.rm=TRUE)
 
 ans$sig2_rmst_time <- sig2_rmst_time
@@ -100,10 +109,7 @@ fit_draws <- KM_diff(
 
 dhat_star_mat2 <- fit_draws$dhat_star
 
-cum_rmst_stars2 <- apply(dhat_star_mat2, 2, function(dhat_star) {
-  mid_dhat <- (head(dhat_star, -1) + tail(dhat_star, -1)) / 2
-  c(0, cumsum(mid_dhat * dt))
-})
+cum_rmst_stars2 <- apply(dhat_star_mat2, 2, ws_cumulative_mean, dt = dt, rule = mean_rule)
 
 # Standardized resamples
 rmst_time_star <- cum_rmst_stars2 / sqrt(sig2_rmst_time)
@@ -120,6 +126,7 @@ rmst_time_sb_upper <- rmst_time + c_alpha_band * sqrt(sig2_rmst_time)
 
 ans$rmst_time_sb_lower <- rmst_time_sb_lower
 ans$rmst_time_sb_upper <- rmst_time_sb_upper
+ans$mean_rule <- mean_rule
 
 if(plot){
 x <- at_points
