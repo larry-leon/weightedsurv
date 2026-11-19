@@ -139,7 +139,7 @@ Input checks: missing values (in any named column, including \code{strata.name})
 negative times, negative weights and an empty arm are errors; rows are never dropped silently.
 Zero weights are allowed: those rows contribute nothing, and the Cox model and log-rank test are
 fitted on the positive-weight rows. A stratum in which one arm is empty contributes nothing to the
-stratified statistics. On degenerate data (an arm without events, no events at all, one subject
+stratified statistics (that arm's stratum curve is \code{NA}). On degenerate data (an arm without events, no events at all, one subject
 per arm) a result is still returned; quantities that cannot be computed are \code{NA}, with one
 warning that says why.
 For stratified analyses, stratum-specific estimates are computed and combined appropriately.

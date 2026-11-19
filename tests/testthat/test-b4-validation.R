@@ -102,7 +102,9 @@ test_that("an empty arm is an error naming the arm (and the subgroup in plotKM.b
 test_that("stratified df_counting(): a stratum with one arm empty contributes nothing", {
   d <- ws_sim(150, 10); d$s <- rep(c("a", "b", "c"), 50)
   d$s[d$treat == 1 & d$s == "c"] <- "b"          # stratum c has no treated patient
-  r <- suppressWarnings(dfc(d, strata.name = "s"))
+  expect_warning(r <- dfc(d, strata.name = "s"), "stratum 'c' has no treatment-arm")
+  expect_true(all(is.na(r$surv1_stratum[r$strata == "c"])))
+  expect_false(anyNA(r$surv0_stratum))
   r2 <- suppressWarnings(dfc(d[d$s != "c", ], strata.name = "s"))
   expect_equal(r$lr_stratified, r2$lr_stratified, tolerance = 1e-10)
   expect_equal(r$sig2_lr_stratified, r2$sig2_lr_stratified, tolerance = 1e-10)

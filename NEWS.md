@@ -15,7 +15,8 @@
   On degenerate data (an arm without events, no events at all, one subject per arm)
   `df_counting()` now returns a result; quantities that cannot be computed (for example the hazard
   ratio when an arm has no events) are `NA`, with one warning that says why. In a stratified
-  analysis a stratum in which one arm is empty contributes nothing instead of stopping the call.
+  analysis a stratum in which one arm is empty contributes nothing (that arm's stratum curve is
+  `NA`, with the same single warning) instead of stopping the call.
   `plotKM.band_subgroups()` asks for `Maxtau` when an arm has no events. `cox_rhogamma()` warns
   when an arm has no events (the estimate is not finite). (B4)
 
