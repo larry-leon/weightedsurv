@@ -86,7 +86,7 @@ plot_km_curves_counting(
 
 \item{censor.cex}{Numeric; censoring mark size (default 1.0).}
 
-\item{time.zero}{Numeric; time zero value for risk table alignment (default 0).}
+\item{time.zero}{Numeric; time at which the curves start at S = 1 (default 0).}
 
 \item{tpoints.add}{Numeric vector; additional time points to include (default c(0)).}
 
@@ -97,4 +97,7 @@ Invisibly returns NULL. Used for plotting side effects.
 }
 \description{
 Plots Kaplan-Meier survival curves for two groups, with options for confidence intervals and censoring marks.
+Each curve is drawn as the right-continuous step function from \code{time.zero} (where S = 1) to the
+group's last observed time; the confidence band (log transform, upper limit capped at 1, closing onto
+the curve where S = 0) is a step band over the same range.
 }

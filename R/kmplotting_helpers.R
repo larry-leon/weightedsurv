@@ -32,6 +32,9 @@ plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
 #' Plot KM curves for two groups with optional confidence intervals and censoring marks
 #'
 #' Plots Kaplan-Meier survival curves for two groups, with options for confidence intervals and censoring marks.
+#' Each curve is drawn as the right-continuous step function from \code{time.zero} (where S = 1) to the
+#' group's last observed time; the confidence band (log transform, upper limit capped at 1, closing onto
+#' the curve where S = 0) is a step band over the same range.
 #'
 #' @param at_points Numeric vector of time points for plotting.
 #' @param S0.KM Numeric vector of survival probabilities for group 0.
@@ -58,7 +61,7 @@ plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
 #' @param conf.int Logical; show confidence intervals (default FALSE).
 #' @param conf_level Confidence level (default 0.95).
 #' @param censor.cex Numeric; censoring mark size (default 1.0).
-#' @param time.zero Numeric; time zero value for risk table alignment (default 0).
+#' @param time.zero Numeric; time at which the curves start at S = 1 (default 0).
 #' @param tpoints.add Numeric vector; additional time points to include (default c(0)).
 #' @param ... Additional arguments to plot.
 #'
@@ -85,13 +88,18 @@ plot_km_curves_counting <- function(
   axis(2, las = 2)
   axis(1, at = risk.points, labels = risk.points.label)
 
+  # Step-function vertices from time.zero (S = 1) to each group's last observed time,
+  # and the step confidence band (one internal helper: km_step_vertices())
+  v0 <- km_step_vertices(at_points, S0.KM, idv0, se = se0.KM, conf_level = conf_level, time.zero = time.zero)
+  v1 <- km_step_vertices(at_points, S1.KM, idv1, se = se1.KM, conf_level = conf_level, time.zero = time.zero)
+
   if (conf.int && !is.null(se0.KM) && !is.null(se1.KM)) {
-    plot_km_confint_polygon(at_points[idv0], S0.KM[idv0], se0.KM[idv0], conf_level, "lightgrey")
-    plot_km_confint_polygon(at_points[idv1], S1.KM[idv1], se1.KM[idv1], conf_level, "lightblue")
+    polygon(v0$band_x, v0$band_y, col = "lightgrey", border = FALSE)
+    polygon(v1$band_x, v1$band_y, col = "lightblue", border = FALSE)
   }
 
-  lines(at_points[idv1], S1.KM[idv1], type = "s", lty = ltys[1], col = col.1, lwd = lwds[1])
-  lines(at_points[idv0], S0.KM[idv0], type = "s", lty = ltys[2], col = col.0, lwd = lwds[2])
+  lines(v1$x, v1$y, type = "s", lty = ltys[1], col = col.1, lwd = lwds[1])
+  lines(v0$x, v0$y, type = "s", lty = ltys[2], col = col.0, lwd = lwds[2])
 
   if (show.ticks && !is.null(cens0)) {
     points(cens0, S0.KM[idx0], pch = 3, col = col.0, cex = censor.cex)
@@ -278,7 +286,7 @@ add_legends <- function(dfcount, show.cox, cox.cex, put.legend.cox, show.logrank
 #' @param xmin Additional graphical and calculation parameters.
 #' @param xmax Additional graphical and calculation parameters.
 #' @param x.truncate Additional graphical and calculation parameters.
-#' @param time.zero Numeric; time zero value for risk table alignment (default: 0).
+#' @param time.zero Numeric; time at which the curves start at S = 1 (default: 0).
 #' @param tpoints.add Numeric vector; additional time points to include (default: c(0)).
 #' @return Invisibly returns NULL. Used for plotting side effects.
 #' @importFrom graphics plot lines legend title axis box abline par points
@@ -340,7 +348,8 @@ KM_plot_2sample_weighted_counting <- function(
     risk.points = risk.points, risk.points.label = risk.points.label,
     xlim = c(xmin, ifelse(is.null(xmax), max(c(at_points)), xmax)),
     show.ticks = show.ticks, cens0 = cens0, cens1 = cens1,
-    censor.cex = censor.cex, conf.int = conf.int, conf_level = conf_level, se1.KM = se1.KM, se0.KM = se0.KM
+    censor.cex = censor.cex, conf.int = conf.int, conf_level = conf_level, se1.KM = se1.KM, se0.KM = se0.KM,
+    time.zero = time.zero
   )
 
   if (risk.set) {

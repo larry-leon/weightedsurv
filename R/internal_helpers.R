@@ -119,3 +119,36 @@ ws_km_quantile_time <- function(time_points, survival_probs, qprob, tol = sqrt(.
   if (!is.na(f[k]) && abs(p - f[k]) < tol) q <- (x[i_reach] + x_last) / 2
   if (is.na(q)) NA else q
 }
+
+# Vertices of a Kaplan-Meier curve as plot_km_curves_counting() draws it (B10).
+# The curve is the right-continuous step function from time.zero (S = 1) through the group's
+# event times to its last observed time: at_points[idv] are the event times followed by the
+# last observed time (df_counting()'s idv0 / idv1). x and y are drawn with type = "s".
+# When se is given, lower / upper are the log-transform pointwise limits at the same vertices:
+# 1 before the first event, upper capped at 1, and equal to the curve (0) where S = 0; they are
+# step functions too. band_x / band_y trace the staircase polygon of the band.
+#' @noRd
+km_step_vertices <- function(at_points, S, idv, se = NULL, conf_level = 0.95, time.zero = 0) {
+  x <- c(time.zero, at_points[idv])
+  y <- c(1, S[idv])
+  out <- list(x = x, y = y, lower = NULL, upper = NULL, band_x = NULL, band_y = NULL)
+  if (!is.null(se)) {
+    z <- stats::qnorm(1 - (1 - conf_level) / 2)
+    s <- S[idv]; e <- se[idv]
+    lo <- up <- s
+    ok <- !is.na(s) & s > 0
+    lo[ok] <- exp(log(s[ok]) - z * e[ok] / s[ok])
+    up[ok] <- pmin(exp(log(s[ok]) + z * e[ok] / s[ok]), 1)
+    out$lower <- c(1, lo)
+    out$upper <- c(1, up)
+    stair <- function(xx, v) {
+      k <- length(xx)
+      list(x = c(xx[1], rep(xx[-1], each = 2)), y = c(rep(v[-k], each = 2), v[k]))
+    }
+    su <- stair(x, out$upper)
+    sl <- stair(x, out$lower)
+    out$band_x <- c(su$x, rev(sl$x))
+    out$band_y <- c(su$y, rev(sl$y))
+  }
+  out
+}

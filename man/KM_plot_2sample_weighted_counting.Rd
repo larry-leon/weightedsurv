@@ -175,7 +175,7 @@ KM_plot_2sample_weighted_counting(
 
 \item{x.truncate}{Additional graphical and calculation parameters.}
 
-\item{time.zero}{Numeric; time zero value for risk table alignment (default: 0).}
+\item{time.zero}{Numeric; time at which the curves start at S = 1 (default: 0).}
 
 \item{prob.points}{Numeric vector; probability points for additional annotations (default: NULL).}
 }
