@@ -1,0 +1,233 @@
+OK 1a
+OK 1b
+OK 2a
+OK 2b
+API compare: 46 exports before, 46 now
+DIFFERENCES from api_s2.rds:
+  cumulative_rmst_bands: appended mean_rule = c("trapezoid", "rectangle")
+  KM_diff: default of 'show_resamples' changed: TRUE -> FALSE
+API: only the two allowed changes
+OK 2c
+final whitelist = union over: T0, B9, B11, B8, M
+golden compare, whitelist 'final': 6553 fields in golden, 6569 in new run, 16 added
+ADDED (allowed):
+  veteran/rmst_band/mean_rule
+  veteran/rmst_band_wv/mean_rule
+  gbsg/rmst_band/mean_rule
+  gbsg/rmst_band_wv/mean_rule
+  gbsg_er_le0/rmst_band/mean_rule
+  gbsg_er_le0/rmst_band_wv/mean_rule
+  gbsg_er_gt0/rmst_band/mean_rule
+  gbsg_er_gt0/rmst_band_wv/mean_rule
+  sim_cont/rmst_band/mean_rule
+  sim_cont/rmst_band_wv/mean_rule
+  sim_ties/rmst_band/mean_rule
+  sim_ties/rmst_band_wv/mean_rule
+  sim_weighted/rmst_band/mean_rule
+  sim_weighted/rmst_band_wv/mean_rule
+  sim_strata/rmst_band/mean_rule
+  sim_strata/rmst_band_wv/mean_rule
+LISTS THAT GAINED ELEMENTS (allowed, 16):
+  veteran/rmst_band@names: + mean_rule
+  veteran/rmst_band_wv@names: + mean_rule
+  gbsg/rmst_band@names: + mean_rule
+  gbsg/rmst_band_wv@names: + mean_rule
+  gbsg_er_le0/rmst_band@names: + mean_rule
+  gbsg_er_le0/rmst_band_wv@names: + mean_rule
+  gbsg_er_gt0/rmst_band@names: + mean_rule
+  gbsg_er_gt0/rmst_band_wv@names: + mean_rule
+  sim_cont/rmst_band@names: + mean_rule
+  sim_cont/rmst_band_wv@names: + mean_rule
+  sim_ties/rmst_band@names: + mean_rule
+  sim_ties/rmst_band_wv@names: + mean_rule
+  sim_weighted/rmst_band@names: + mean_rule
+  sim_weighted/rmst_band_wv@names: + mean_rule
+  sim_strata/rmst_band@names: + mean_rule
+  sim_strata/rmst_band_wv@names: + mean_rule
+WHITELISTED fields that moved (165):
+  veteran/df_counting_weighted/quantile_results/upper: max abs diff 7
+  veteran/df_counting_weighted/sig2_surv0: max abs diff 0.000878
+  veteran/df_counting_weighted/sig2_surv1: max abs diff 0.00122
+  veteran/df_counting_weighted/sig2_survP: max abs diff 0.00151
+  veteran/df_counting_wv/quantile_results/upper: max abs diff 7
+  veteran/df_counting_wv/sig2_surv0: max abs diff 0.000878
+  veteran/df_counting_wv/sig2_surv1: max abs diff 0.00122
+  veteran/df_counting_wv/sig2_survP: max abs diff 0.00151
+  veteran/KM_diff_wv/sig2_surv0: max abs diff 0.000878
+  veteran/KM_diff_wv/sig2_surv1: max abs diff 0.00122
+  veteran/KM_diff_wv/sig2_dhat: max abs diff 0.00169
+  veteran/KM_diff_wv/lower: max abs diff 0.0188
+  veteran/KM_diff_wv/upper: max abs diff 0.0188
+  veteran/KM_diff_wv_band/sig2_surv0: max abs diff 0.000878
+  veteran/KM_diff_wv_band/sig2_surv1: max abs diff 0.00122
+  veteran/KM_diff_wv_band/sig2_dhat: max abs diff 0.00169
+  veteran/KM_diff_wv_band/lower: max abs diff 0.0188
+  veteran/KM_diff_wv_band/upper: max abs diff 0.0188
+  veteran/KM_diff_wv_band/Zdhat_star: max abs diff 0.925
+  veteran/KM_diff_wv_band/c_alpha_band: max abs diff 0.0504
+  veteran/KM_diff_wv_band/sb_lower: max abs diff 0.0273
+  veteran/KM_diff_wv_band/sb_upper: max abs diff 0.0273
+  gbsg/df_counting_weighted/quantile_results/lower: max abs diff 0.0329
+  gbsg/df_counting_weighted/quantile_results/upper: max abs diff 5.78
+  gbsg/df_counting_weighted/sig2_surv0: max abs diff 0.00544
+  gbsg/df_counting_weighted/sig2_surv1: max abs diff 0.00035
+  gbsg/df_counting_weighted/sig2_survP: max abs diff 0.000703
+  gbsg/df_counting_wv/quantile_results/lower: max abs diff 0.0329
+  gbsg/df_counting_wv/quantile_results/upper: max abs diff 5.78
+  gbsg/df_counting_wv/sig2_surv0: max abs diff 0.00544
+  gbsg/df_counting_wv/sig2_surv1: max abs diff 0.00035
+  gbsg/df_counting_wv/sig2_survP: max abs diff 0.000703
+  gbsg/KM_diff_wv/sig2_surv0: max abs diff 0.00544
+  gbsg/KM_diff_wv/sig2_surv1: max abs diff 0.00035
+  gbsg/KM_diff_wv/sig2_dhat: max abs diff 0.00579
+  gbsg/KM_diff_wv/lower: max abs diff 0.0532
+  gbsg/KM_diff_wv/upper: max abs diff 0.0532
+  gbsg/KM_diff_wv_band/sig2_surv0: max abs diff 0.00544
+  gbsg/KM_diff_wv_band/sig2_surv1: max abs diff 0.00035
+  gbsg/KM_diff_wv_band/sig2_dhat: max abs diff 0.00579
+  gbsg/KM_diff_wv_band/lower: max abs diff 0.0532
+  gbsg/KM_diff_wv_band/upper: max abs diff 0.0532
+  gbsg/KM_diff_wv_band/Zdhat_star: max abs diff 0.804
+  gbsg/KM_diff_wv_band/c_alpha_band: max abs diff 0.0266
+  gbsg/KM_diff_wv_band/sb_lower: max abs diff 0.0818
+  gbsg/KM_diff_wv_band/sb_upper: max abs diff 0.0818
+  gbsg_er_le0/df_counting_weighted/sig2_surv0: max abs diff 0.00109
+  gbsg_er_le0/df_counting_weighted/sig2_surv1: max abs diff 0.00319
+  gbsg_er_le0/df_counting_weighted/sig2_survP: max abs diff 0.000493
+  gbsg_er_le0/df_counting_wv/sig2_surv0: max abs diff 0.00109
+  gbsg_er_le0/df_counting_wv/sig2_surv1: max abs diff 0.00319
+  gbsg_er_le0/df_counting_wv/sig2_survP: max abs diff 0.000493
+  gbsg_er_le0/KM_diff_wv/sig2_surv0: max abs diff 0.00109
+  gbsg_er_le0/KM_diff_wv/sig2_surv1: max abs diff 0.00319
+  gbsg_er_le0/KM_diff_wv/sig2_dhat: max abs diff 0.00428
+  gbsg_er_le0/KM_diff_wv/lower: max abs diff 0.0315
+  gbsg_er_le0/KM_diff_wv/upper: max abs diff 0.0315
+  gbsg_er_le0/KM_diff_wv_band/sig2_surv0: max abs diff 0.00109
+  gbsg_er_le0/KM_diff_wv_band/sig2_surv1: max abs diff 0.00319
+  gbsg_er_le0/KM_diff_wv_band/sig2_dhat: max abs diff 0.00428
+  gbsg_er_le0/KM_diff_wv_band/lower: max abs diff 0.0315
+  gbsg_er_le0/KM_diff_wv_band/upper: max abs diff 0.0315
+  gbsg_er_le0/KM_diff_wv_band/Zdhat_star: max abs diff 0.368
+  gbsg_er_le0/KM_diff_wv_band/c_alpha_band: max abs diff 0.151
+  gbsg_er_le0/KM_diff_wv_band/sb_lower: max abs diff 0.0221
+  gbsg_er_le0/KM_diff_wv_band/sb_upper: max abs diff 0.0221
+  gbsg_er_gt0/df_counting_weighted/quantile_results/lower: max abs diff 0.0657
+  gbsg_er_gt0/df_counting_weighted/sig2_surv0: max abs diff 0.0149
+  gbsg_er_gt0/df_counting_weighted/sig2_surv1: max abs diff 0.0002
+  gbsg_er_gt0/df_counting_weighted/sig2_survP: max abs diff 0.001
+  gbsg_er_gt0/df_counting_wv/quantile_results/lower: max abs diff 0.0657
+  gbsg_er_gt0/df_counting_wv/sig2_surv0: max abs diff 0.0149
+  gbsg_er_gt0/df_counting_wv/sig2_surv1: max abs diff 0.0002
+  gbsg_er_gt0/df_counting_wv/sig2_survP: max abs diff 0.001
+  gbsg_er_gt0/KM_diff_wv/sig2_surv0: max abs diff 0.0149
+  gbsg_er_gt0/KM_diff_wv/sig2_surv1: max abs diff 0.0002
+  gbsg_er_gt0/KM_diff_wv/sig2_dhat: max abs diff 0.0151
+  gbsg_er_gt0/KM_diff_wv/lower: max abs diff 0.116
+  gbsg_er_gt0/KM_diff_wv/upper: max abs diff 0.116
+  gbsg_er_gt0/KM_diff_wv_band/sig2_surv0: max abs diff 0.0149
+  gbsg_er_gt0/KM_diff_wv_band/sig2_surv1: max abs diff 0.0002
+  gbsg_er_gt0/KM_diff_wv_band/sig2_dhat: max abs diff 0.0151
+  gbsg_er_gt0/KM_diff_wv_band/lower: max abs diff 0.116
+  gbsg_er_gt0/KM_diff_wv_band/upper: max abs diff 0.116
+  gbsg_er_gt0/KM_diff_wv_band/Zdhat_star: max abs diff 1.29
+  gbsg_er_gt0/KM_diff_wv_band/c_alpha_band: max abs diff 0.0158
+  gbsg_er_gt0/KM_diff_wv_band/sb_lower: max abs diff 0.182
+  gbsg_er_gt0/KM_diff_wv_band/sb_upper: max abs diff 0.182
+  sim_cont/df_counting_wv/quantile_results/upper: max abs diff 2.96
+  sim_cont/df_counting_wv/sig2_surv0: max abs diff 0.000894
+  sim_cont/df_counting_wv/sig2_surv1: max abs diff 0.00276
+  sim_cont/df_counting_wv/sig2_survP: max abs diff 0.000472
+  sim_cont/KM_diff_wv/sig2_surv0: max abs diff 0.000894
+  sim_cont/KM_diff_wv/sig2_surv1: max abs diff 0.00276
+  sim_cont/KM_diff_wv/sig2_dhat: max abs diff 0.00348
+  sim_cont/KM_diff_wv/lower: max abs diff 0.04
+  sim_cont/KM_diff_wv/upper: max abs diff 0.04
+  sim_cont/KM_diff_wv_band/sig2_surv0: max abs diff 0.000894
+  sim_cont/KM_diff_wv_band/sig2_surv1: max abs diff 0.00276
+  sim_cont/KM_diff_wv_band/sig2_dhat: max abs diff 0.00348
+  sim_cont/KM_diff_wv_band/lower: max abs diff 0.04
+  sim_cont/KM_diff_wv_band/upper: max abs diff 0.04
+  sim_cont/KM_diff_wv_band/Zdhat_star: max abs diff 0.6
+  sim_cont/KM_diff_wv_band/c_alpha_band: max abs diff 0.163
+  sim_cont/KM_diff_wv_band/sb_lower: max abs diff 0.0463
+  sim_cont/KM_diff_wv_band/sb_upper: max abs diff 0.0463
+  sim_ties/df_counting_wv/quantile_results/lower: max abs diff 2
+  sim_ties/df_counting_wv/quantile_results/upper: max abs diff 1.5
+  sim_ties/df_counting_wv/sig2_surv0: max abs diff 0.00866
+  sim_ties/df_counting_wv/sig2_surv1: max abs diff 0.00503
+  sim_ties/df_counting_wv/sig2_survP: max abs diff 0.00644
+  sim_ties/KM_diff_wv/sig2_surv0: max abs diff 0.00866
+  sim_ties/KM_diff_wv/sig2_surv1: max abs diff 0.00503
+  sim_ties/KM_diff_wv/sig2_dhat: max abs diff 0.0135
+  sim_ties/KM_diff_wv/lower: max abs diff 0.114
+  sim_ties/KM_diff_wv/upper: max abs diff 0.114
+  sim_ties/KM_diff_wv_band/sig2_surv0: max abs diff 0.00866
+  sim_ties/KM_diff_wv_band/sig2_surv1: max abs diff 0.00503
+  sim_ties/KM_diff_wv_band/sig2_dhat: max abs diff 0.0135
+  sim_ties/KM_diff_wv_band/lower: max abs diff 0.114
+  sim_ties/KM_diff_wv_band/upper: max abs diff 0.114
+  sim_ties/KM_diff_wv_band/Zdhat_star: max abs diff 1.58
+  sim_ties/KM_diff_wv_band/c_alpha_band: max abs diff 0.511
+  sim_ties/KM_diff_wv_band/sb_lower: max abs diff 0.083
+  sim_ties/KM_diff_wv_band/sb_upper: max abs diff 0.083
+  sim_weighted/df_counting_weighted/quantile_results/upper: max abs diff 0.0139
+  sim_weighted/df_counting_weighted/sig2_surv0: max abs diff 0.000387
+  sim_weighted/df_counting_weighted/sig2_surv1: max abs diff 0.000756
+  sim_weighted/df_counting_weighted/sig2_survP: max abs diff 0.000153
+  sim_weighted/df_counting_wv/quantile_results/upper: max abs diff 0.0139
+  sim_weighted/df_counting_wv/sig2_surv0: max abs diff 0.000387
+  sim_weighted/df_counting_wv/sig2_surv1: max abs diff 0.000756
+  sim_weighted/df_counting_wv/sig2_survP: max abs diff 0.000153
+  sim_weighted/KM_diff_wv/sig2_surv0: max abs diff 0.000387
+  sim_weighted/KM_diff_wv/sig2_surv1: max abs diff 0.000756
+  sim_weighted/KM_diff_wv/sig2_dhat: max abs diff 0.00114
+  sim_weighted/KM_diff_wv/lower: max abs diff 0.0165
+  sim_weighted/KM_diff_wv/upper: max abs diff 0.0165
+  sim_weighted/KM_diff_wv_band/sig2_surv0: max abs diff 0.000387
+  sim_weighted/KM_diff_wv_band/sig2_surv1: max abs diff 0.000756
+  sim_weighted/KM_diff_wv_band/sig2_dhat: max abs diff 0.00114
+  sim_weighted/KM_diff_wv_band/lower: max abs diff 0.0165
+  sim_weighted/KM_diff_wv_band/upper: max abs diff 0.0165
+  sim_weighted/KM_diff_wv_band/Zdhat_star: max abs diff 0.366
+  sim_weighted/KM_diff_wv_band/c_alpha_band: max abs diff 0.09
+  sim_weighted/KM_diff_wv_band/sb_lower: max abs diff 0.0199
+  sim_weighted/KM_diff_wv_band/sb_upper: max abs diff 0.0199
+  sim_strata/df_counting_wv/quantile_results/lower: max abs diff 0.0558
+  sim_strata/df_counting_wv/sig2_surv0: max abs diff 0.000647
+  sim_strata/df_counting_wv/sig2_surv1: max abs diff 0.00419
+  sim_strata/df_counting_wv/sig2_survP: max abs diff 0.000413
+  sim_strata/KM_diff_wv/sig2_surv0: max abs diff 0.000647
+  sim_strata/KM_diff_wv/sig2_surv1: max abs diff 0.00419
+  sim_strata/KM_diff_wv/sig2_dhat: max abs diff 0.00483
+  sim_strata/KM_diff_wv/lower: max abs diff 0.0609
+  sim_strata/KM_diff_wv/upper: max abs diff 0.0609
+  sim_strata/KM_diff_wv_band/sig2_surv0: max abs diff 0.000647
+  sim_strata/KM_diff_wv_band/sig2_surv1: max abs diff 0.00419
+  sim_strata/KM_diff_wv_band/sig2_dhat: max abs diff 0.00483
+  sim_strata/KM_diff_wv_band/lower: max abs diff 0.0609
+  sim_strata/KM_diff_wv_band/upper: max abs diff 0.0609
+  sim_strata/KM_diff_wv_band/Zdhat_star: max abs diff 1.34
+  sim_strata/KM_diff_wv_band/c_alpha_band: max abs diff 0.161
+  sim_strata/KM_diff_wv_band/sb_lower: max abs diff 0.0829
+  sim_strata/KM_diff_wv_band/sb_upper: max abs diff 0.0829
+M formula check: 71 moved sig2_surv* fields checked against the weighted Greenwood formula
+Warnings: no call raises a warning it did not raise in golden_s2.rds
+GOLDEN: identical outside the whitelist
+OK 3
+OK 4
+OK 5a
+OK 5b
+OK 6a
+OK 6b
+OK 6c
+OK 7
+OK 8 (if no FAIL above)
+b5b8f67 stage2b: verification artifacts (pressure test, M1c, plot sheets after2, R CMD check, forestsearch, report numbers)
+932ba3a stage2b docs: NEWS for M, B8, B9, B11; help pages for M; article passages for B8 and M
+470c40b M: weighted Kaplan-Meier variance is weighted Greenwood
+fcb47ac B8: cumulative_rmst_bands(mean_rule = c("trapezoid", "rectangle"))
+87ca3c8 B11: semi-transparent KM confidence bands (alpha 0.5, same hues)
+7834e43 B9: KM_diff(show_resamples = FALSE) by default
+769605b T0: testthat (>= 3.1.7) in Suggests
+0525f3b stage2b: baseline (golden_s2.rds, api_s2.rds) and copied scripts
+d7c3900 stage2b: add task doc

@@ -34,6 +34,6 @@ survival attached: FALSE
 | I4   | NOT_REPRODUCED | inference   | Quantile self-check uses survfit's 0.95 limits whatever conf_level is -> quantile-discrepancy warnings: conf_level 0.95 -> 0, 0.90 -> 0
 | I5   | NOT_REPRODUCED | inference   | qprob != 0.5: quantile_results and the survfit cross-check use opposite conventions -> control, qprob=0.25: quantile_results 15.54 (survfit probs=0.75 is 15.54); quantile_check 15.54 (survfit probs=0.25 is 4.29)
 | P2   | NOT_REPRODUCED | package     | Functions overwrite the caller's RNG state (set.seed inside) -> next runif after user seeds 123 / 999: 0.287578 / 0.389071
-| P5   | INFO           | package     | df_counting() cost at n = 2000 (O(n^2) matrices) -> elapsed 0.4s, peak R memory 18784880 MB
+| P5   | INFO           | package     | df_counting() cost at n = 2000 (O(n^2) matrices) -> elapsed 0.3s, peak R memory 18784872 MB
 
 INFO: 1 | NOT_REPRODUCED: 25 | PASS: 3 | REPRODUCED: 1
