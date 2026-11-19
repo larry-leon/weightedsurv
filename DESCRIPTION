@@ -15,7 +15,6 @@ URL: https://larry-leon.github.io/weightedsurv/, https://github.com/larry-leon/w
 BugReports: https://github.com/larry-leon/weightedsurv/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports: 
     ggplot2,
     graphics,
@@ -34,3 +33,4 @@ Suggests:
   pammtools,
   rmarkdown
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0

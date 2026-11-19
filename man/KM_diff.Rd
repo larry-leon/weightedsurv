@@ -128,10 +128,10 @@ result_band <- KM_diff(
 \code{\link{plotKM.band_subgroups}} for visualization
 \code{\link{cumulative_rmst_bands}} for RMST analysis
 
-Other survival_analysis: 
-\code{\link{cox_rhogamma}()},
-\code{\link{df_counting}()},
-\code{\link{wt.rg.S}()}
+Other survival_analysis:
+\code{\link[=cox_rhogamma]{cox_rhogamma()}},
+\code{\link[=df_counting]{df_counting()}},
+\code{\link[=wt.rg.S]{wt.rg.S()}}
 }
 \concept{plotting_functions}
 \concept{survival_analysis}

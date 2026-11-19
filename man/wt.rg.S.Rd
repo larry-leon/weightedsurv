@@ -110,14 +110,14 @@ Schemper, M., Wakounig, S., and Heinze, G. (2009). The estimation of average haz
 by weighted Cox regression. Statistics in Medicine, 28(19), 2473-2489.
 }
 \seealso{
-Other survival_analysis: 
-\code{\link{KM_diff}()},
-\code{\link{cox_rhogamma}()},
-\code{\link{df_counting}()}
+Other survival_analysis:
+\code{\link[=KM_diff]{KM_diff()}},
+\code{\link[=cox_rhogamma]{cox_rhogamma()}},
+\code{\link[=df_counting]{df_counting()}}
 
-Other weighted_tests: 
-\code{\link{cox_rhogamma}()},
-\code{\link{df_counting}()}
+Other weighted_tests:
+\code{\link[=cox_rhogamma]{cox_rhogamma()}},
+\code{\link[=df_counting]{df_counting()}}
 }
 \concept{survival_analysis}
 \concept{weighted_tests}

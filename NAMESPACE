@@ -46,46 +46,57 @@ export(validate_scheme_params)
 export(wlr_cumulative)
 export(wlr_dhat_estimates)
 export(wt.rg.S)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,facet_wrap)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,scale_color_manual)
-importFrom(ggplot2,scale_linewidth_manual)
-importFrom(ggplot2,scale_size_manual)
-importFrom(ggplot2,theme_minimal)
-importFrom(graphics,abline)
-importFrom(graphics,axis)
-importFrom(graphics,box)
-importFrom(graphics,legend)
-importFrom(graphics,lines)
-importFrom(graphics,matplot)
-importFrom(graphics,par)
-importFrom(graphics,plot)
-importFrom(graphics,points)
-importFrom(graphics,polygon)
-importFrom(graphics,text)
-importFrom(graphics,title)
+importFrom(ggplot2,
+  aes,
+  facet_wrap,
+  geom_line,
+  ggplot,
+  labs,
+  scale_color_manual,
+  scale_linewidth_manual,
+  scale_size_manual,
+  theme_minimal
+)
+importFrom(graphics,
+  abline,
+  axis,
+  box,
+  legend,
+  lines,
+  matplot,
+  par,
+  plot,
+  points,
+  polygon,
+  text,
+  title
+)
 importFrom(rlang,.data)
-importFrom(stats,as.formula)
-importFrom(stats,chisq.test)
-importFrom(stats,confint)
-importFrom(stats,fisher.test)
-importFrom(stats,na.omit)
-importFrom(stats,pchisq)
-importFrom(stats,pnorm)
-importFrom(stats,qnorm)
-importFrom(stats,quantile)
-importFrom(stats,rnorm)
-importFrom(stats,sd)
-importFrom(stats,t.test)
-importFrom(stats,uniroot)
-importFrom(stats,var)
-importFrom(survival,Surv)
-importFrom(survival,aeqSurv)
-importFrom(survival,coxph)
-importFrom(survival,survdiff)
-importFrom(survival,survfit)
-importFrom(utils,head)
-importFrom(utils,tail)
+importFrom(stats,
+  as.formula,
+  chisq.test,
+  confint,
+  fisher.test,
+  na.omit,
+  pchisq,
+  pnorm,
+  qnorm,
+  quantile,
+  rnorm,
+  sd,
+  t.test,
+  uniroot,
+  var
+)
+importFrom(survival,
+  Surv,
+  aeqSurv,
+  coxph,
+  strata,
+  survdiff,
+  survfit
+)
+importFrom(utils,
+  head,
+  tail
+)

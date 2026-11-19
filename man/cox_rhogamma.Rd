@@ -124,14 +124,14 @@ Statistics in Medicine, 38(20), 3782-3790.
 \code{\link{wt.rg.S}} for weighting schemes
 \code{\link{cox_score_rhogamma}} for score function
 
-Other survival_analysis: 
-\code{\link{KM_diff}()},
-\code{\link{df_counting}()},
-\code{\link{wt.rg.S}()}
+Other survival_analysis:
+\code{\link[=KM_diff]{KM_diff()}},
+\code{\link[=df_counting]{df_counting()}},
+\code{\link[=wt.rg.S]{wt.rg.S()}}
 
-Other weighted_tests: 
-\code{\link{df_counting}()},
-\code{\link{wt.rg.S}()}
+Other weighted_tests:
+\code{\link[=df_counting]{df_counting()}},
+\code{\link[=wt.rg.S]{wt.rg.S()}}
 }
 \concept{survival_analysis}
 \concept{weighted_tests}

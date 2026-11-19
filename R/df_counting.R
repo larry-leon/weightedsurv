@@ -127,7 +127,7 @@
 #' @family survival_analysis
 #' @family weighted_tests
 #' @importFrom stats as.formula pchisq
-#' @importFrom survival aeqSurv Surv coxph survfit survdiff
+#' @importFrom survival aeqSurv Surv coxph survfit survdiff strata
 #' @export
 
 df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name = "treat", weight.name=NULL, strata.name = NULL, arms=c("treat","control"),

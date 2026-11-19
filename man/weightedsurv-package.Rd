@@ -102,5 +102,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Larry Leon \email{larry.leon.05@post.harvard.edu}
 
+Authors:
+\itemize{
+  \item Larry Leon \email{larry.leon.05@post.harvard.edu}
+}
+
 }
 \keyword{internal}

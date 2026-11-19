@@ -192,14 +192,14 @@ Statistics in Medicine, 38(20), 3782-3790.
 \code{\link{cox_rhogamma}} for weighted Cox models
 \code{\link{KM_diff}} for Kaplan-Meier differences
 
-Other survival_analysis: 
-\code{\link{KM_diff}()},
-\code{\link{cox_rhogamma}()},
-\code{\link{wt.rg.S}()}
+Other survival_analysis:
+\code{\link[=KM_diff]{KM_diff()}},
+\code{\link[=cox_rhogamma]{cox_rhogamma()}},
+\code{\link[=wt.rg.S]{wt.rg.S()}}
 
-Other weighted_tests: 
-\code{\link{cox_rhogamma}()},
-\code{\link{wt.rg.S}()}
+Other weighted_tests:
+\code{\link[=cox_rhogamma]{cox_rhogamma()}},
+\code{\link[=wt.rg.S]{wt.rg.S()}}
 }
 \concept{survival_analysis}
 \concept{weighted_tests}
