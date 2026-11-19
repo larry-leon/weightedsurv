@@ -59,19 +59,34 @@
   the random-number stream of the calling session; results for a given `seedstart` are unchanged.
   (B6)
 
-* Weighted standard errors: the standard error of a weighted Kaplan-Meier curve is now the
-  weighted Greenwood estimate, `S(t)^2 * sum over s <= t of sum(w_i^2 dN_i(s)) / (Y_w(s) * (Y_w(s) - dN_w(s)))`,
-  in `df_counting()`, `KM_diff()` and `calculate_risk_event_counts()`. **Every weighted standard
-  error changes**, and with it everything computed from one: pointwise limits, simultaneous-band
-  limits and critical values, the standardised resampled curves, and the confidence limits of
-  weighted quantiles. Unweighted results do not change (at unit weights the formula is
-  Greenwood's). All weights equal to a constant now give the unweighted standard error; before, a
-  constant weight c gave the standard error of the data with every row repeated c times. Survival
-  estimates, differences, resampled curves, risk tables, log-rank, Cox and RMST results do not
-  change. The standard error no longer depends on the scale
-  of the weights (weights `w` and `10 * w` give the same answer), so weights are not frequency
-  weights: a weight of 2 is not two copies of the row. Weights are treated as fixed and known.
-  With `draws > 0` and unequal weights the resampling variance is used, as before. (M)
+* Weighted standard errors: when the weights are not all equal, the standard error of a weighted
+  Kaplan-Meier curve is now the robust (infinitesimal-jackknife) standard error,
+  `S(t)^2 * sum_i w_i^2 psi_i(t)^2` with `psi_i` subject i's influence contribution, in
+  `df_counting()`, `KM_diff()` and `calculate_risk_event_counts()`. It equals the standard error
+  of `survival::survfit(weights = w, robust = TRUE)`. **Every weighted standard error changes**,
+  and with it everything computed from one: pointwise limits, simultaneous-band limits and
+  critical values, the standardised resampled curves, and the confidence limits of weighted
+  quantiles. **Unweighted results do not change**, and neither do results with all weights equal
+  (both use Greenwood's formula; all weights equal to a constant give the unweighted standard
+  error, where in 0.1.0 a constant weight c gave the standard error of the data with every row
+  repeated c times). Survival estimates, differences, risk tables, log-rank, Cox and the RMST
+  point estimate do not change. The standard error does not depend on the scale of the weights
+  (weights `w` and `10 * w` give the same answer), so weights are not frequency weights: a weight
+  of 2 is not two copies of the row. Weights are treated as fixed and known: with estimated
+  propensity-score weights the standard error is conservative, and with extreme weights (low
+  effective sample size) it is too small. (M, R1)
+
+* Weighted resampling: when the weights are not all equal, resampled Kaplan-Meier curves are now
+  built from the same per-subject influence contributions, `-S(t) * sum_i G_i w_i psi_i(t)` for
+  the same standard-normal multipliers `G_i` as before (before, the multipliers perturbed the
+  events only). This applies to `resampling_survival()`, the resampled curves of `KM_diff()`
+  (`surv0_star`, `surv1_star`, `dhat_star`, `Zdhat_star`), and the `draws > 0` variance of
+  `KM_diff()`, `df_counting()` and `calculate_risk_event_counts()`. **Weighted simultaneous bands
+  and weighted RMST bands change** (`cumulative_rmst_bands()`: the RMST variance, pointwise
+  limits, critical value and band limits; not the RMST estimate), and the resampling variance now
+  agrees with the robust standard error. **Unweighted results, and results with all weights
+  equal, do not change**: they keep the events-only perturbation, with the same seeds and draws.
+  (R2)
 
 * `cumulative_rmst_bands()` has a new last argument `mean_rule`. The default, `"trapezoid"`, gives
   the same results as before. `"rectangle"` integrates the survival difference as a step function;

@@ -320,6 +320,19 @@ get_event_risk_matrices <- function(U, at.points) {
 #'
 #' Performs resampling to generate survival curves for a group, used for constructing confidence bands.
 #'
+#' @details Each column is one resampled deviation \eqn{\hat S^*(t) - \hat S(t)} at \code{at.points},
+#' for one column of multipliers \code{G_draws} (one row per subject). With no weights or all weights
+#' equal, the multipliers perturb the events only:
+#' \eqn{-\hat S(t) \sum_{s \le t} \sum_i G_i w_i dN_i(s) / Y_w(s)}; these results are unchanged.
+#' With weights that are not all equal, the deviation is built from the per-subject influence
+#' contributions \eqn{\psi_i(t)} of the robust variance (see \code{\link{KM_diff}}, section
+#' "Variance of the Kaplan-Meier estimate"):
+#' \eqn{-\hat S(t) \sum_i G_i w_i \psi_i(t)}, so its variance over draws is the robust variance
+#' \eqn{\hat S(t)^2 \sum_i w_i^2 \psi_i(t)^2}, which equals that of
+#' \code{survival::survfit(weights = w, robust = TRUE)}. The weights are treated as fixed and known.
+#' Both forms need \code{at.points} to hold every event time of the group
+#' (\code{\link{KM_diff}} arranges this).
+#'
 #' @param U Vector of observed times.
 #' @param W Vector of weights.
 #' @param D Vector of event indicators (0/1).
@@ -400,21 +413,35 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' the supremum distribution of the standardized difference process. These bands
 #' maintain the specified coverage probability across all time points simultaneously.
 #'
-#' The pointwise variance of each arm's curve is weighted Greenwood (Greenwood's formula for
-#' unweighted data; see the section below), or resampling-based when \code{draws > 0} and the weights
-#' are not all equal.
+#' The pointwise variance of each arm's curve is Greenwood's formula for unweighted data (or all
+#' weights equal) and the robust variance for weights that are not all equal (see the section below),
+#' or resampling-based when \code{draws > 0} and the weights are not all equal.
+#'
+#' For weights that are not all equal, the resampled curves (\code{surv0_star}, \code{surv1_star},
+#' and from them \code{dhat_star}, \code{Zdhat_star}, the simultaneous band and
+#' \code{\link{cumulative_rmst_bands}}) are built from the same per-subject contributions as the
+#' robust variance (\code{\link{resampling_survival}}), so the variance across draws matches the
+#' analytic variance. With no weights or all weights equal they are unchanged.
 #'
 #' @section Variance of the Kaplan-Meier estimate:
-#' Unless resampling is requested (\code{draws > 0} with weights that are not all equal), the
-#' variance of each arm's Kaplan-Meier estimate is weighted Greenwood:
-#' \deqn{\widehat{Var}[\hat S(t)] = \hat S(t)^2 \sum_{s \le t} \frac{\sum_i w_i^2 dN_i(s)}{Y_w(s)\{Y_w(s) - dN_w(s)\}},}{Var[S(t)] = S(t)^2 * sum_{s <= t} [sum_i w_i^2 dN_i(s)] / [Y_w(s) (Y_w(s) - dN_w(s))],}
-#' with \eqn{Y_w(s)} the weighted number at risk and \eqn{dN_w(s) = \sum_i w_i dN_i(s)} the
-#' weighted number of events at \eqn{s}; a term is 0 where \eqn{Y_w(s) = 0} or
-#' \eqn{Y_w(s) - dN_w(s) \le 10^{-10} Y_w(s)}. With all weights equal (or no weights) this is
-#' Greenwood's formula. The weights are treated as fixed and known: there is no adjustment for
-#' estimated weights (for example estimated propensity scores). The standard error does not depend
-#' on the scale of the weights, so weights are not frequency weights: a weight of 2 is not two
-#' copies of the row.
+#' With no weights, or with all weights equal, the variance of a Kaplan-Meier estimate is
+#' Greenwood's formula, and these results are unchanged. When the weights are not all equal it is
+#' the robust (infinitesimal-jackknife) variance
+#' \deqn{\widehat{Var}[\hat S(t)] = \hat S(t)^2 \sum_i w_i^2 \psi_i(t)^2,}{Var[S(t)] = S(t)^2 * sum_i w_i^2 psi_i(t)^2,}
+#' \deqn{\psi_i(t) = \frac{D_i 1(U_i \le t)}{Y_w(U_i) - dN_w(U_i)} - \sum_{s \le \min(t, U_i)} \frac{dN_w(s)}{Y_w(s)\{Y_w(s) - dN_w(s)\}},}{psi_i(t) = D_i 1(U_i <= t) / (Y_w(U_i) - dN_w(U_i)) - sum_{s <= min(t, U_i)} dN_w(s) / [Y_w(s) (Y_w(s) - dN_w(s))],}
+#' where \eqn{U_i}, \eqn{D_i} and \eqn{w_i} are subject \eqn{i}'s time, event indicator and weight,
+#' \eqn{Y_w(s)} is the weighted number at risk, \eqn{dN_w(s)} the weighted number of events at
+#' \eqn{s}, the sum runs over event times, and a term is 0 where
+#' \eqn{Y_w(s) - dN_w(s) \le 10^{-10} Y_w(s)}. It equals the standard error of
+#' \code{survival::survfit(weights = w, robust = TRUE)} (on the time-fixed data), reduces to
+#' Greenwood's formula at equal weights, and does not depend on the scale of the weights.
+#' With \code{draws > 0} and unequal weights the variance is instead the variance over resampling
+#' draws of \eqn{\sum_i G_i w_i \psi_i(t)} (standard-normal multipliers \eqn{G_i}), which estimates
+#' the same quantity; resampled curves for weighted data are built from the same per-subject
+#' contributions (see \code{\link{resampling_survival}}).
+#' The weights are treated as fixed and known: with estimated propensity-score weights the standard
+#' error is conservative (it ignores the estimation of the weights), and when the weights are
+#' extreme (low effective sample size) it is too small.
 #'
 #' @section Confidence Intervals vs Bands:
 #' \itemize{

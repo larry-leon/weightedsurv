@@ -74,3 +74,13 @@ A list with elements:
 Calculates cumulative Restricted Mean Survival Time (RMST) and confidence bands for survival curves using resampling.
 Optionally plots the cumulative RMST curve, pointwise confidence intervals, and simultaneous confidence bands.
 }
+\details{
+The pointwise variance of the cumulative RMST difference and the simultaneous band come
+from the resampled survival-difference curves of \code{fit} (\code{fit$dhat_star}) and of a
+second \code{\link{KM_diff}} call with \code{seedstart = 99999}. With weights that are not all
+equal, those resampled curves are built from the per-subject contributions of the robust
+variance (see \code{\link{resampling_survival}}), so the RMST variance and bands are the robust
+ones; with no weights or all weights equal they are unchanged. The weights are treated as fixed
+and known: with estimated propensity-score weights the intervals are conservative, and with
+extreme weights (low effective sample size) they are too narrow.
+}

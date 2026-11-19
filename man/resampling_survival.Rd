@@ -27,3 +27,17 @@ Matrix of resampled survival curves.
 \description{
 Performs resampling to generate survival curves for a group, used for constructing confidence bands.
 }
+\details{
+Each column is one resampled deviation \eqn{\hat S^*(t) - \hat S(t)} at \code{at.points},
+for one column of multipliers \code{G_draws} (one row per subject). With no weights or all weights
+equal, the multipliers perturb the events only:
+\eqn{-\hat S(t) \sum_{s \le t} \sum_i G_i w_i dN_i(s) / Y_w(s)}; these results are unchanged.
+With weights that are not all equal, the deviation is built from the per-subject influence
+contributions \eqn{\psi_i(t)} of the robust variance (see \code{\link{KM_diff}}, section
+"Variance of the Kaplan-Meier estimate"):
+\eqn{-\hat S(t) \sum_i G_i w_i \psi_i(t)}, so its variance over draws is the robust variance
+\eqn{\hat S(t)^2 \sum_i w_i^2 \psi_i(t)^2}, which equals that of
+\code{survival::survfit(weights = w, robust = TRUE)}. The weights are treated as fixed and known.
+Both forms need \code{at.points} to hold every event time of the group
+(\code{\link{KM_diff}} arranges this).
+}
