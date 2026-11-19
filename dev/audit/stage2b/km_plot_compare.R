@@ -1,7 +1,11 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# km_plot_compare.R <before|after> -- Kaplan-Meier plot comparison against survfit() on GBSG
+# km_plot_compare.R <before|after|after2> -- Kaplan-Meier plot comparison against survfit() on GBSG
 # (TASK_km_fixes_stage2.md, Step P)
+#
+# Stage-2b copy (TASK_km_fixes_stage2b.md, Step 4.5): adds a third mode, after2, which is the
+# "after" mode run on the Stage-2b code and writes into dev/audit/stage2b/ (before / after still
+# write into dev/audit/stage2/).
 #
 # Writes dev/audit/stage2/km_plots_<mode>.pdf  (KM-curve sheets, then difference-curve sheets)
 #        dev/audit/stage2/km_plot_compare_<mode>.csv
@@ -16,13 +20,13 @@
 # shows where drawing starts). Band comparisons skip points where survfit's limit is NA (S = 0).
 # =============================================================================
 args <- commandArgs(trailingOnly = TRUE)
-mode <- if (length(args)) args[1] else stop("usage: km_plot_compare.R before|after")
-stopifnot(mode %in% c("before", "after"))
+mode <- if (length(args)) args[1] else stop("usage: km_plot_compare.R before|after|after2")
+stopifnot(mode %in% c("before", "after", "after2"))
 if (!file.exists("DESCRIPTION")) stop("Run from the repo root.")
 suppressMessages(pkgload::load_all(".", quiet = TRUE, export_all = FALSE, helpers = FALSE))
-S2 <- file.path("dev", "audit", "stage2")
+S2 <- file.path("dev", "audit", if (mode == "after2") "stage2b" else "stage2")
 ns <- asNamespace("weightedsurv")
-HELPER <- mode == "after" && exists("km_step_vertices", envir = ns, inherits = FALSE)
+HELPER <- mode %in% c("after", "after2") && exists("km_step_vertices", envir = ns, inherits = FALSE)
 cat(sprintf("mode %s; B10 vertex helper %s\n", mode, if (HELPER) "used" else "not used"))
 
 g <- survival::gbsg

@@ -1,5 +1,9 @@
 #!/usr/bin/env Rscript
 # =============================================================================
+# km_pressure_test_s2b.R -- copy of dev/audit/stage2/km_pressure_test_s2.R for Stage 2b, Step 4.
+# Only difference: the default output directory is dev/audit/stage2b. Tests are unchanged.
+#
+# Stage-2 header:
 # km_pressure_test_s2.R -- copy of dev/audit/km_pressure_test.R (Stage 1) for Stage 2, Step 5.
 # Differences from the Stage-1 script: an output directory (--out=<dir>, default dev/audit/stage2)
 # and an optional family filter (--only=T4,T5) for development runs. Tests are unchanged.
@@ -26,7 +30,7 @@ NO_WRITE <- "--no-write" %in% args
 if (!file.exists("DESCRIPTION")) stop("Run from the repo root.")
 suppressMessages(pkgload::load_all(".", quiet = TRUE, export_all = FALSE, helpers = FALSE))
 out_arg <- sub("^--out=", "", grep("^--out=", args, value = TRUE))
-out_dir <- if (length(out_arg)) out_arg[1] else file.path("dev", "audit", "stage2")
+out_dir <- if (length(out_arg)) out_arg[1] else file.path("dev", "audit", "stage2b")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 only_arg <- sub("^--only=", "", grep("^--only=", args, value = TRUE))
 ONLY <- if (length(only_arg)) strsplit(only_arg[1], ",")[[1]] else character(0)

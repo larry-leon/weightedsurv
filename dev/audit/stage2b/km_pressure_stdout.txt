@@ -1,0 +1,43 @@
+[REF] done in 0s
+[T1] done in 60s
+[T2] done in 3s
+[T4] done in 2s
+[T5] done in 1s
+[T6] done in 0s
+[T7] done in 0s
+[T8] done in 0s
+[T9] done in 29s
+[T10] done in 0s
+
+weightedsurv KM pressure test -- LOCAL TREE via pkgload::load_all
+R: R version 4.5.2 (2025-10-31) | survival 3.8.11 
+
+fam    cells   checks  failed
+REF        1       12       0
+T1       141    41438       0
+T3       288    86376       0
+T6        24      888       0
+T2        18      513       0
+T4        22     7401       0
+T5        11      401       0
+T7        18      192       0
+T8        83       73       0
+T9         1       12       0
+T10        5       64       3
+
+T9 scaling:
+                       fn    n elapsed_s peak_mb note
+              df_counting  500      0.02     249     
+ KM_diff(draws.band=1000)  500      0.05     314     
+    cox_rhogamma(draws=0)  500      0.05     328     
+              df_counting 2000      0.31     310     
+ KM_diff(draws.band=1000) 2000      0.50     396     
+    cox_rhogamma(draws=0) 2000      0.73     413     
+              df_counting 4000      1.35     562     
+ KM_diff(draws.band=1000) 4000      1.25     636     
+    cox_rhogamma(draws=0) 4000      2.94     738     
+              df_counting 8000      4.69    1886     
+ KM_diff(draws.band=1000) 8000      3.40    1215     
+    cox_rhogamma(draws=0) 8000     11.33    1957     
+
+elapsed 96s; written: dev/audit/stage2b/km_pressure_results.csv, written: dev/audit/stage2b/km_scaling.csv

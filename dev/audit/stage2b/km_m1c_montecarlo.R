@@ -1,5 +1,8 @@
 #!/usr/bin/env Rscript
 # =============================================================================
+# M1c (TASK_km_fixes_stage2b.md Step 4.2): copy of dev/audit/stage2/km_m1b_montecarlo.R that differs
+# only in its output path (dev/audit/stage2b/km_m1c_results.csv); run on the Stage-2b package code.
+#
 # km_m1b_montecarlo.R -- M1b: copy of km_m1_montecarlo.R (Stage 1) with a fourth estimator,
 # "weighted Greenwood" (TASK_km_fixes_stage2.md Step 1; run because the kickoff said "M1b: GO")
 #
@@ -67,6 +70,6 @@ for (ties in c("continuous", "ceiling 0.5")) for (wt in c("none", "U(0.3,3)", "U
 }
 res <- do.call(rbind, out)
 num <- c("mean_S", "emp_sd", "mean_se", "se_over_sd", "coverage"); res[num] <- lapply(res[num], round, 4)
-if (!NO_WRITE) utils::write.csv(res, file.path("dev", "audit", "stage2", "km_m1b_results.csv"), row.names = FALSE)
+if (!NO_WRITE) utils::write.csv(res, file.path("dev", "audit", "stage2b", "km_m1c_results.csv"), row.names = FALSE)
 options(width = 200); print(res, row.names = FALSE)
 cat(sprintf("\nM1b: %d replicates per cell, n = %d; elapsed %.0fs\n", R, n, proc.time()[["elapsed"]] - t0))
