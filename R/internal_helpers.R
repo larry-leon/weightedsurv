@@ -164,3 +164,93 @@ ws_cumulative_mean <- function(d, dt, rule = c("trapezoid", "rectangle")) {
   h <- if (rule == "trapezoid") (utils::head(d, -1) + utils::tail(d, -1)) / 2 else utils::head(d, -1)
   c(0, cumsum(h * dt))
 }
+
+# Per-subject influence of a weighted Kaplan-Meier curve on a sorted grid (Stage 2c, R1 and R2).
+# For subject i with time U_i, event indicator D_i and weight w_i,
+#   psi_i(t) = D_i 1(U_i <= t) / (Y_w(U_i) - dN_w(U_i))
+#              - sum over event times s <= min(t, U_i) of dN_w(s) / (Y_w(s) (Y_w(s) - dN_w(s))),
+# a term being 0 where Y_w - dN_w <= 1e-10 Y_w (or Y_w = 0). Then S(t)^2 sum_i w_i^2 psi_i(t)^2 is
+# the robust (infinitesimal-jackknife) variance of survfit(weights = w, robust = TRUE), and
+# -S(t) sum_i G_i w_i psi_i(t) is one resampled deviation for multipliers G_i. Valid when the grid
+# holds every event time of the group.
+# On the grid g_1 <= ... <= g_m, psi_i(g_j) = D_i 1(k_i <= j) a[k_i] - H[min(j, k_i)], with k_i the
+# first grid point >= U_i for an event and the last grid point <= U_i for a censored time (0 before
+# the grid, m + 1 after it). psi_i is constant from j = k_i on, at `exit` = D_i a[k_i] - H[k_i].
+#' @noRd
+ws_km_psi_parts <- function(U, D, at_points, ybar, nbar) {
+  m <- length(at_points)
+  dN <- diff(c(0, nbar))
+  ok <- ybar > 0 & (ybar - dN) > 1e-10 * ybar
+  a <- ifelse(ok, 1 / (ybar - dN), 0)
+  H <- cumsum(ifelse(ok, dN / (ybar * (ybar - dN)), 0))
+  ev <- D == 1
+  k <- ifelse(ev, findInterval(U, at_points, left.open = TRUE) + 1L, findInterval(U, at_points))
+  in_grid <- k >= 1 & k <= m
+  kk <- pmin(pmax(k, 1L), max(m, 1L))
+  exit <- ifelse(in_grid, ifelse(ev, a[kk], 0) - H[kk], 0)
+  list(m = m, k = k, in_grid = in_grid, H = H, exit = exit)
+}
+
+# Sum the rows of x (vector or matrix with one row per subject) by grid index idx in 1..m;
+# returns an m-row matrix (zero rows where no subject has that index).
+#' @noRd
+ws_rowsum_grid <- function(x, idx, m) {
+  x <- as.matrix(x)
+  out <- matrix(0, m, ncol(x))
+  if (length(idx)) {
+    s <- rowsum(x, idx, reorder = TRUE)
+    out[as.integer(rownames(s)), ] <- s
+  }
+  out
+}
+
+# Column-wise cumulative sums, keeping the matrix shape.
+#' @noRd
+ws_colcumsum <- function(x) matrix(apply(x, 2, cumsum), nrow = nrow(x))
+
+# V(g_j) = sum_i w_i^2 psi_i(g_j)^2 for every grid point (R1), in O(n + m):
+# subjects with k_i <= j contribute their exit value, the others H_j^2 w_i^2.
+#' @noRd
+ws_km_ij_var <- function(parts, W) {
+  m <- parts$m
+  if (m == 0) return(numeric(0))
+  w2 <- W^2
+  ig <- parts$in_grid
+  C <- cumsum(ws_rowsum_grid(w2[ig] * parts$exit[ig]^2, parts$k[ig], m)[, 1])
+  Q <- sum(w2[parts$k >= 1]) - cumsum(ws_rowsum_grid(w2[ig], parts$k[ig], m)[, 1])
+  C + parts$H^2 * Q
+}
+
+# M[j, b] = sum_i G[i, b] w_i psi_i(g_j) for every grid point and draw (R2), in O((n + m) B).
+#' @noRd
+ws_km_ij_draws <- function(parts, W, G) {
+  m <- parts$m
+  G <- as.matrix(G)
+  if (m == 0) return(matrix(0, 0, ncol(G)))
+  ig <- parts$in_grid
+  Gw <- G * W
+  E <- ws_colcumsum(ws_rowsum_grid(Gw[ig, , drop = FALSE] * parts$exit[ig], parts$k[ig], m))
+  X <- ws_colcumsum(ws_rowsum_grid(Gw[ig, , drop = FALSE], parts$k[ig], m))
+  tot <- colSums(Gw[parts$k >= 1, , drop = FALSE])
+  still <- -sweep(X, 2, tot, "-")  # sum over subjects with k_i > j
+  E - parts$H * still
+}
+
+# The robust variance or resampled deviations for one group on any at_points: computed on the
+# sorted grid and returned in the order of at_points.
+#' @noRd
+ws_km_ij_sorted <- function(U, D, W, at_points, ybar, nbar, G = NULL) {
+  o <- order(at_points)
+  srt <- !is.unsorted(at_points)
+  g <- if (srt) at_points else at_points[o]
+  yb <- if (srt) ybar else ybar[o]
+  nb <- if (srt) nbar else nbar[o]
+  parts <- ws_km_psi_parts(U, D, g, yb, nb)
+  if (is.null(G)) {
+    v <- ws_km_ij_var(parts, W)
+    if (srt) v else v[order(o)]
+  } else {
+    M <- ws_km_ij_draws(parts, W, G)
+    if (srt) M else M[order(o), , drop = FALSE]
+  }
+}

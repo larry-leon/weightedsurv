@@ -263,8 +263,15 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
     drisk_star <- sweep(dN_star_all, 1, risk_w, "/")
     drisk_star[is.infinite(drisk_star) | is.nan(drisk_star)] <- 0
     sig2w_multiplier <- apply(drisk_star, 1, var)
+  } else if (length(unique(W)) > 1) {
+    # Weights not all equal: robust (infinitesimal-jackknife) variance, survfit(robust = TRUE).
+    # V(t) = sum_i w_i^2 psi_i(t)^2 (see ws_km_psi_parts()); KM_estimates() forms S^2 * cumsum of the
+    # multiplier, so the multiplier is the successive differences of V along at_points (individual
+    # differences may be negative).
+    V <- ws_km_ij_sorted(U, D, W, at_points, ybar, nbar)
+    sig2w_multiplier <- diff(c(0, V))
   } else {
-    # Weighted Greenwood (Greenwood itself when all weights are equal):
+    # No weights or all weights equal: Greenwood, as before.
     #   sum_i w_i^2 dN_i(s) / [Y_w(s) (Y_w(s) - dN_w(s))], 0 where Y_w - dN_w <= 1e-10 Y_w or Y_w = 0.
     # An empty group (e.g. an arm absent from a stratum) gives all zeros.
     dN <- diff(c(0, nbar))
