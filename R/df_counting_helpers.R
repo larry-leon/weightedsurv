@@ -234,40 +234,23 @@ extract_group_data <- function(time, delta, wgt, z, group = 1) {
 calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart = 816951) {
   ybar <- colSums(outer(U, at_points, FUN = ">=") * W)
   nbar <- colSums(outer(U[D == 1], at_points, FUN = "<=") * W[D == 1])
-  dN <- diff(c(0, nbar))
-  # For un-weighted (all weights equal) return standard variance term
-  # (an empty group, e.g. an arm absent from a stratum, also takes this branch: all zeros)
-  if(length(unique(W)) <= 1){
-    # Greenwood
-    sig2w_multiplier <- ifelse(ybar > 0 & ybar > dN, dN / (ybar * (ybar-dN)), 0.0)
-    # Alternative with dN / (ybar^2)
-  }
-  if(length(unique(W)) > 1){
+  if (draws > 0 && length(unique(W)) > 1) {
+    # Resampling (draws > 0 and weights not all equal)
     event_mat <- outer(U, at_points, FUN = "<=")
-    risk_mat  <- outer(U, at_points, FUN = ">=")
-    risk_w <- colSums(risk_mat *  W)
-    result <- switch(
-      as.integer(draws > 0) + 1,
-      {
-        # draws == 0
-        counting <- colSums(event_mat * (D * W))
-        dN_w <- diff(c(0, counting))
-        dL <- ifelse(risk_w == 0, 0, dN_w / risk_w)
-        h2 <- ifelse(risk_w > 0, (1 / (risk_w)), 0)
-        sig2w_multiplier <- (h2 * (dN_w - dL))^2
-        sig2w_multiplier
-      },
-      {
-        # draws > 0
-        G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * length(U)), ncol = draws))
-        counting_star_all <- t(event_mat * W) %*% (D * G.draws)
-        dN_star_all <- apply(counting_star_all, 2, function(x) diff(c(0, x)))
-        drisk_star <- sweep(dN_star_all, 1, risk_w, "/")
-        drisk_star[is.infinite(drisk_star) | is.nan(drisk_star)] <- 0
-        sig2w_multiplier <- apply(drisk_star, 1, var)
-        sig2w_multiplier
-      }
-    )
+    risk_w <- colSums(outer(U, at_points, FUN = ">=") * W)
+    G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * length(U)), ncol = draws))
+    counting_star_all <- t(event_mat * W) %*% (D * G.draws)
+    dN_star_all <- apply(counting_star_all, 2, function(x) diff(c(0, x)))
+    drisk_star <- sweep(dN_star_all, 1, risk_w, "/")
+    drisk_star[is.infinite(drisk_star) | is.nan(drisk_star)] <- 0
+    sig2w_multiplier <- apply(drisk_star, 1, var)
+  } else {
+    # Weighted Greenwood (Greenwood itself when all weights are equal):
+    #   sum_i w_i^2 dN_i(s) / [Y_w(s) (Y_w(s) - dN_w(s))], 0 where Y_w - dN_w <= 1e-10 Y_w or Y_w = 0.
+    # An empty group (e.g. an arm absent from a stratum) gives all zeros.
+    dN <- diff(c(0, nbar))
+    dN2 <- diff(c(0, colSums(outer(U[D == 1], at_points, FUN = "<=") * W[D == 1]^2)))
+    sig2w_multiplier <- ifelse(ybar > 0 & (ybar - dN) > 1e-10 * ybar, dN2 / (ybar * (ybar - dN)), 0.0)
   }
   list(ybar = ybar, nbar = nbar, sig2w_multiplier = sig2w_multiplier)
 }
