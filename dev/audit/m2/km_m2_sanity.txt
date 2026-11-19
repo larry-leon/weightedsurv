@@ -1,0 +1,29 @@
+M2 sanity run (Gate G1); 12 cores; HEAD 52c064e
+ij vs robust, cell D dataset r = 1, arm 0, no ties: max relative difference 2.77e-16
+ij vs robust, cell D dataset r = 1, arm 1, no ties: max relative difference 4.41e-16
+ij vs robust, cell D dataset r = 1, arm 0, times rounded up to 0.5 (ties): max relative difference 4.17e-16
+ij vs robust, cell D dataset r = 1, arm 1, times rounded up to 0.5 (ties): max relative difference 5.71e-16
+xie_liu vs adjustedCurves::adjustedsurv(iptw_km, conf_int = TRUE), arm 0: max relative difference 3.1e-16 (xie_liu 0.0229534/0.0240904/0.0223662; adjustedCurves 0.0229534/0.0240904/0.0223662)
+xie_liu vs adjustedCurves::adjustedsurv(iptw_km, conf_int = TRUE), arm 1: max relative difference 6.14e-16 (xie_liu 0.0338874/0.0421628/0.0504272; adjustedCurves 0.0338874/0.0421628/0.0504272)
+point estimate vs survfit(weights = w), arm 0: max abs difference 8.33e-16
+point estimate vs survfit(weights = w), arm 1: max abs difference 6.66e-16
+ armcell      estimator  t     truth n_reps se_over_sd coverage n_nonfinite         bias max_abs_diff_survfit max_abs_diff_survfit_nofix
+       A            pkg  5 0.6065307    200  0.9794505    0.925           0 0.0022854498         3.330669e-16               3.330669e-16
+       A pkg_resampling  5 0.6065307    200  0.9767347    0.925           0 0.0022854498         3.330669e-16               3.330669e-16
+       A         robust  5 0.6065307    200  0.9794946    0.925           0 0.0022854498         3.330669e-16               3.330669e-16
+       A             ij  5 0.6065307    200  0.9794946    0.925           0 0.0022854498         3.330669e-16               3.330669e-16
+       A        xie_liu  5 0.6065307    200  0.9796910    0.925           0 0.0022854498         3.330669e-16               3.330669e-16
+       A            pkg 10 0.3678794    200  1.0410544    0.965           0 0.0030457273         2.220446e-16               2.220446e-16
+       A pkg_resampling 10 0.3678794    200  1.0369836    0.970           0 0.0030457273         2.220446e-16               2.220446e-16
+       A         robust 10 0.3678794    200  1.0413261    0.960           0 0.0030457273         2.220446e-16               2.220446e-16
+       A             ij 10 0.3678794    200  1.0413261    0.960           0 0.0030457273         2.220446e-16               2.220446e-16
+       A        xie_liu 10 0.3678794    200  1.0416780    0.960           0 0.0030457273         2.220446e-16               2.220446e-16
+       A            pkg 20 0.1353353    200  1.1116362    0.970           0 0.0003461478         1.526557e-16               1.526557e-16
+       A pkg_resampling 20 0.1353353    200  1.0956802    0.970           0 0.0003461478         1.526557e-16               1.526557e-16
+       A         robust 20 0.1353353    200  1.1125152    0.965           0 0.0003461478         1.526557e-16               1.526557e-16
+       A             ij 20 0.1353353    200  1.1125152    0.965           0 0.0003461478         1.526557e-16               1.526557e-16
+       A        xie_liu 20 0.1353353    200  1.1137787    0.970           0 0.0003461478         1.526557e-16               1.526557e-16
+
+wall-clock per replicate (s, 12 cores, with resampling): A 0.0033, B 0.0042, C 0.0038, Bt 0.0026, D 0.0083, E 0.0089, F 0.0083
+projected wall-clock for the full run: 0.9 min
+G1: PASS
