@@ -57,6 +57,7 @@ importFrom(ggplot2,
   scale_size_manual,
   theme_minimal
 )
+importFrom(grDevices,adjustcolor)
 importFrom(graphics,
   abline,
   axis,

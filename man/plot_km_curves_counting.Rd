@@ -99,5 +99,6 @@ Invisibly returns NULL. Used for plotting side effects.
 Plots Kaplan-Meier survival curves for two groups, with options for confidence intervals and censoring marks.
 Each curve is drawn as the right-continuous step function from \code{time.zero} (where S = 1) to the
 group's last observed time; the confidence band (log transform, upper limit capped at 1, closing onto
-the curve where S = 0) is a step band over the same range.
+the curve where S = 0) is a step band over the same range. The two bands are filled with
+semi-transparent grey (control) and light blue (treated), so each stays visible where they overlap.
 }

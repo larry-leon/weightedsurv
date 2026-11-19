@@ -34,7 +34,8 @@ plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
 #' Plots Kaplan-Meier survival curves for two groups, with options for confidence intervals and censoring marks.
 #' Each curve is drawn as the right-continuous step function from \code{time.zero} (where S = 1) to the
 #' group's last observed time; the confidence band (log transform, upper limit capped at 1, closing onto
-#' the curve where S = 0) is a step band over the same range.
+#' the curve where S = 0) is a step band over the same range. The two bands are filled with
+#' semi-transparent grey (control) and light blue (treated), so each stays visible where they overlap.
 #'
 #' @param at_points Numeric vector of time points for plotting.
 #' @param S0.KM Numeric vector of survival probabilities for group 0.
@@ -66,6 +67,7 @@ plot_km_confint_polygon <- function(x, surv, se, conf_level, col) {
 #' @param ... Additional arguments to plot.
 #'
 #' @importFrom graphics plot lines legend title axis box points
+#' @importFrom grDevices adjustcolor
 #' @return Invisibly returns NULL. Used for plotting side effects.
 #' @export
 
@@ -94,8 +96,9 @@ plot_km_curves_counting <- function(
   v1 <- km_step_vertices(at_points, S1.KM, idv1, se = se1.KM, conf_level = conf_level, time.zero = time.zero)
 
   if (conf.int && !is.null(se0.KM) && !is.null(se1.KM)) {
-    polygon(v0$band_x, v0$band_y, col = "lightgrey", border = FALSE)
-    polygon(v1$band_x, v1$band_y, col = "lightblue", border = FALSE)
+    # semi-transparent fills, so that each band stays visible where the two overlap
+    polygon(v0$band_x, v0$band_y, col = adjustcolor("lightgrey", alpha.f = 0.5), border = FALSE)
+    polygon(v1$band_x, v1$band_y, col = adjustcolor("lightblue", alpha.f = 0.5), border = FALSE)
   }
 
   lines(v1$x, v1$y, type = "s", lty = ltys[1], col = col.1, lwd = lwds[1])
