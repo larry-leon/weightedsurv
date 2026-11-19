@@ -245,3 +245,24 @@ Reverse dependencies: `forestsearch` (0.5.0, Imports `weightedsurv (>= 0.1.0)`).
 ---
 
 ## G. Post-conditions (Gate G2)
+
+Run from the repo root with `START_SHA=edd61a2cecf4b08352719af0a24b10fa1e0b041c`, on HEAD `a5e4bbc` (before the commit that adds this section). The block was re-run on the final HEAD; that output is printed at the end of the session.
+
+```
+OK 1
+OK 2
+OK 3 (if no FAIL above)
+OK 4 (if no FAIL above)
+OK 5a
+OK 5b
+OK 5c
+a5e4bbc audit: REPORT_km_audit.md (sections A-F)
+3b441fc audit: full KM pressure-test results (T1-T10) and scaling
+3ef9716 audit: CRAN baseline check log, diff vs CRAN 0.1.0, static-lead confirmations
+4f61bc4 audit: KM pressure-test script (dev) and M1 Monte Carlo results
+aaf0be4 audit: exports inventory
+add1cda audit: provenance and seed probe results (G0, G1 pass)
+2ae793d audit: add KM audit task doc and seed probe
+```
+
+Nothing was pushed: no remote operations were run during the audit.
