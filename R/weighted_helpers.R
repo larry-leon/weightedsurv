@@ -249,8 +249,9 @@ get_validated_weights <- function(df_weights,
     at_points <- df_weights$at_points
     S.pool <- df_weights$S.pool
 
-    if(scheme == "MB"){
-    if(is.null(scheme_params$mb_tstar)) cat("Missing mb_tstar argument in scheme_params you have:", paste(names(scheme_params), collapse = ", "), "\n")
+    if(scheme == "MB" && is.null(scheme_params$mb_tstar)) {
+      stop("For MB weights, provide mb_tstar (cutoff time) in scheme_params; scheme_params has: ",
+           if (length(scheme_params)) paste(names(scheme_params), collapse = ", ") else "(nothing)")
     }
    if(scheme == "schemper") scheme_params <- list(Scensor = df_weights$G.pool)
    if(scheme == "XO") scheme_params <- list(Ybar = df_weights$Ybar)

@@ -258,8 +258,7 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
       },
       {
         # draws > 0
-        set.seed(seedstart)
-        G.draws <- matrix(rnorm(draws * n), ncol = draws)
+        G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * n), ncol = draws))
         counting_star_all <- t(event_mat * W) %*% (D * G.draws)
         dN_star_all <- apply(counting_star_all, 2, function(x) diff(c(0, x)))
         drisk_star <- sweep(dN_star_all, 1, risk_w, "/")

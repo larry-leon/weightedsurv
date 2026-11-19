@@ -479,16 +479,19 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
   c_alpha_band <- sb_lower <- sb_upper <- NULL
   Zdhat_star <- NULL
   if(draws.band > 0){
-    # draws > 0
-    set.seed(seedstart)
+    # draws > 0: drawn under set.seed(seedstart); the caller's RNG state is restored afterwards
+    n0 <- length(group_data0$U)
+    n1 <- length(group_data1$U)
+    G_draws <- ws_with_seed(seedstart, list(
+      G0 = matrix(rnorm(draws.band * n0), ncol = draws.band),
+      G1 = matrix(rnorm(draws.band * n1), ncol = draws.band)
+    ))
+    G0.draws <- G_draws$G0
+    G1.draws <- G_draws$G1
 
     # Control group
-    n0 <- length(group_data0$U)
-    G0.draws <- matrix(rnorm(draws.band * n0), ncol = draws.band)
     surv0_star <- resampling_survival(group_data0$U, group_data0$W, group_data0$D, at_points, draws.band, surv0, G0.draws)
     # Treatment group
-    n1 <- length(group_data1$U)
-    G1.draws <- matrix(rnorm(draws.band * n1), ncol = draws.band)
     surv1_star <- resampling_survival(group_data1$U, group_data1$W, group_data1$D, at_points, draws.band, surv1, G1.draws)
 
     dhat_star <- (surv1_star - surv0_star)

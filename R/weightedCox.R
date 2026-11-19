@@ -414,9 +414,12 @@ cox_rhogamma_resample <- function(fit_rhogamma, i_bhat, K_wt_rg, i_zero, K_zero,
   if (n0 + n1 != n) stop("z must be a (0/1) treatment group indicator")
 
   if (is.null(G0.draws) && is.null(G1.draws) && draws > 0) {
-    set.seed(seedstart)
-    G0.draws <- matrix(rnorm(draws * n0), ncol = draws)
-    G1.draws <- matrix(rnorm(draws * n1), ncol = draws)
+    G_draws <- ws_with_seed(seedstart, list(
+      G0 = matrix(rnorm(draws * n0), ncol = draws),
+      G1 = matrix(rnorm(draws * n1), ncol = draws)
+    ))
+    G0.draws <- G_draws$G0
+    G1.draws <- G_draws$G1
   }
   idx0 <- which(z == 0)
   idx1 <- which(z == 1)
