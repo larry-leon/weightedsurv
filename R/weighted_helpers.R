@@ -37,7 +37,8 @@
 #'   \item{Fleming-Harrington (fh)}{w(t) = S(t-)^rho * (1-S(t-))^gamma. See vignette for common choices.}
 #'   \item{Schemper}{w(t) = S(t-)/G(t-) where G is the censoring distribution.}
 #'   \item{Xu-O'Quigley (XO)}{w(t) = S(t-)/Y(t) where Y is risk set size.}
-#'   \item{Magirr-Burman (MB)}{w(t) = 1/max(S(t-), S(t*)).}
+#'   \item{Magirr-Burman (MB)}{w(t) = 1/max(S(t-), S(t*)), with S(t*) the survival at the last time point
+#'     <= t* (carried forward when t* is at or beyond the last point); 0 where both are 0.}
 #'   \item{Custom time}{Step function with weight w_0 before t* and w_1 after t*.}
 #' }
 #' @note
@@ -111,10 +112,13 @@ wt.rg.S <- function(
   } else if (scheme == 'MB') {
     if (is.null(tpoints) || length(tpoints) != n) stop('For MB weights, provide tpoints (time points) of same length as S.')
     if (is.null(mb_tstar)) stop('For MB weights, provide mb_tstar (cutoff time).')
-    loc_tstar <- which.max(tpoints > mb_tstar)
-    Shat_tzero <- if (mb_tstar <= max(tpoints)) S_left[loc_tstar] else 0.0
-    mS <- pmax(S_left, Shat_tzero)
-    wt <- 1 / mS
+    # S(t*): survival at the last time point <= t* (1 before the first point; carried forward
+    # from the last point when t* is at or beyond it)
+    le_tstar <- which(tpoints <= mb_tstar)
+    S_tstar <- if (length(le_tstar) > 0) S[max(le_tstar)] else 1
+    mS <- pmax(S_left, S_tstar)
+    # finite always: where both are 0 nobody is at risk, and the weight is set to 0
+    wt <- ifelse(mS > 0, 1 / mS, 0)
   } else if (scheme == 'custom_time') {
     if (is.null(tpoints) || length(tpoints) != n) stop('For custom_time weights, provide tpoints (time points) of same length as S.')
     if (is.null(t.tau)) stop('For custom_time weights, provide t.tau (cutoff time).')

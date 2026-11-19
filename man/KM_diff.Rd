@@ -39,7 +39,8 @@ non-decreasing (duplicates are allowed and returned as given). The Kaplan-Meier 
 point is right-continuous, whether or not the points include the event times.
 Default: the sorted observed times.}
 
-\item{alpha}{Numeric; significance level for confidence intervals. Default: 0.05.}
+\item{alpha}{Numeric; significance level for the pointwise intervals and the simultaneous band
+(the band's critical value is the \code{1 - alpha} quantile of the resampled suprema). Default: 0.05.}
 
 \item{seedstart}{Integer; random seed for reproducibility. Default: 8316951.}
 

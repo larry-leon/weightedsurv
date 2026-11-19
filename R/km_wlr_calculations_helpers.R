@@ -163,7 +163,10 @@ km_quantile_table <- function(time_points, surv0, se0, surv1, se1, arms = c("tre
 #' @param dfcounting List output from \code{df_counting} containing risk sets, event counts, and survival estimates.
 #' @param scheme_params Named list with numeric weighting parameters \code{rho}
 #'   and \code{gamma} (used for "fh" and "custom_code" schemes).
-#' @param tzero Time point at which to evaluate the difference in survival (default: 24).
+#' @param tzero Time point at which to evaluate the difference in survival (default: NULL, no
+#'   difference computed). The curves and the pooled survival are read at the last grid point
+#'   \code{<= tzero}; before the first grid point the difference is 0 with variance 0, and at or after
+#'   the last grid point the values at the last grid point are used.
 #' @param scheme Character string specifying weighting scheme. One of:
 #'   "fh" (Fleming-Harrington), "schemper", "XO", "MB", "custom_time", or "custom_code".
 #'
@@ -186,27 +189,30 @@ wlr_dhat_estimates <- function(dfcounting,
 ) {
   # Check for required columns
   required_cols <- c("at_points", "nbar0", "nbar1", "ybar0", "ybar1", "survP")
-  if(scheme == "schemper") requires_cols <- c(required_cols,"survG")
+  if(scheme == "schemper") required_cols <- c(required_cols,"survG")
   missing_cols <- setdiff(required_cols, names(dfcounting))
   if (length(missing_cols) > 0) {
-    stop("df_weights is missing required columns: ", paste(missing_cols, collapse = ", "))
+    stop("dfcounting is missing required elements: ", paste(missing_cols, collapse = ", "),
+         if ("survG" %in% missing_cols) " (scheme = 'schemper' needs the censoring curve survG at at_points)" else "")
   }
 
-  at_points <- dfcounting$at_points
-  nbar0 <- dfcounting$nbar0
-  nbar1 <- dfcounting$nbar1
-  ybar0 <- dfcounting$ybar0
-  ybar1 <- dfcounting$ybar1
-  S.pool <- dfcounting$survP
-  G.pool <- dfcounting$survG
+  # exact names only ([[ ]]): no partial matching (e.g. survG must not pick up survG_all)
+  at_points <- dfcounting[["at_points"]]
+  nbar0 <- dfcounting[["nbar0"]]
+  nbar1 <- dfcounting[["nbar1"]]
+  ybar0 <- dfcounting[["ybar0"]]
+  ybar1 <- dfcounting[["ybar1"]]
+  S.pool <- dfcounting[["survP"]]
+  G.pool <- dfcounting[["survG"]]
 
-  # weights
-  dfwlr <- data.frame(at_points, S.pool, G.pool, Ybar = ybar0 + ybar1)
+  # weights (the censoring curve is only needed, and only added, when present)
+  dfwlr <- data.frame(at_points, S.pool, Ybar = ybar0 + ybar1)
+  if (!is.null(G.pool)) dfwlr$G.pool <- G.pool
 
   wt_rg <- get_validated_weights(dfwlr, scheme, scheme_params)
 
-  S1 <- dfcounting$surv1
-  S0 <- dfcounting$surv0
+  S1 <- dfcounting[["surv1"]]
+  S0 <- dfcounting[["surv0"]]
 
   dN0 <- diff(c(0, nbar0))
   dN1 <- diff(c(0, nbar1))
@@ -214,13 +220,17 @@ wlr_dhat_estimates <- function(dfcounting,
   ybar <- ybar0 + ybar1
 
   if(!is.null(tzero)){
-    loc_tzero <- which.max(at_points > tzero)
-    if (at_points[loc_tzero] <= tzero & at_points[loc_tzero + 1] > tzero) {
+    # values at tzero: those at the last grid point <= tzero (step functions);
+    # tzero before the first grid point: dhat = 0 (both curves are 1) and variance 0
+    le_tzero <- which(at_points <= tzero)
+    if (length(le_tzero) > 0) {
+      loc_tzero <- max(le_tzero)
       dhat_tzero <- S1[loc_tzero] - S0[loc_tzero]
+      Sp_tzero <- S.pool[loc_tzero]
     } else {
-      dhat_tzero <- S1[loc_tzero - 1] - S0[loc_tzero - 1]
+      dhat_tzero <- 0
+      Sp_tzero <- 1
     }
-    Sp_tzero <- S.pool[loc_tzero]
   }
 
   K <- ifelse(ybar > 0, wt_rg * (ybar0 * ybar1) / ybar, 0.0)
@@ -241,7 +251,7 @@ wlr_dhat_estimates <- function(dfcounting,
     h2 <- h2 * ifelse(at_points <= tzero, 1, 0)
     sig2_dhat <- (Sp_tzero^2) * sum(h2 * (1 - dJ) * dL)
     # Correlation between log-rank statistic and dhat at time tzero
-    cor_wlr_dhat <- cov_wlr_dhat / (sqrt(sig2_lr) * sqrt(sig2_dhat))
+    cor_wlr_dhat <- if (sig2_lr > 0 && sig2_dhat > 0) cov_wlr_dhat / (sqrt(sig2_lr) * sqrt(sig2_dhat)) else NA_real_
 
     ans <- list(
       score = lr, sig2.score = sig2_lr, z.score = lr / sqrt(sig2_lr), dhat = dhat_tzero,
@@ -346,7 +356,8 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #'   non-decreasing (duplicates are allowed and returned as given). The Kaplan-Meier value at each
 #'   point is right-continuous, whether or not the points include the event times.
 #'   Default: the sorted observed times.
-#' @param alpha Numeric; significance level for confidence intervals. Default: 0.05.
+#' @param alpha Numeric; significance level for the pointwise intervals and the simultaneous band
+#'   (the band's critical value is the \code{1 - alpha} quantile of the resampled suprema). Default: 0.05.
 #' @param seedstart Integer; random seed for reproducibility. Default: 8316951.
 #' @param draws Integer; number of draws for pointwise variance estimation. Default: 0.
 #' @param risk.points Numeric vector; time points for risk table display.
@@ -512,7 +523,7 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
 
     # simultaneous band
     sups <- apply(abs(Zdhat_star), 2, max, na.rm = TRUE)
-    c_alpha_band <- quantile(sups,c(0.95))
+    c_alpha_band <- quantile(sups, 1 - alpha)
     # Show first 20 (or all of them when draws.band < 20)
     if(show_resamples){
       matplot(at_points, Zdhat_star[, seq_len(min(20, draws.band)), drop = FALSE], type="s", lty=2, lwd = 1, xlab="time",
@@ -554,22 +565,25 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
 wlr_cumulative <- function(df_weights, scheme, scheme_params = list(rho = 0, gamma = 0), return_cumulative = FALSE) {
 # Check for required columns
   required_cols <- c("at_points", "nbar0", "nbar1", "ybar0", "ybar1", "survP")
-  if(scheme == "schemper") requires_cols <- c(required_cols,"survG")
+  if(scheme == "schemper") required_cols <- c(required_cols,"survG")
   missing_cols <- setdiff(required_cols, names(df_weights))
   if (length(missing_cols) > 0) {
-    stop("df_weights is missing required columns: ", paste(missing_cols, collapse = ", "))
+    stop("df_weights is missing required columns: ", paste(missing_cols, collapse = ", "),
+         if ("survG" %in% missing_cols) " (scheme = 'schemper' needs the censoring curve survG at at_points)" else "")
   }
 
-  at_points <- df_weights$at_points
-  nbar0 <- df_weights$nbar0
-  nbar1 <- df_weights$nbar1
-  ybar0 <- df_weights$ybar0
-  ybar1 <- df_weights$ybar1
-  S.pool <- df_weights$survP
-  G.pool <- df_weights$survG
+  # exact names only ([[ ]]): no partial matching
+  at_points <- df_weights[["at_points"]]
+  nbar0 <- df_weights[["nbar0"]]
+  nbar1 <- df_weights[["nbar1"]]
+  ybar0 <- df_weights[["ybar0"]]
+  ybar1 <- df_weights[["ybar1"]]
+  S.pool <- df_weights[["survP"]]
+  G.pool <- df_weights[["survG"]]
 
-  # weights
-  dfwlr <- data.frame(at_points, S.pool, G.pool, Ybar = ybar0 + ybar1)
+  # weights (the censoring curve is only needed, and only added, when present)
+  dfwlr <- data.frame(at_points, S.pool, Ybar = ybar0 + ybar1)
+  if (!is.null(G.pool)) dfwlr$G.pool <- G.pool
   wt_rg <- get_validated_weights(dfwlr, scheme, scheme_params)
 
   dN0 <- diff(c(0, nbar0))

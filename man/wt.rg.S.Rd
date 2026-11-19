@@ -68,7 +68,8 @@ This function implements several weighting schemes for weighted log-rank tests:
 \item{Fleming-Harrington (fh)}{w(t) = S(t-)^rho * (1-S(t-))^gamma. See vignette for common choices.}
 \item{Schemper}{w(t) = S(t-)/G(t-) where G is the censoring distribution.}
 \item{Xu-O'Quigley (XO)}{w(t) = S(t-)/Y(t) where Y is risk set size.}
-\item{Magirr-Burman (MB)}{w(t) = 1/max(S(t-), S(t*)).}
+\item{Magirr-Burman (MB)}{w(t) = 1/max(S(t-), S(t*)), with S(t*) the survival at the last time point
+<= t* (carried forward when t* is at or beyond the last point); 0 where both are 0.}
 \item{Custom time}{Step function with weight w_0 before t* and w_1 after t*.}
 }
 }

@@ -1,0 +1,173 @@
+golden compare, whitelist 'B1,B3,B5': 5409 fields in golden, 5409 in new run, 0 added
+WHITELISTED fields that moved (145):
+  veteran/df_counting_default/quantile_results/quantile: max abs diff 0.5
+  veteran/df_counting_MB/quantile_results/quantile: max abs diff 0.5
+  veteran/df_counting_q25/quantile_check/time: max abs diff 135
+  veteran/df_counting_q25/quantile_check/lower: max abs diff 123
+  veteran/df_counting_q25/quantile_check/upper: max abs diff 297
+  veteran/KM_diff_band_modtau/surv0: max abs diff 0.0177
+  veteran/KM_diff_band_modtau/sig2_surv0: max abs diff 0.000306
+  veteran/KM_diff_band_modtau/surv1: max abs diff 0.0192
+  veteran/KM_diff_band_modtau/sig2_surv1: max abs diff 0.000292
+  veteran/KM_diff_band_modtau/dhat: max abs diff 0.00806
+  veteran/KM_diff_band_modtau/sig2_dhat: max abs diff 0.000597
+  veteran/KM_diff_band_modtau/lower: max abs diff 0.0187
+  veteran/KM_diff_band_modtau/upper: max abs diff 0.0203
+  veteran/KM_diff_band_modtau/dhat_star: max abs diff 0.0494
+  veteran/KM_diff_band_modtau/Zdhat_star: max abs diff 1.22
+  veteran/KM_diff_band_modtau/surv0_star: max abs diff 0.0426
+  veteran/KM_diff_band_modtau/surv1_star: max abs diff 0.015
+  veteran/KM_diff_band_modtau/c_alpha_band: max abs diff 0.00159
+  veteran/KM_diff_band_modtau/sb_lower: max abs diff 0.0289
+  veteran/KM_diff_band_modtau/sb_upper: max abs diff 0.0305
+  veteran/wlr_dhat/cov_wlr_dhat: max abs diff 0.0051
+  veteran/wlr_dhat/sig2_dhat: max abs diff 0.000213
+  veteran/km_quantile_arm1/qhat: max abs diff 0.5
+  veteran/df_counting_strata/quantile_results/quantile: max abs diff 0.5
+  gbsg/df_counting_q25/quantile_check/time: NA pattern differs
+  gbsg/df_counting_q25/quantile_check/lower: NA pattern differs
+  gbsg/df_counting_q25/quantile_check/upper: NA pattern differs
+  gbsg/KM_diff_band_modtau/surv0: max abs diff 0.00503
+  gbsg/KM_diff_band_modtau/sig2_surv0: max abs diff 1.25e-05
+  gbsg/KM_diff_band_modtau/surv1: max abs diff 0.00617
+  gbsg/KM_diff_band_modtau/sig2_surv1: max abs diff 6.44e-05
+  gbsg/KM_diff_band_modtau/dhat: max abs diff 0.00151
+  gbsg/KM_diff_band_modtau/sig2_dhat: max abs diff 7.68e-05
+  gbsg/KM_diff_band_modtau/lower: max abs diff 0.00253
+  gbsg/KM_diff_band_modtau/upper: max abs diff 0.00206
+  gbsg/KM_diff_band_modtau/dhat_star: max abs diff 0.00465
+  gbsg/KM_diff_band_modtau/Zdhat_star: max abs diff 0.0778
+  gbsg/KM_diff_band_modtau/surv0_star: max abs diff 0.00148
+  gbsg/KM_diff_band_modtau/surv1_star: max abs diff 0.00438
+  gbsg/KM_diff_band_modtau/c_alpha_band: max abs diff 0.00285
+  gbsg/KM_diff_band_modtau/sb_lower: max abs diff 0.00331
+  gbsg/KM_diff_band_modtau/sb_upper: max abs diff 0.00244
+  gbsg_er_le0/df_counting_q25/quantile_check/time: NA pattern differs
+  gbsg_er_le0/df_counting_q25/quantile_check/lower: NA pattern differs
+  gbsg_er_le0/df_counting_q25/quantile_check/upper: NA pattern differs
+  gbsg_er_le0/KM_diff_band_modtau/surv0: max abs diff 0.0132
+  gbsg_er_le0/KM_diff_band_modtau/sig2_surv0: max abs diff 0.000167
+  gbsg_er_le0/KM_diff_band_modtau/surv1: max abs diff 0.0494
+  gbsg_er_le0/KM_diff_band_modtau/sig2_surv1: max abs diff 0.00103
+  gbsg_er_le0/KM_diff_band_modtau/dhat: max abs diff 0.0388
+  gbsg_er_le0/KM_diff_band_modtau/sig2_dhat: max abs diff 0.00114
+  gbsg_er_le0/KM_diff_band_modtau/lower: max abs diff 0.0413
+  gbsg_er_le0/KM_diff_band_modtau/upper: max abs diff 0.0437
+  gbsg_er_le0/KM_diff_band_modtau/dhat_star: max abs diff 0.0225
+  gbsg_er_le0/KM_diff_band_modtau/Zdhat_star: max abs diff 0.18
+  gbsg_er_le0/KM_diff_band_modtau/surv0_star: max abs diff 0.00602
+  gbsg_er_le0/KM_diff_band_modtau/surv1_star: max abs diff 0.0203
+  gbsg_er_le0/KM_diff_band_modtau/c_alpha_band: max abs diff 0.00479
+  gbsg_er_le0/KM_diff_band_modtau/sb_lower: max abs diff 0.0421
+  gbsg_er_le0/KM_diff_band_modtau/sb_upper: max abs diff 0.0457
+  gbsg_er_le0/wlr_dhat/cov_wlr_dhat: max abs diff 0.00748
+  gbsg_er_le0/wlr_dhat/sig2_dhat: max abs diff 0.000836
+  gbsg_er_gt0/df_counting_q25/quantile_check/time: NA pattern differs
+  gbsg_er_gt0/df_counting_q25/quantile_check/lower: NA pattern differs
+  gbsg_er_gt0/df_counting_q25/quantile_check/upper: NA pattern differs
+  gbsg_er_gt0/KM_diff_band_modtau/surv0: max abs diff 0.00549
+  gbsg_er_gt0/KM_diff_band_modtau/sig2_surv0: max abs diff 1.62e-05
+  gbsg_er_gt0/KM_diff_band_modtau/surv1: max abs diff 0.00703
+  gbsg_er_gt0/KM_diff_band_modtau/sig2_surv1: max abs diff 9.1e-05
+  gbsg_er_gt0/KM_diff_band_modtau/dhat: max abs diff 0.00211
+  gbsg_er_gt0/KM_diff_band_modtau/sig2_dhat: max abs diff 0.000107
+  gbsg_er_gt0/KM_diff_band_modtau/lower: max abs diff 0.00329
+  gbsg_er_gt0/KM_diff_band_modtau/upper: max abs diff 0.00278
+  gbsg_er_gt0/KM_diff_band_modtau/dhat_star: max abs diff 0.00497
+  gbsg_er_gt0/KM_diff_band_modtau/Zdhat_star: max abs diff 0.0833
+  gbsg_er_gt0/KM_diff_band_modtau/surv0_star: max abs diff 0.00132
+  gbsg_er_gt0/KM_diff_band_modtau/surv1_star: max abs diff 0.00466
+  gbsg_er_gt0/KM_diff_band_modtau/c_alpha_band: max abs diff 0.00106
+  gbsg_er_gt0/KM_diff_band_modtau/sb_lower: max abs diff 0.00418
+  gbsg_er_gt0/KM_diff_band_modtau/sb_upper: max abs diff 0.00309
+  sim_cont/df_counting_q25/quantile_check/time: max abs diff 17.5
+  sim_cont/df_counting_q25/quantile_check/lower: max abs diff 13.3
+  sim_cont/df_counting_q25/quantile_check/upper: NA pattern differs
+  sim_cont/KM_diff_band_modtau/surv0: max abs diff 0.0284
+  sim_cont/KM_diff_band_modtau/sig2_surv0: max abs diff 0.000349
+  sim_cont/KM_diff_band_modtau/surv1: max abs diff 0.0214
+  sim_cont/KM_diff_band_modtau/sig2_surv1: max abs diff 0.000143
+  sim_cont/KM_diff_band_modtau/dhat: max abs diff 0.0164
+  sim_cont/KM_diff_band_modtau/sig2_dhat: max abs diff 0.000435
+  sim_cont/KM_diff_band_modtau/lower: max abs diff 0.0137
+  sim_cont/KM_diff_band_modtau/upper: max abs diff 0.0209
+  sim_cont/KM_diff_band_modtau/dhat_star: max abs diff 0.0181
+  sim_cont/KM_diff_band_modtau/Zdhat_star: max abs diff 0.207
+  sim_cont/KM_diff_band_modtau/surv0_star: max abs diff 0.0179
+  sim_cont/KM_diff_band_modtau/surv1_star: max abs diff 0.00829
+  sim_cont/KM_diff_band_modtau/c_alpha_band: max abs diff 0.0333
+  sim_cont/KM_diff_band_modtau/sb_lower: max abs diff 0.0186
+  sim_cont/KM_diff_band_modtau/sb_upper: max abs diff 0.0206
+  sim_cont/wlr_dhat/cov_wlr_dhat: max abs diff 0.00275
+  sim_cont/wlr_dhat/sig2_dhat: max abs diff 0.000102
+  sim_ties/df_counting_q25/quantile_check/time: max abs diff 21.5
+  sim_ties/df_counting_q25/quantile_check/lower: max abs diff 12.5
+  sim_ties/df_counting_q25/quantile_check/upper: NA pattern differs
+  sim_ties/wlr_dhat/cov_wlr_dhat: max abs diff 0.0108
+  sim_ties/wlr_dhat/sig2_dhat: max abs diff 0.000401
+  sim_weighted/df_counting_q25/quantile_check/time: max abs diff 15
+  sim_weighted/df_counting_q25/quantile_check/lower: max abs diff 13
+  sim_weighted/df_counting_q25/quantile_check/upper: NA pattern differs
+  sim_weighted/KM_diff_band_modtau/surv0: max abs diff 0.0255
+  sim_weighted/KM_diff_band_modtau/sig2_surv0: max abs diff 9.38e-05
+  sim_weighted/KM_diff_band_modtau/surv1: max abs diff 0.0211
+  sim_weighted/KM_diff_band_modtau/sig2_surv1: max abs diff 9.82e-05
+  sim_weighted/KM_diff_band_modtau/dhat: max abs diff 0.00676
+  sim_weighted/KM_diff_band_modtau/sig2_dhat: max abs diff 0.000155
+  sim_weighted/KM_diff_band_modtau/lower: max abs diff 0.00572
+  sim_weighted/KM_diff_band_modtau/upper: max abs diff 0.00899
+  sim_weighted/KM_diff_band_modtau/dhat_star: max abs diff 0.0177
+  sim_weighted/KM_diff_band_modtau/Zdhat_star: max abs diff 0.269
+  sim_weighted/KM_diff_band_modtau/surv0_star: max abs diff 0.0168
+  sim_weighted/KM_diff_band_modtau/surv1_star: max abs diff 0.00812
+  sim_weighted/KM_diff_band_modtau/c_alpha_band: max abs diff 0.0425
+  sim_weighted/KM_diff_band_modtau/sb_lower: max abs diff 0.00914
+  sim_weighted/KM_diff_band_modtau/sb_upper: max abs diff 0.00787
+  sim_weighted/wlr_dhat/cov_wlr_dhat: max abs diff 0.00199
+  sim_weighted/wlr_dhat/sig2_dhat: max abs diff 4.75e-05
+  sim_strata/df_counting_q25/quantile_check/time: max abs diff 20.1
+  sim_strata/df_counting_q25/quantile_check/lower: max abs diff 15.4
+  sim_strata/df_counting_q25/quantile_check/upper: NA pattern differs
+  sim_strata/KM_diff_band_modtau/surv0: max abs diff 0.0278
+  sim_strata/KM_diff_band_modtau/sig2_surv0: max abs diff 8.54e-05
+  sim_strata/KM_diff_band_modtau/surv1: max abs diff 0.0151
+  sim_strata/KM_diff_band_modtau/sig2_surv1: max abs diff 6.54e-05
+  sim_strata/KM_diff_band_modtau/dhat: max abs diff 0.0127
+  sim_strata/KM_diff_band_modtau/sig2_dhat: max abs diff 0.000144
+  sim_strata/KM_diff_band_modtau/lower: max abs diff 0.0136
+  sim_strata/KM_diff_band_modtau/upper: max abs diff 0.0118
+  sim_strata/KM_diff_band_modtau/dhat_star: max abs diff 0.0133
+  sim_strata/KM_diff_band_modtau/Zdhat_star: max abs diff 0.191
+  sim_strata/KM_diff_band_modtau/surv0_star: max abs diff 0.0144
+  sim_strata/KM_diff_band_modtau/surv1_star: max abs diff 0.00373
+  sim_strata/KM_diff_band_modtau/c_alpha_band: max abs diff 0.0407
+  sim_strata/KM_diff_band_modtau/sb_lower: max abs diff 0.0167
+  sim_strata/KM_diff_band_modtau/sb_upper: max abs diff 0.00869
+  sim_strata/wlr_dhat/cov_wlr_dhat: max abs diff 0.00193
+  sim_strata/wlr_dhat/sig2_dhat: max abs diff 4.63e-05
+B5 old/new ratios:
+  veteran       sig2_dhat     old 0.00696039 new 0.00717291 old/new 0.970372
+  veteran       cov_wlr_dhat  old 0.336652 new 0.341753 old/new 0.985075
+  veteran       cor_wlr_dhat  old 0.731734 new 0.731734 old/new 1.000000
+  gbsg          sig2_dhat     old 0.00156313 new 0.00156313 old/new 1.000000
+  gbsg          cov_wlr_dhat  old 0.28045 new 0.28045 old/new 1.000000
+  gbsg          cor_wlr_dhat  old 0.841932 new 0.841932 old/new 1.000000
+  gbsg_er_le0   sig2_dhat     old 0.0165187 new 0.017355 old/new 0.951814
+  gbsg_er_le0   cov_wlr_dhat  old 0.299372 new 0.306856 old/new 0.975610
+  gbsg_er_le0   cor_wlr_dhat  old 0.840606 new 0.840606 old/new 1.000000
+  gbsg_er_gt0   sig2_dhat     old 0.0017199 new 0.0017199 old/new 1.000000
+  gbsg_er_gt0   cov_wlr_dhat  old 0.273051 new 0.273051 old/new 1.000000
+  gbsg_er_gt0   cor_wlr_dhat  old 0.842115 new 0.842115 old/new 1.000000
+  sim_cont      sig2_dhat     old 0.00504629 new 0.00514875 old/new 0.980100
+  sim_cont      cov_wlr_dhat  old 0.272497 new 0.275249 old/new 0.990000
+  sim_cont      cor_wlr_dhat  old 0.711725 new 0.711725 old/new 1.000000
+  sim_ties      sig2_dhat     old 0.00456888 new 0.00497035 old/new 0.919226
+  sim_ties      cov_wlr_dhat  old 0.250373 new 0.261142 old/new 0.958763
+  sim_ties      cor_wlr_dhat  old 0.708103 new 0.708103 old/new 1.000000
+  sim_weighted  sig2_dhat     old 0.00352589 new 0.00357337 old/new 0.986711
+  sim_weighted  cov_wlr_dhat  old 0.29581 new 0.297796 old/new 0.993333
+  sim_weighted  cor_wlr_dhat  old 0.733596 new 0.733596 old/new 1.000000
+  sim_strata    sig2_dhat     old 0.00343809 new 0.00348439 old/new 0.986711
+  sim_strata    cov_wlr_dhat  old 0.287845 new 0.289777 old/new 0.993333
+  sim_strata    cor_wlr_dhat  old 0.745232 new 0.745232 old/new 1.000000
+GOLDEN: identical outside the whitelist

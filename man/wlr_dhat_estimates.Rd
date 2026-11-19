@@ -20,7 +20,10 @@ wlr_dhat_estimates(
 \item{scheme_params}{Named list with numeric weighting parameters \code{rho}
 and \code{gamma} (used for "fh" and "custom_code" schemes).}
 
-\item{tzero}{Time point at which to evaluate the difference in survival (default: 24).}
+\item{tzero}{Time point at which to evaluate the difference in survival (default: NULL, no
+difference computed). The curves and the pooled survival are read at the last grid point
+\code{<= tzero}; before the first grid point the difference is 0 with variance 0, and at or after
+the last grid point the values at the last grid point are used.}
 }
 \value{
 A list with elements:

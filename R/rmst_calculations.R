@@ -41,6 +41,9 @@ cumulative_rmst_bands <- function(df, fit, tte.name, event.name, treat.name, wei
   missing <- setdiff(required_names, names(df))
   if (length(missing) > 0) stop(sprintf("Missing columns in df: %s", paste(missing, collapse = ", ")))
   if (!is.list(fit)) stop("fit must be a list (output from KM_diff).")
+  if (is.null(fit[["dhat_star"]])) {
+    stop("cumulative_rmst_bands() needs a KM_diff() fit made with draws.band > 0 (fit$dhat_star is missing).")
+  }
 
 ans <- list()
 at_points <- fit$at_points
