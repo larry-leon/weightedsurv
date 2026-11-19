@@ -2,7 +2,9 @@
 # Stage 2c (R1) replaced the two blocks of this file that encoded the weighted Greenwood formula
 # ("the multiplier equals the formula computed independently ..." and "df_counting() and KM_diff()
 # report the formula ..."); the weighted variance is now the robust variance, tested in
-# test-r1-robust-variance.R.
+# test-r1-robust-variance.R. Stage 2c (R2) replaced the block that required the weighted
+# resampling path (draws > 0, unequal weights) to be unchanged; its equal-weights half is kept,
+# and the new resampling is tested in test-r2-weighted-resampling.R.
 mult <- function(U, D, W, at, ...) calculate_risk_event_counts(U, D, W, at, ...)$sig2w_multiplier
 arm <- function(d, a) d[d$treat == a, ]
 
@@ -43,19 +45,9 @@ test_that("constant weights give the unit-weight SE", {
   expect_equal(a$sig2_surv1, b$sig2_surv1, tolerance = 1e-12)
 })
 
-test_that("resampling path (draws > 0, unequal weights) is the one used before and is unchanged", {
+test_that("draws > 0 with equal weights takes the formula, as before", {
   d <- ws_sim(150, 106, weighted = TRUE)
-  x <- arm(d, 1); at <- sort(unique(x$time)); U <- x$time; D <- x$status; W <- x$w
-  got <- mult(U, D, W, at, draws = 100, seedstart = 77)
-  old <- local({
-    event_mat <- outer(U, at, FUN = "<="); risk_w <- colSums(outer(U, at, FUN = ">=") * W)
-    set.seed(77); G <- matrix(stats::rnorm(100 * length(U)), ncol = 100)
-    dN <- apply(t(event_mat * W) %*% (D * G), 2, function(z) diff(c(0, z)))
-    dr <- sweep(dN, 1, risk_w, "/"); dr[is.infinite(dr) | is.nan(dr)] <- 0
-    apply(dr, 1, stats::var)
-  })
-  expect_identical(got, old)
-  # equal weights with draws > 0 take the formula, as before
+  x <- arm(d, 1); at <- sort(unique(x$time)); U <- x$time; D <- x$status
   expect_identical(mult(U, D, rep(1, length(U)), at, draws = 100), mult(U, D, rep(1, length(U)), at))
 })
 

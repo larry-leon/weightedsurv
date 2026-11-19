@@ -254,15 +254,13 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
   ybar <- colSums(outer(U, at_points, FUN = ">=") * W)
   nbar <- colSums(outer(U[D == 1], at_points, FUN = "<=") * W[D == 1])
   if (draws > 0 && length(unique(W)) > 1) {
-    # Resampling (draws > 0 and weights not all equal)
-    event_mat <- outer(U, at_points, FUN = "<=")
-    risk_w <- colSums(outer(U, at_points, FUN = ">=") * W)
+    # Resampling (draws > 0 and weights not all equal): for multipliers G (same draws as before),
+    # the variance over draws of sum_i G_ib w_i psi_i(t) at each point (see ws_km_psi_parts()),
+    # returned as successive differences so that KM_estimates() reproduces it. The increments are
+    # not independent, so the variances of the increments are not summed.
     G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * length(U)), ncol = draws))
-    counting_star_all <- t(event_mat * W) %*% (D * G.draws)
-    dN_star_all <- apply(counting_star_all, 2, function(x) diff(c(0, x)))
-    drisk_star <- sweep(dN_star_all, 1, risk_w, "/")
-    drisk_star[is.infinite(drisk_star) | is.nan(drisk_star)] <- 0
-    sig2w_multiplier <- apply(drisk_star, 1, var)
+    M <- ws_km_ij_sorted(U, D, W, at_points, ybar, nbar, G = G.draws)
+    sig2w_multiplier <- diff(c(0, apply(M, 1, var)))
   } else if (length(unique(W)) > 1) {
     # Weights not all equal: robust (infinitesimal-jackknife) variance, survfit(robust = TRUE).
     # V(t) = sum_i w_i^2 psi_i(t)^2 (see ws_km_psi_parts()); KM_estimates() forms S^2 * cumsum of the
