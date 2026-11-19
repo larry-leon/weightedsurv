@@ -134,7 +134,8 @@ km_diff <- KM_diff(
   tte.name = "time",
   event.name = "status",
   treat.name = "treat",
-  draws.band = 1000
+  draws.band = 1000,
+  show_resamples = TRUE
 )
 
 # Plot difference curve

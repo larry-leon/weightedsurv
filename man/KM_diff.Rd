@@ -18,7 +18,7 @@ KM_diff(
   draws.band = 0,
   tau.seq = 0.25,
   qtau = 0.025,
-  show_resamples = TRUE,
+  show_resamples = FALSE,
   modify_tau = FALSE
 )
 }
@@ -54,7 +54,8 @@ Default: the sorted observed times.}
 
 \item{qtau}{Numeric; quantile for tau range restriction. Default: 0.025.}
 
-\item{show_resamples}{Logical; whether to plot resampled curves. Default: TRUE.}
+\item{show_resamples}{Logical; whether to plot the first 20 standardised resampled difference curves
+(only when \code{draws.band > 0}). Default: FALSE.}
 
 \item{modify_tau}{Logical; whether to restrict time range for simultaneous bands. Default: FALSE.}
 }
@@ -126,7 +127,8 @@ result_band <- KM_diff(
   event.name = "status",
   treat.name = "treat",
   draws.band = 1000,
-  modify_tau = TRUE
+  modify_tau = TRUE,
+  show_resamples = TRUE
 )
 
 }

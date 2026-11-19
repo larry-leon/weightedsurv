@@ -364,7 +364,8 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' @param draws.band Integer; number of draws for simultaneous confidence bands. Default: 0.
 #' @param tau.seq Numeric; step size for tau sequence when \code{modify_tau=TRUE}. Default: 0.25.
 #' @param qtau Numeric; quantile for tau range restriction. Default: 0.025.
-#' @param show_resamples Logical; whether to plot resampled curves. Default: TRUE.
+#' @param show_resamples Logical; whether to plot the first 20 standardised resampled difference curves
+#'   (only when \code{draws.band > 0}). Default: FALSE.
 #' @param modify_tau Logical; whether to restrict time range for simultaneous bands. Default: FALSE.
 #'
 #' @return A list containing:
@@ -427,7 +428,8 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #'   event.name = "status",
 #'   treat.name = "treat",
 #'   draws.band = 1000,
-#'   modify_tau = TRUE
+#'   modify_tau = TRUE,
+#'   show_resamples = TRUE
 #' )
 #'
 #' @seealso
@@ -443,7 +445,7 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' @export
 
 KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "treat", weight.name=NULL, at_points = sort(df[[tte.name]]), alpha = 0.05, seedstart = 8316951, draws = 0,
-                    risk.points = NULL, draws.band = 0, tau.seq = 0.25, qtau = 0.025, show_resamples = TRUE, modify_tau = FALSE) {
+                    risk.points = NULL, draws.band = 0, tau.seq = 0.25, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE) {
 
   # Columns present; no NA; times finite and >= 0; event 0/1, logical or 1/2; weights >= 0;
   # both arms non-empty (errors name the column and the problem)
