@@ -87,6 +87,12 @@ $$\hat{\mu}(\tau) = \sum_{k: t_k \leq \tau} \hat{S}(t_{k-1})(t_k - t_{k-1}) + \h
 
 where $t_1 < t_2 < \cdots < t_K$ are the distinct event times up to $\tau$, with the convention $t_0 = 0$ and $\hat{S}(t_0) = 1$.
 
+In `cumulative_rmst_bands`, the cumulative RMST difference $\hat{\Delta}(s_j)$ is computed on the time grid $s_1 \le s_2 \le \cdots$ of the `KM_diff` fit, from the difference $\hat{\delta}(t) = \hat{S}_1(t) - \hat{S}_0(t)$, with $\hat{\Delta}(s_1) = 0$. By default (`mean_rule = "trapezoid"`) each step is integrated with the trapezoid rule,
+$$\hat{\Delta}(s_j) = \sum_{k=2}^{j} \tfrac{1}{2}\{\hat{\delta}(s_{k-1}) + \hat{\delta}(s_k)\}(s_k - s_{k-1}),$$
+which differs slightly from the exact area under the step functions above. With `mean_rule = "rectangle"` the left-rectangle sum
+$$\hat{\Delta}(s_j) = \sum_{k=2}^{j} \hat{\delta}(s_{k-1})(s_k - s_{k-1})$$
+is used. It is the exact area, and equals the difference of the restricted means from `survival::survfit`, when the grid holds every event time, as the default `KM_diff` grid does (not when the fit was made with `modify_tau = TRUE`). The same rule is applied to every resampled curve.
+
 By the uniform consistency of the KM estimator [@Gill1983], $\hat{\mu}(\tau)$ is uniformly consistent for $\mu(\tau)$ over the interval $[0, \tau]$ where $P(X > \tau) > 0$.
 
 ## Variance Estimation

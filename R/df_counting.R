@@ -79,6 +79,18 @@
 #' warning that says why.
 #' For stratified analyses, stratum-specific estimates are computed and combined appropriately.
 #'
+#' @section Variance of the Kaplan-Meier estimate:
+#' Unless resampling is requested (\code{draws > 0} with weights that are not all equal), the
+#' variance of each arm's Kaplan-Meier estimate is weighted Greenwood:
+#' \deqn{\widehat{Var}[\hat S(t)] = \hat S(t)^2 \sum_{s \le t} \frac{\sum_i w_i^2 dN_i(s)}{Y_w(s)\{Y_w(s) - dN_w(s)\}},}{Var[S(t)] = S(t)^2 * sum_{s <= t} [sum_i w_i^2 dN_i(s)] / [Y_w(s) (Y_w(s) - dN_w(s))],}
+#' with \eqn{Y_w(s)} the weighted number at risk and \eqn{dN_w(s) = \sum_i w_i dN_i(s)} the
+#' weighted number of events at \eqn{s}; a term is 0 where \eqn{Y_w(s) = 0} or
+#' \eqn{Y_w(s) - dN_w(s) \le 10^{-10} Y_w(s)}. With all weights equal (or no weights) this is
+#' Greenwood's formula. The weights are treated as fixed and known: there is no adjustment for
+#' estimated weights (for example estimated propensity scores). The standard error does not depend
+#' on the scale of the weights, so weights are not frequency weights: a weight of 2 is not two
+#' copies of the row.
+#'
 #' @section Weighting Schemes:
 #' \describe{
 #'   \item{fh}{Fleming-Harrington: w(t) = S(t)^rho * (1-S(t))^gamma}

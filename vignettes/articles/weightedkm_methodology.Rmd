@@ -200,7 +200,11 @@ Importantly, @DengWang2025 find through simulation that the additional variance 
 
 ## Variance Estimation in `weightedsurv`
 
-In the `weightedsurv` package, standard errors for the weighted KM estimator are computed via a robust variance formula analogous to Greenwood's formula, applied to the weighted counting processes.  These are validated against the `adjustedCurves` package and `survfit` with case-weights (see the `weightedsurv_examples` vignette for cross-checks).
+In the `weightedsurv` package, the standard error of the weighted KM estimator is the weighted Greenwood estimator (used whenever no resampling is requested, that is unless `draws > 0` with unequal weights). With the weighted risk set $\bar{Y}_a^w(s)$ and weighted event count $d\bar{N}_a^w(s)$ defined above,
+
+$$\widehat{\text{Var}}\bigl[\hat{S}^a(t)\bigr] = \hat{S}^a(t)^2 \sum_{s \leq t} \frac{\sum_{i: A_i = a} w_i^2 \, dN_i(s)}{\bar{Y}_a^w(s)\bigl\{\bar{Y}_a^w(s) - d\bar{N}_a^w(s)\bigr\}},$$
+
+where a term is 0 when $\bar{Y}_a^w(s) = 0$ or $\bar{Y}_a^w(s) - d\bar{N}_a^w(s) \leq 10^{-10}\, \bar{Y}_a^w(s)$.  With all weights equal this is Greenwood's formula.  The weights are treated as fixed and known: there is no adjustment for estimated weights.  The standard error does not depend on the scale of the weights ($w_i$ and $c\, w_i$ give the same value), so the weights are not frequency weights: a weight of 2 is not two copies of the row.
 
 For settings involving complex weighting and the simultaneous inference procedures described below, variance estimation via martingale resampling is preferred.
 

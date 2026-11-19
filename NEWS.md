@@ -59,6 +59,33 @@
   the random-number stream of the calling session; results for a given `seedstart` are unchanged.
   (B6)
 
+* Weighted standard errors: the standard error of a weighted Kaplan-Meier curve is now the
+  weighted Greenwood estimate, `S(t)^2 * sum over s <= t of sum(w_i^2 dN_i(s)) / (Y_w(s) * (Y_w(s) - dN_w(s)))`,
+  in `df_counting()`, `KM_diff()` and `calculate_risk_event_counts()`. **Every weighted standard
+  error changes**, and with it everything computed from one: pointwise limits, simultaneous-band
+  limits and critical values, the standardised resampled curves, and the confidence limits of
+  weighted quantiles. Unweighted results do not change (at unit weights the formula is
+  Greenwood's). All weights equal to a constant now give the unweighted standard error; before, a
+  constant weight c gave the standard error of the data with every row repeated c times. Survival
+  estimates, differences, resampled curves, risk tables, log-rank, Cox and RMST results do not
+  change. The standard error no longer depends on the scale
+  of the weights (weights `w` and `10 * w` give the same answer), so weights are not frequency
+  weights: a weight of 2 is not two copies of the row. Weights are treated as fixed and known.
+  With `draws > 0` and unequal weights the resampling variance is used, as before. (M)
+
+* `cumulative_rmst_bands()` has a new last argument `mean_rule`. The default, `"trapezoid"`, gives
+  the same results as before. `"rectangle"` integrates the survival difference as a step function;
+  it then equals the difference of `survfit()`'s restricted means whenever the time grid holds
+  every event time (as the default `KM_diff()` grid does; not with `modify_tau = TRUE`). The result
+  gains an element `mean_rule`. (B8)
+
+* `KM_diff()` no longer plots the resampled difference curves by default (`show_resamples = FALSE`);
+  use `show_resamples = TRUE` to see them. Results are unchanged. (B9)
+
+* The two confidence bands of the Kaplan-Meier plots (`plot_weighted_km()`,
+  `KM_plot_2sample_weighted_counting()`, `plot_km_curves_counting()`) are now semi-transparent, in
+  the same colours, so each stays visible where they overlap. Nothing else on the plot changes. (B11)
+
 ## Bug fixes
 
 * Stratified `df_counting()` no longer depends on `survival` being attached or recent enough to

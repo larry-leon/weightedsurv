@@ -228,7 +228,26 @@ extract_group_data <- function(time, delta, wgt, z, group = 1) {
 #' @param at_points Numeric vector of time points.
 #' @param draws Number of draws for variance estimation (default 0).
 #' @param seedstart Random seed for draws (default 816951).
-#' @return List with ybar (risk set counts), nbar (event counts), sig2w_multiplier (variance term).
+#' @return List with ybar (risk set counts), nbar (event counts), sig2w_multiplier (variance term:
+#'   its cumulative sum times \eqn{\hat S(t)^2} is the variance of the Kaplan-Meier estimate, see
+#'   \code{\link{KM_estimates}}).
+#' @details \code{sig2w_multiplier} is the per-time-point weighted Greenwood term
+#'   \eqn{\sum_i w_i^2 dN_i(s) / [Y_w(s)\{Y_w(s) - dN_w(s)\}]} (0 where \eqn{Y_w(s) = 0} or
+#'   \eqn{Y_w(s) - dN_w(s) \le 10^{-10} Y_w(s)}), or, when \code{draws > 0} and the weights are not
+#'   all equal, the resampling variance of the increments.
+#'
+#' @section Variance of the Kaplan-Meier estimate:
+#' Unless resampling is requested (\code{draws > 0} with weights that are not all equal), the
+#' variance of the Kaplan-Meier estimate built from these counts is weighted Greenwood:
+#' \deqn{\widehat{Var}[\hat S(t)] = \hat S(t)^2 \sum_{s \le t} \frac{\sum_i w_i^2 dN_i(s)}{Y_w(s)\{Y_w(s) - dN_w(s)\}},}{Var[S(t)] = S(t)^2 * sum_{s <= t} [sum_i w_i^2 dN_i(s)] / [Y_w(s) (Y_w(s) - dN_w(s))],}
+#' with \eqn{Y_w(s)} the weighted number at risk and \eqn{dN_w(s) = \sum_i w_i dN_i(s)} the
+#' weighted number of events at \eqn{s}; a term is 0 where \eqn{Y_w(s) = 0} or
+#' \eqn{Y_w(s) - dN_w(s) \le 10^{-10} Y_w(s)}. With all weights equal (or no weights) this is
+#' Greenwood's formula. The weights are treated as fixed and known: there is no adjustment for
+#' estimated weights (for example estimated propensity scores). The standard error does not depend
+#' on the scale of the weights, so weights are not frequency weights: a weight of 2 is not two
+#' copies of the row.
+#'
 #' @export
 
 calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart = 816951) {
