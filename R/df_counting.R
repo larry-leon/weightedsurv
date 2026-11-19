@@ -152,7 +152,6 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
   cox_results <- NULL
   if (get.cox) {
-    if (!requireNamespace("survival", quietly = TRUE)) stop("Package 'survival' is required for Cox model.")
     treat.name.strata <- treat.name
     if (!is.null(strata.name)) {
       treat.name.strata <- paste(treat.name,"+",paste("strata(",eval(strata.name),")"))
@@ -182,7 +181,6 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   }
   ans$cox_results <- cox_results
   logrank_results <- NULL
-  if (!requireNamespace("survival", quietly = TRUE)) stop("Package 'survival' is required for logrank test.")
   surv_obj <- survival::Surv(df[[tte.name]], df[[event.name]])
   group <- df[[treat.name]]
  # survdiff does not support case weights
@@ -389,7 +387,8 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     if(verbose){  if (stop.onerror) stop(msg) else warning(msg)
     }
     }
-    check_km_curve <- function(time, S.KM, se.KM, df_check, group_name = "Group", check.seKM = TRUE) {
+    # internal check against survfit (distinct from the exported check_km_curve())
+    check_km_fit <- function(time, S.KM, se.KM, df_check, group_name = "Group", check.seKM = TRUE) {
         if (any(S.KM < 0 | S.KM > 1)) {
         msg <- paste0(group_name, " : ","KM curve has values outside [0,1].")
         if (stop.onerror) stop(msg) else warning(msg)
@@ -426,8 +425,8 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
               }
       }
-    check_km_curve(at_points[idv0.check],surv0[idv0.check], sqrt(sig2_surv0[idv0.check]), df0_check, "control", check.seKM = check.seKM)
-    check_km_curve(at_points[idv1.check],surv1[idv1.check], sqrt(sig2_surv1[idv1.check]), df1_check, "treat", check.seKM = check.seKM)
+    check_km_fit(at_points[idv0.check],surv0[idv0.check], sqrt(sig2_surv0[idv0.check]), df0_check, "control", check.seKM = check.seKM)
+    check_km_fit(at_points[idv1.check],surv1[idv1.check], sqrt(sig2_surv1[idv1.check]), df1_check, "treat", check.seKM = check.seKM)
      }
 
   plot_km_comparison <- function(time,surv,se,dfcheck,group_name = "control"){
@@ -447,7 +446,6 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   }
 
   ans$at_points <- at_points
-  ans$strata <- strata
   ans$ybar0 <- ybar0
   ans$nbar0 <- nbar0
   ans$surv0 <- surv0

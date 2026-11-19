@@ -240,7 +240,6 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
     # Alternative with dN / (ybar^2)
   }
   if(length(unique(W)) > 1){
-    n <- length(U)
     event_mat <- outer(U, at_points, FUN = "<=")
     risk_mat  <- outer(U, at_points, FUN = ">=")
     risk_w <- colSums(risk_mat *  W)
@@ -250,7 +249,6 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
         # draws == 0
         counting <- colSums(event_mat * (D * W))
         dN_w <- diff(c(0, counting))
-        dJ <- ifelse(risk_w == 1, 0, (dN_w - 1) / (risk_w - 1))
         dL <- ifelse(risk_w == 0, 0, dN_w / risk_w)
         h2 <- ifelse(risk_w > 0, (1 / (risk_w)), 0)
         sig2w_multiplier <- (h2 * (dN_w - dL))^2
@@ -258,7 +256,7 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
       },
       {
         # draws > 0
-        G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * n), ncol = draws))
+        G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * length(U)), ncol = draws))
         counting_star_all <- t(event_mat * W) %*% (D * G.draws)
         dN_star_all <- apply(counting_star_all, 2, function(x) diff(c(0, x)))
         drisk_star <- sweep(dN_star_all, 1, risk_w, "/")

@@ -323,8 +323,6 @@ plot_weight_schemes <- function(
     rescheme_fhexp2 = TRUE
 ) {
 
-  if (!requireNamespace("ggplot2", quietly = TRUE)) stop("Package 'ggplot2' is required.")
-
   atpoints <- dfcount$at_points_all
   S.pool <- dfcount$survP_all
   ybar <- dfcount$ybar_all
