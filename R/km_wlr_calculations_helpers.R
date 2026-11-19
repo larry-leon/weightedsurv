@@ -61,39 +61,46 @@ risk_weighted <- function(x, y, w = rep(1, length(y))) {
 
 #' Kaplan-Meier quantile calculation
 #'
-#' Calculates the quantile time for a Kaplan-Meier curve.
+#' Calculates the quantile time for a Kaplan-Meier curve: the time at which survival drops to
+#' \code{qprob} (\code{qprob = 0.5} is the median; \code{qprob = 0.25} is the time at which
+#' 25\% are still event-free, i.e. \code{quantile(survfit(...), probs = 0.75)}).
 #'
-#' @param time_points Vector of time points.
-#' @param survival_probs Vector of survival probabilities.
-#' @param qprob Quantile probability (default 0.5).
+#' With \code{type = "midpoint"} the rule of \code{survival::quantile.survfit} is used: the first
+#' time at which S(t) <= qprob (comparisons within \code{sqrt(.Machine$double.eps)}); when S(t)
+#' equals \code{qprob} on an interval, the midpoint of that interval; when that plateau runs to the
+#' last time point, the midpoint between its start and the last time point. NA when the curve
+#' never reaches \code{qprob}. With \code{type = "min"}, the first time at which S(t) <= qprob.
+#' The curve is taken to start at S = 1 at time 0 and to end at the last element of
+#' \code{time_points}; values may be NA (they are skipped).
+#'
+#' @param time_points Vector of time points (non-decreasing).
+#' @param survival_probs Vector of survival probabilities at \code{time_points}.
+#' @param qprob Survival level (default 0.5): the quantile is the time at which S drops to \code{qprob}.
 #' @param type Calculation type (midpoint or min).
 #' @return Estimated quantile time.
 #' @importFrom stats quantile
 #' @export
 
 kmq_calculations <- function(time_points, survival_probs, qprob = 0.5, type = "midpoint") {
-  tq2 <- suppressWarnings(min(time_points[which(survival_probs <= qprob)]))
-  loc.tq2 <- which(time_points == tq2)
-  # jump point prior to quant
-  qjt1 <- suppressWarnings(min(survival_probs[survival_probs > qprob]))
-  tq1 <- suppressWarnings(min(time_points[which(survival_probs == qjt1)]))
-  tq.hat <- tq2
-  mid_flag <- !is.na(qjt1) && (round(qjt1, 12) == qprob)
-  if (type == "midpoint" && mid_flag) {
-    tq.hat <- tq1 + (tq2 - tq1) / 2
+  if (type != "midpoint") {
+    tq <- suppressWarnings(min(time_points[which(survival_probs <= qprob)]))
+    return(if (is.finite(tq)) tq else NA)
   }
-  if (is.infinite(tq.hat) || is.na(tq.hat)) tq.hat <- NA
-  return(tq.hat)
+  ws_km_quantile_time(time_points, survival_probs, qprob)
 }
 
 #' Kaplan-Meier quantile and confidence interval
 #'
-#' Calculates the quantile and confidence interval for a Kaplan-Meier curve.
+#' Calculates the quantile and confidence interval for a Kaplan-Meier curve. The quantile is the
+#' time at which survival drops to \code{qprob} (see \code{\link{kmq_calculations}}); the limits
+#' are the same quantity read from the log-transform pointwise limits of the curve (upper limit
+#' capped at 1, NA where S = 0), as \code{survival::quantile.survfit} does with
+#' \code{conf.type = "log"}.
 #'
 #' @param time_points Vector of time points.
 #' @param survival_probs Vector of survival probabilities.
 #' @param se_probs Standard errors of survival probabilities.
-#' @param qprob Quantile probability (default 0.5).
+#' @param qprob Survival level (default 0.5): the quantile is the time at which S drops to \code{qprob}.
 #' @param type Calculation type (midpoint or min).
 #' @param conf_level Confidence level (default 0.95).
 #' @return List with quantile and confidence interval.
@@ -111,7 +118,7 @@ km_quantile <- function(time_points, survival_probs, se_probs = NULL, qprob = 0.
     lower_probs <- upper_probs <- rep(NA_real_, length(survival_probs))
     ok <- !is.na(survival_probs) & survival_probs > 0
     lower_probs[ok] <- exp(log(survival_probs[ok]) - z * se_probs[ok] / survival_probs[ok])
-    upper_probs[ok] <- exp(log(survival_probs[ok]) + z * se_probs[ok] / survival_probs[ok])
+    upper_probs[ok] <- pmin(exp(log(survival_probs[ok]) + z * se_probs[ok] / survival_probs[ok]), 1)
     qhat_lower <- kmq_calculations(time_points = time_points, survival_probs = lower_probs, qprob = qprob, type = type)
     qhat_lower[is.infinite(qhat_lower)] <- NA
     qhat_upper <- kmq_calculations(time_points = time_points, survival_probs = upper_probs, qprob = qprob, type = type)

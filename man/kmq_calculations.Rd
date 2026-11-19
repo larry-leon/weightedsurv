@@ -7,11 +7,11 @@
 kmq_calculations(time_points, survival_probs, qprob = 0.5, type = "midpoint")
 }
 \arguments{
-\item{time_points}{Vector of time points.}
+\item{time_points}{Vector of time points (non-decreasing).}
 
-\item{survival_probs}{Vector of survival probabilities.}
+\item{survival_probs}{Vector of survival probabilities at \code{time_points}.}
 
-\item{qprob}{Quantile probability (default 0.5).}
+\item{qprob}{Survival level (default 0.5): the quantile is the time at which S drops to \code{qprob}.}
 
 \item{type}{Calculation type (midpoint or min).}
 }
@@ -19,5 +19,16 @@ kmq_calculations(time_points, survival_probs, qprob = 0.5, type = "midpoint")
 Estimated quantile time.
 }
 \description{
-Calculates the quantile time for a Kaplan-Meier curve.
+Calculates the quantile time for a Kaplan-Meier curve: the time at which survival drops to
+\code{qprob} (\code{qprob = 0.5} is the median; \code{qprob = 0.25} is the time at which
+25\\% are still event-free, i.e. \code{quantile(survfit(...), probs = 0.75)}).
+}
+\details{
+With \code{type = "midpoint"} the rule of \code{survival::quantile.survfit} is used: the first
+time at which S(t) <= qprob (comparisons within \code{sqrt(.Machine$double.eps)}); when S(t)
+equals \code{qprob} on an interval, the midpoint of that interval; when that plateau runs to the
+last time point, the midpoint between its start and the last time point. NA when the curve
+never reaches \code{qprob}. With \code{type = "min"}, the first time at which S(t) <= qprob.
+The curve is taken to start at S = 1 at time 0 and to end at the last element of
+\code{time_points}; values may be NA (they are skipped).
 }

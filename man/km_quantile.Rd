@@ -20,7 +20,7 @@ km_quantile(
 
 \item{se_probs}{Standard errors of survival probabilities.}
 
-\item{qprob}{Quantile probability (default 0.5).}
+\item{qprob}{Survival level (default 0.5): the quantile is the time at which S drops to \code{qprob}.}
 
 \item{type}{Calculation type (midpoint or min).}
 
@@ -30,5 +30,9 @@ km_quantile(
 List with quantile and confidence interval.
 }
 \description{
-Calculates the quantile and confidence interval for a Kaplan-Meier curve.
+Calculates the quantile and confidence interval for a Kaplan-Meier curve. The quantile is the
+time at which survival drops to \code{qprob} (see \code{\link{kmq_calculations}}); the limits
+are the same quantity read from the log-transform pointwise limits of the curve (upper limit
+capped at 1, NA where S = 0), as \code{survival::quantile.survfit} does with
+\code{conf.type = "log"}.
 }

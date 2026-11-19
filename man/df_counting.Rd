@@ -73,7 +73,9 @@ Logical (TRUE = event) and 1/2 coding (2 = event, as \code{survival::Surv} reads
 
 \item{verbose}{Logical; whether to print warnings and diagnostic messages. Default: FALSE.}
 
-\item{qprob}{Numeric in (0,1); quantile probability for KM quantile table. Default: 0.5 (median).}
+\item{qprob}{Numeric in (0,1); survival level for the KM quantile table: the quantile reported is the
+time at which survival drops to \code{qprob}, i.e. \code{quantile(survfit(...), probs = 1 - qprob)}.
+Default: 0.5 (median).}
 
 \item{scheme}{Character; weighting scheme for logrank/Fleming-Harrington test.
 Options: "fh", "schemper", "XO", "MB", "custom_time", "fh_exp1", "fh_exp2". Default: "fh".}

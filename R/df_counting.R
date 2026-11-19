@@ -23,7 +23,9 @@
 #' @param cox.eps Numeric; threshold for Cox p-value formatting (values below shown as "<eps"). Default: 0.001.
 #' @param lr.eps Numeric; threshold for logrank p-value formatting. Default: 0.001.
 #' @param verbose Logical; whether to print warnings and diagnostic messages. Default: FALSE.
-#' @param qprob Numeric in (0,1); quantile probability for KM quantile table. Default: 0.5 (median).
+#' @param qprob Numeric in (0,1); survival level for the KM quantile table: the quantile reported is the
+#'   time at which survival drops to \code{qprob}, i.e. \code{quantile(survfit(...), probs = 1 - qprob)}.
+#'   Default: 0.5 (median).
 #' @param scheme Character; weighting scheme for logrank/Fleming-Harrington test.
 #'   Options: "fh", "schemper", "XO", "MB", "custom_time", "fh_exp1", "fh_exp2". Default: "fh".
 #' @param scheme_params List; parameters for the selected weighting scheme. Default: \code{list(rho = 0, gamma = 0)}.
@@ -342,9 +344,18 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   ans$cens0 <- cens_ev$cens
   ans$riskpoints0 <- riskpoints0
 
-  # Quantiles
-  get_kmq <- km_quantile_table(at_points, surv0, se0 = sqrt(sig2_surv0), surv1, se1 = sqrt(sig2_surv1), arms,
-                               qprob = qprob, type = c("midpoint"), conf_level = conf_level)
+  # Quantiles: the time at which S drops to qprob (survfit's quantile(probs = 1 - qprob)).
+  # Each arm's curve is read up to that arm's last observed time (positive-weight rows), so that
+  # a plateau at the level that runs to the end of follow-up is handled as survfit does.
+  arm_q <- function(a, S, sig2) {
+    last_a <- max(time[z == a & wgt > 0])
+    sel <- at_points <= last_a
+    km_quantile(at_points[sel], S[sel], sqrt(sig2[sel]), qprob = qprob, type = "midpoint", conf_level = conf_level)
+  }
+  kmq1 <- arm_q(1, surv1, sig2_surv1)
+  kmq0 <- arm_q(0, surv0, sig2_surv0)
+  get_kmq <- rbind(data.frame(group = arms[1], quantile = kmq1$qhat, lower = kmq1$lower, upper = kmq1$upper),
+                   data.frame(group = arms[2], quantile = kmq0$qhat, lower = kmq0$lower, upper = kmq0$upper))
   ans$quantile_results <- get_kmq
 
 
@@ -384,7 +395,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     # survfit on the positive-weight rows (zero-weight rows contribute nothing);
     # control arm will be first stratum
     cd <- data.frame(time = time, delta = delta, z = z, wgt = wgt)[wgt > 0, , drop = FALSE]
-    check_fit <- survfit(Surv(time, delta) ~ z, data = cd, weights = wgt)
+    check_fit <- survfit(Surv(time, delta) ~ z, data = cd, weights = wgt, conf.int = conf_level, conf.type = "log")
     # survfit per arm, at that arm's event times (an arm without events has no rows)
     arm_check <- function(a) {
       s <- summary(survfit(Surv(time, delta) ~ 1, data = cd[cd$z == a, , drop = FALSE], weights = wgt))
@@ -393,10 +404,9 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     df0_check <- arm_check(0)
     df1_check <- arm_check(1)
 
-    # Note: the quantile() function can yield different results than median table
-    # The median table calculations appear more stable ...
+    # survfit's quantile at the same convention (probs = 1 - qprob) and the same confidence level
+    qtab <- quantile(check_fit, probs = 1 - qprob)
     if(qprob != 0.50){
-      qtab <- quantile(check_fit,probs=c(qprob))
       strata_names <- rownames(qtab$quantile)
       quantile_table <- data.frame(
         stratum = rep(strata_names, each = length(qprob)),
@@ -408,32 +418,31 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     ans$quantile_check <- quantile_table
     }
     if(qprob == 0.50){
-      qtab <- summary(check_fit)$table[, c("median", "0.95LCL", "0.95UCL")]
       quantile_table <- data.frame(
-        time = qtab[, "median"],
-        lower = qtab[, "0.95LCL"],
-        upper = qtab[, "0.95UCL"]
+        time = as.vector(qtab$quantile),
+        lower = as.vector(qtab$lower),
+        upper = as.vector(qtab$upper),
+        row.names = rownames(qtab$quantile)
       )
       ans$quantile_check <- quantile_table
     }
+    # A real discrepancy is reported whatever verbose is (an error under stop.onerror).
+    # Point estimates are always compared; the limits only without case weights, because the
+    # weighted limits use the package's own weighted variance.
+    q_differs <- function(a, b) any(is.na(a) != is.na(b)) || any(abs(a - b) > 1e-6, na.rm = TRUE)
+    cols_cmp <- if (is.null(weight.name)) 1:3 else 1
     # First row is control here
-    qcheck_0 <- quantile_table[1,c("time","lower","upper")]
-    aa <- c(unlist(qcheck_0))
-    bb <- c(unlist(get_kmq[2,c("quantile","lower","upper")]))
-    dcheck <- round(abs(aa-bb),6)
-    if(any(dcheck > 1e-6, na.rm = TRUE)){
+    aa <- c(unlist(quantile_table[1, c("time","lower","upper")]))
+    bb <- c(unlist(get_kmq[2, c("quantile","lower","upper")]))
+    if (q_differs(aa[cols_cmp], bb[cols_cmp])) {
       msg <- paste0(arms[2]," : ", "Control: discrepancy in quantile calculations")
-    if(verbose){  if (stop.onerror) stop(msg) else warning(msg)
+      if (stop.onerror) stop(msg) else warning(msg)
     }
-    }
-    qcheck_1 <- quantile_table[2,c("time","lower","upper")]
-    aa <- c(unlist(qcheck_1))
-    bb <- c(unlist(get_kmq[1,c("quantile","lower","upper")]))
-    dcheck <- round(abs(aa-bb),6)
-    if(any(dcheck > 1e-6, na.rm = TRUE)){
+    aa <- c(unlist(quantile_table[2, c("time","lower","upper")]))
+    bb <- c(unlist(get_kmq[1, c("quantile","lower","upper")]))
+    if (q_differs(aa[cols_cmp], bb[cols_cmp])) {
       msg <- paste0(arms[1]," : ", "Treatment: discrepancy in quantile calculations")
-    if(verbose){  if (stop.onerror) stop(msg) else warning(msg)
-    }
+      if (stop.onerror) stop(msg) else warning(msg)
     }
     # internal check against survfit (distinct from the exported check_km_curve())
     check_km_fit <- function(time, S.KM, se.KM, df_check, group_name = "Group", check.seKM = TRUE) {

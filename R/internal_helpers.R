@@ -93,3 +93,29 @@ km_arm_on_grid <- function(U, D, W, at_points, draws = 0, seedstart = 816951) {
   idx <- match(at_points, G)
   list(grid = G, idx = idx, S_grid = km$S_KM, surv = km$S_KM[idx], sig2 = km$sig2_KM[idx])
 }
+
+# Quantile time of a survival step curve, following the rule of survival::quantile.survfit:
+# work on F = 1 - S, starting from F = 0 at time 0, with level p = 1 - qprob; keep the first
+# time of each distinct value of F; the quantile is the midpoint between the first time F
+# reaches p and the first time F exceeds p (both within tol), so that a plateau at the level
+# gives the midpoint of the plateau; a plateau that runs to the end gives the midpoint between
+# its start and the last time point. NA when the curve never reaches the level. NA values in
+# survival_probs (e.g. limits where S = 0) are skipped.
+#' @noRd
+ws_km_quantile_time <- function(time_points, survival_probs, qprob, tol = sqrt(.Machine$double.eps)) {
+  x <- c(min(0, time_points[1]), time_points)
+  f <- c(0, 1 - survival_probs)
+  p <- 1 - qprob
+  if (all(is.na(f)) || max(f, na.rm = TRUE) < p) return(NA)
+  x_last <- x[length(x)]
+  first <- !duplicated(f)
+  x <- x[first]
+  f <- f[first]
+  k <- length(f)
+  i_reach <- stats::approx(f + tol, seq_len(k), p, method = "constant", f = 1)$y
+  i_pass <- stats::approx(f - tol, seq_len(k), p, method = "constant", f = 1)$y
+  q <- (x[i_reach] + x[i_pass]) / 2
+  if (p == 0) q <- x[1]
+  if (!is.na(f[k]) && abs(p - f[k]) < tol) q <- (x[i_reach] + x_last) / 2
+  if (is.na(q)) NA else q
+}

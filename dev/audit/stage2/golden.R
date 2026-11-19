@@ -5,7 +5,8 @@
 #   Rscript dev/audit/stage2/golden.R make                 -> golden_before.rds (refuses to overwrite)
 #   Rscript dev/audit/stage2/golden.R compare <whitelist>  -> exit 0 when every field outside the
 #                                                            whitelist is identical to golden_before.rds
-#   <whitelist> is one package ID (B7, B6, V, B4, B2, B1, B3, B5, B10), "none", or "final"
+#   <whitelist> is a package ID (B7, B6, V, B4, B2, B1, B3, B5, B10), a comma-separated list of IDs
+#   (a package is compared with the whitelists of the packages committed before it), "none", or "final"
 #   (the union over the packages listed in dev/audit/stage2/packages_done.txt).
 #
 # Identical means: numeric tolerance 1e-12 absolute; NA pattern, names, lengths and strings exact.
@@ -138,8 +139,9 @@ whitelist_for <- function(w) {
     message("final whitelist = union over: ", paste(done, collapse = ", "))
     return(unique(unlist(WL[done])))
   }
-  if (!w %in% names(WL)) stop("unknown whitelist: ", w)
-  WL[[w]]
+  ids <- trimws(strsplit(w, ",")[[1]])
+  if (!all(ids %in% names(WL))) stop("unknown whitelist: ", paste(setdiff(ids, names(WL)), collapse = ", "))
+  unique(unlist(WL[ids]))
 }
 
 same <- function(a, b) {
