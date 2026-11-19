@@ -1,0 +1,10 @@
+== before
+draws =    0, arm 0: pkg/adjustedCurves SE median 1.028 (range 1.019-1.117); pkg/survfit robust median 1.0081 (range 1.0000-1.0240)
+draws =    0, arm 1: pkg/adjustedCurves SE median 0.834 (range 0.406-1.083); pkg/survfit robust median 0.9576 (range 0.8617-1.0710)
+draws = 5000, arm 0: pkg/adjustedCurves SE median 1.026 (range 1.017-1.133); pkg/survfit robust median 1.0074 (range 0.9880-1.0217)
+draws = 5000, arm 1: pkg/adjustedCurves SE median 0.827 (range 0.406-1.020); pkg/survfit robust median 0.9524 (range 0.8521-1.0558)
+== after
+draws =    0, arm 0: pkg/adjustedCurves SE median 1.018 (range 1.009-1.117); pkg/survfit robust median 1.0000 (range 1.0000-1.0000)
+draws =    0, arm 1: pkg/adjustedCurves SE median 0.872 (range 0.411-1.021); pkg/survfit robust median 1.0000 (range 1.0000-1.0000)
+draws = 5000, arm 0: pkg/adjustedCurves SE median 1.008 (range 0.989-1.133); pkg/survfit robust median 0.9928 (range 0.9752-1.0144)
+draws = 5000, arm 1: pkg/adjustedCurves SE median 0.877 (range 0.409-1.023); pkg/survfit robust median 1.0023 (range 0.9884-1.0114)
