@@ -1,0 +1,2 @@
+vignettes/articles/estimated_weights_methodology.Rmd: rendered with options(warn = 2) in 1.6 s; weightedsurv 0.2.0 from the HEAD build in a temporary library
+vignettes/weightedsurv_examples.Rmd: rendered with options(warn = 2) in 7.8 s; weightedsurv 0.2.0 from the HEAD build in a temporary library

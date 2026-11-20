@@ -274,7 +274,7 @@ The resampling standard error is the standard deviation of $\hat{\beta}^{\dagger
 
 Under these conditions the conditional distribution of $\hat{\Delta}^{*}$ given the data and the distribution of $\hat{\Delta} - \Delta$ have the same Gaussian limit, and the same holds for continuous functionals: the standardized supremum and the integral.
 
-**Pointwise resampling variance (`draws > 0`) under `"estimated"`.**  In `df_counting()`, `KM_diff()` and `plotKM.band_subgroups()`, `draws > 0` replaces the analytic pointwise variance of a curve by the variance over draws of $\sum_{i \in g} G_i\, w_i\, \psi_i(t)$.  In the source that route draws multipliers for the members of one group at a time and uses that group's contributions only; $\Phi_i^a(t)$ needs the multipliers and the influence values of all $n$ subjects together.  With `weight_variance = "estimated"` the argument check stops with an error unless `draws` is 0.  The Stage 2e record (`dev/tasks/TASK_km_fixes_stage2e.md`) lists `draws = 0` as a validation rule and gives no further reason.  The analytic variance $\hat{S}^a(t)^2 \sum_i \Phi_i^a(t)^2$ is the quantity such a resampling variance would estimate.
+**Pointwise resampling variance (`draws > 0`) under `"estimated"`.**  In `df_counting()`, `KM_diff()` and `plotKM.band_subgroups()`, `draws > 0` replaces the analytic pointwise variance of a curve by the variance over draws of $\sum_{i \in g} G_i\, w_i\, \psi_i(t)$.  In the source that route draws multipliers for the members of one group at a time and uses that group's contributions only; $\Phi_i^a(t)$ needs the multipliers and the influence values of all $n$ subjects together.  With `weight_variance = "estimated"` the argument check stops with an error unless `draws` is 0.  The development record of this version lists `draws = 0` as a validation rule and gives no further reason.  The analytic variance $\hat{S}^a(t)^2 \sum_i \Phi_i^a(t)^2$ is the quantity such a resampling variance would estimate.
 
 # Conditions and properties
 
@@ -288,38 +288,191 @@ $$\text{ESS}_a = \frac{\bigl(\sum_{i: A_i = a} w_i\bigr)^2}{\sum_{i: A_i = a} w_
 
 returned with its ratio to the arm size as `df_counting()$ess`.  A ratio near 1 means evenly spread weights.  The package sets no threshold on it, and no warning depends on it.
 
-**Evaluation evidence.**  The table below is copied from `dev/audit/REPORT_km_fixes_stage2e.md` in the package repository (Monte Carlo study M7 of this version of the package): a selection of rows and columns of "Table M7", and, for the rows marked "first 500", of the table "Bootstrap benchmark on the same first 500 replicates".  Nothing is recomputed here.  Entries are the coverage of nominal 0.95 intervals for the survival difference at month 18 and for the log hazard ratio under FH(0, 0), and the rejection rate of the two-sided 5% log-rank test under the null.  "ESS ratio" is the mean of ESS / $n$, control / treated.  "boot" is a bootstrap of subjects in which the propensity model is refitted and the weights rebuilt in every resample (normal interval from the bootstrap standard deviation).  Rows without a mark have 2,000 replicates (Monte Carlo error $\pm 0.005$); rows marked "first 500" have 500 ($\pm 0.010$).  A dash means not evaluated.
+## Simulation results by time {#simulation-results-by-time}
 
-| Cell | Regime | ESS ratio c / t | Option | Survival difference, month 18 | Log HR, FH(0,0) | Null rejection, FH(0,0) |
-|---|---|---|---|---|---|---|
-| 31 Es-400 | moderate confounding, proportional hazards | 0.83 / 0.69 | known | 0.970 | 0.976 | --- |
-| | | | estimated | 0.941 | 0.944 | --- |
-| 32 Es-400-null | moderate confounding, null | 0.83 / 0.69 | known | 0.971 | 0.968 | 0.035 |
-| | | | estimated | 0.943 | 0.943 | 0.060 |
-| 35 Fe-400 | strong confounding, proportional hazards | 0.50 / 0.39 | known | 0.959 | 0.933 | --- |
-| | | | estimated | 0.916 | 0.901 | --- |
-| 37 Fe-400-null | strong confounding, null | 0.51 / 0.37 | known | 0.942 | 0.914 | 0.095 |
-| | | | estimated | 0.905 | 0.871 | 0.136 |
-| 38 V-1450-null | few treated, concentrated treated-arm weights, null | 0.95 / 0.36 | known | 0.943 | 0.906 | 0.103 |
-| | | | estimated | 0.925 | 0.889 | 0.117 |
-| | | | known (first 500) | 0.930 | 0.898 | --- |
-| | | | estimated (first 500) | 0.912 | 0.884 | --- |
-| | | | boot (first 500) | 0.906 | 0.882 | --- |
-| 39 V-1450-ph | few treated, concentrated treated-arm weights, proportional hazards | 0.95 / 0.35 | known | 0.948 | 0.920 | --- |
-| | | | estimated | 0.931 | 0.902 | --- |
-| | | | known (first 500) | 0.948 | 0.914 | --- |
-| | | | estimated (first 500) | 0.932 | 0.890 | --- |
-| | | | boot (first 500) | 0.932 | 0.892 | --- |
+```{r simres-data, echo = FALSE}
+res <- read.csv("sim_results/ps_weight_results_by_time.csv", stringsAsFactors = FALSE)
+f <- function(x, d = 3) ifelse(is.na(x), "", formatC(x, format = "f", digits = d))
+main <- res[!(res$source == "OC" & res$cell_id == 8), ]          # cell 8: bootstrap benchmark only (Table 5)
+cell_order <- c("Es9-400", "Es9-400-null", "Es-400", "Es-400-null", "Fe-400", "Fe-400-null",
+                "V-1450-ph", "V-1450-null", "D-400", "F-400")
+stopifnot(setequal(unique(main$cell), cell_order))
+v <- function(cell, est, col, t = NA) {
+  i <- main$cell == cell & main$estimand == est & (if (is.na(t)) is.na(main$time) else main$time %in% t)
+  stopifnot(sum(i) == 1)
+  main[[col]][i]
+}
+vals <- function(cells, est, col, t) unlist(lapply(cells, function(cl) vapply(t, function(u) v(cl, est, col, u), numeric(1))))
+rg <- function(cells, est, col, t, d = 3) {
+  x <- vals(cells, est, col, t)
+  if (f(min(x), d) == f(max(x), d)) f(min(x), d) else paste0(f(min(x), d), "--", f(max(x), d))
+}
+rgx <- function(x, d = 3) if (f(min(x), d) == f(max(x), d)) f(min(x), d) else paste0(f(min(x), d), "--", f(max(x), d))
+allm <- sort(unique(main$time[main$estimand == "delta"]))
+months <- c(1, 6, 12, 24, 36, 48)
+c9 <- c("Es9-400", "Es9-400-null"); c69 <- c("Es-400", "Es-400-null"); cF <- c("Fe-400", "Fe-400-null")
+cV <- c("V-1450-ph", "V-1450-null")
+nrep <- unique(main$replicates)
+mcse95 <- function(n) sqrt(0.95 * 0.05 / n)
+sc_short <- function(x) ifelse(grepl("^null", x), "null", "PH")
+ess_lab <- function(x) paste(f(x$ess_ratio_control, 2), f(x$ess_ratio_treated, 2), sep = " / ")
+cov_lab <- function(p, s) ifelse(is.na(p), "", paste0(f(p, 3), " (", f(s, 3), ")"))
+blank_rep <- function(x) { x[c(FALSE, x[-1] == x[-length(x)])] <- ""; x }
+# percentile of month m among observed event times (formula): event times exponential with the arm's hazard
+# (marginal over X), observed when before the uniform(0, 72) censoring time
+pct_obs <- function(m, rate) {
+  g <- function(t) rate * exp(-rate * t) * (1 - t / 72)
+  100 * integrate(g, 0, m)$value / integrate(g, 0, 72)$value
+}
+q_obs <- function(p, rate) uniroot(function(m) pct_obs(m, rate) - p, c(1e-6, 72))$root
+rate0 <- 0.04; rate1 <- 0.04 * exp(-0.4)
+stopifnot(q_obs(10, rate0) > 1, q_obs(10, rate1) > 1, q_obs(90, rate0) < 48, q_obs(90, rate1) < 48)
+p_treat <- function(a, b) 100 * integrate(function(x) plogis(a + b * x) * dnorm(x), -Inf, Inf)$value
+ess_t <- function(cells) rgx(vals(cells, "delta", "ess_ratio_treated", 1), 2)
+pc <- function(m) paste0("month ", m, " at percentile ", f(pct_obs(m, rate0), 0), " (control) and ", f(pct_obs(m, rate1), 0), " (treated, PH)")
+and_join <- function(x) if (length(x) == 1) x else paste(paste(x[-length(x)], collapse = ", "), "and", x[length(x)])
+```
 
-Source: `dev/audit/REPORT_km_fixes_stage2e.md`, section C.
+**Design.**  Each cell is a Monte Carlo study of `r format(nrep, big.mark = ",")` replicates of one data-generating model.  A covariate $X \sim N(0, 1)$ drives both treatment and outcome.  The event time of a subject in arm $a$ is $\Lambda_a^{-1}(H)$ with $H = -\log \Phi(0.6 X + 0.8 Z)$, $Z \sim N(0, 1)$ independent of $X$; $H$ is standard exponential, so each arm's marginal survival is $S_a(t) = \exp\{-\Lambda_a(t)\}$, with control hazard 0.04 per month and treated hazard $0.04 \exp(-0.4)$ (proportional hazards, hazard ratio 0.670) or 0.04 (null).  Censoring is uniform on (0, 72) months.  Treatment is Bernoulli with probability $e(X)$, $\text{logit}\, e = \alpha + \beta X$, and the weights are built in every replicate by `ps_weights(treat ~ X)` from the fitted model; the analyses are run under `weight_variance = "known"` and `"estimated"` on the same data and weights.  The regimes, named by the treated arm's ESS ratio (mean of ESS / $n$ over replicates, control / treated in the tables):
 
-Reading.
+- **Near 0.9**: $\text{logit}\, e = -0.44 + 0.51 X$, $N = 400$, stabilized weights (treated ESS ratio `r ess_t(c9)`).  The restricted Rotterdam example of section 8 has weights spread about this evenly.  The coefficients were set so that the population ESS ratio of the treated arm is about 0.91 and the treated proportion matches that of the next regime.
+- **About 0.69**: $\text{logit}\, e = -0.5 + X$, $N = 400$, stabilized weights (treated ESS ratio `r ess_t(c69)`).
+- **Strong confounding**: $\text{logit}\, e = -0.5 + 2X$, $N = 400$, inverse-probability weights (treated ESS ratio `r ess_t(cF)`).
+- **14% treated**: $\text{logit}\, e = -2.3 + 1.3 X$ (`r f(p_treat(-2.3, 1.3), 1)`% treated), $N = 1{,}450$, stabilized weights (treated ESS ratio `r ess_t(cV)`); the control arm's weights are nearly even and the treated arm's are concentrated.
+- **Reference, true weights**: the designs of the second and third regimes with the true propensities as inverse-probability weights (treated ESS ratio `r f(v("D-400", "delta", "ess_ratio_treated", 1), 2)` and `r f(v("F-400", "delta", "ess_ratio_treated", 1), 2)`), analysed under `"known"` only (with true weights there is no estimation to carry).
 
-- With the more evenly spread weights (the moderate-confounding cells), `"estimated"` is close to the nominal level and `"known"` is above it: intervals that are too wide and a test that rejects a true null less often than its level.  This is the direction section 5 predicts.
-- With concentrated weights (the strong-confounding cells and the cells with few treated subjects), both options are below the nominal coverage and above the nominal test level, and `"estimated"` is further from nominal than `"known"`.
-- In those cells the shortfall is largest late in follow-up (time profile in `dev/audit/stage2e/m7_summary.csv` in the repository; not shown in the table).
-- On the same replicates, `"estimated"` agrees with the bootstrap that refits the propensity model, within Monte Carlo error.  The linearization therefore reproduces what refitting gives, and the shortfall under concentrated weights comes from the weights, not from the way their estimation is carried.
-- Neither option is the better one in general.  `"known"` is conservative when the weights are even, and that margin partly offsets the shortfall when they are concentrated; it does not remove it.
+Every regime has a proportional-hazards cell and a null cell, except the reference, which has the proportional-hazards cell of each design.  The truth is in closed form: $S_1(t) - S_0(t)$; the RMST difference $\int_0^t \{S_1(u) - S_0(u)\}\, du$; the log hazard ratio $-0.4$ or 0 (both arms are exponential marginally).  A replicate counts at month $t$ when each arm has a subject with observed time at least $t$.  Coverage is that of the nominal 0.95 pointwise interval; an interval that could not be computed counts as not covering.  The Monte Carlo standard error (MCSE) of a coverage near 0.95 is `r f(mcse95(nrep), 3)` at `r format(nrep, big.mark = ",")` replicates and `r f(mcse95(500), 3)` at 500.  Where the reported months fall among observed event times (percentile, from the formula, marginal over $X$; the same in every regime because the outcome model is the same): `r paste(vapply(months, pc, ""), collapse = "; ")`.  The 10th and 90th percentiles are months `r f(q_obs(10, rate0), 1)` and `r f(q_obs(90, rate0), 1)` (control) and `r f(q_obs(10, rate1), 1)` and `r f(q_obs(90, rate1), 1)` (treated, PH); months 1 and 48 lie outside them.
+
+Provenance: run for weightedsurv 0.2.0 (the near-0.9 cells at package commit f55001f; the other cells with estimated weights at c195953 and the true-weight cells at d9b7558); the scripts and records are kept in the package repository under `dev/audit/`.  This article reads only the stored summary `sim_results/ps_weight_results_by_time.csv`.
+
+Columns of Tables 1 to 3: true value; bias (mean estimate minus truth; the estimate is the same under both options); empirical SD of the estimate; mean standard error under each option; coverage with its MCSE in brackets; mean interval length.  ESS c / t: mean ESS ratio, control / treated.
+
+```{r simres-tab1, echo = FALSE}
+tab_time <- function(est, d1, d2) {
+  x <- main[main$estimand == est & main$time %in% months, ]
+  x <- x[order(match(x$cell, cell_order), x$time), ]
+  data.frame(Regime = blank_rep(x$regime), Cell = blank_rep(x$cell), Scenario = blank_rep(sc_short(x$scenario)),
+             `ESS c / t` = blank_rep(ess_lab(x)), Month = x$time, True = f(x$true_value, d1), Bias = f(x$bias, d1),
+             `Emp SD` = f(x$empirical_sd, d1), `SE known` = f(x$mean_se_known, d1), `SE estimated` = f(x$mean_se_estimated, d1),
+             `Cov known` = cov_lab(x$coverage_known, x$coverage_known_mcse),
+             `Cov estimated` = cov_lab(x$coverage_estimated, x$coverage_estimated_mcse),
+             `Length known` = f(x$mean_ci_length_known, d2), `Length estimated` = f(x$mean_ci_length_estimated, d2),
+             check.names = FALSE)
+}
+ev <- main[main$estimand == "delta" & main$replicates_evaluable < main$replicates, ]
+knitr::kable(tab_time("delta", 4, 3), align = "lllllrrrrrrrrr",
+             caption = "Table 1. Survival difference $S_1(t) - S_0(t)$.")
+```
+
+Evaluable replicates are fewer than `r format(nrep, big.mark = ",")` only at months `r and_join(sort(unique(ev$time)))`, in `r length(unique(ev$cell))` cells (fewest: `r format(min(ev$replicates_evaluable), big.mark = ",")`, `r ev$cell[which.min(ev$replicates_evaluable)]`, month `r ev$time[which.min(ev$replicates_evaluable)]`).
+
+```{r simres-fig1, echo = FALSE, fig.width = 8, fig.height = 12, fig.cap = sprintf("Figure 1. Coverage of the survival difference at the %d stored months. Solid: \"known\"; dashed: \"estimated\" (absent with true weights). Grey band: 0.95 plus or minus 2 MCSE at %s replicates.", length(allm), format(nrep, big.mark = ","))}
+yl <- range(c(main$coverage_known[main$estimand == "delta"], main$coverage_estimated[main$estimand == "delta"]), 0.95, na.rm = TRUE)
+op <- par(mfrow = c(5, 2), mar = c(3.4, 4.6, 2.2, 0.6), mgp = c(2.1, 0.6, 0), las = 1, cex.main = 0.95)
+for (cl in cell_order) {
+  x <- main[main$cell == cl & main$estimand == "delta", ]; x <- x[order(x$time), ]
+  h <- 2 * mcse95(nrep)
+  plot(NA, xlim = range(allm), ylim = yl, xlab = "Month", ylab = "",
+       main = sprintf("%s: %s (%s)", x$regime[1], cl, sc_short(x$scenario[1])))
+  mtext("Coverage", side = 2, line = 3.3, las = 0, cex = 0.8)
+  polygon(c(0, 60, 60, 0), c(0.95 - h, 0.95 - h, 0.95 + h, 0.95 + h), col = "grey88", border = NA)
+  abline(h = 0.95, col = "grey45")
+  lines(x$time, x$coverage_known, type = "b", pch = 16, lty = 1, col = "#1f5a96")
+  if (any(!is.na(x$coverage_estimated))) lines(x$time, x$coverage_estimated, type = "b", pch = 17, lty = 2, col = "#b2432f")
+  if (cl == cell_order[1]) legend("bottomleft", c("known", "estimated"), lty = 1:2, pch = 16:17, col = c("#1f5a96", "#b2432f"), bty = "n")
+}
+par(op)
+```
+
+```{r simres-tab2, echo = FALSE}
+knitr::kable(tab_time("R", 3, 2), align = "lllllrrrrrrrrr",
+             caption = "Table 2. RMST difference $\\int_0^t \\{S_1(u) - S_0(u)\\}\\, du$ (months).")
+```
+
+```{r simres-tab3, echo = FALSE}
+x <- main[main$estimand %in% c("loghr_fh00", "loghr_fh01"), ]
+x <- x[order(match(x$cell, cell_order), x$estimand), ]
+knitr::kable(data.frame(Regime = blank_rep(x$regime), Cell = blank_rep(x$cell), Scenario = blank_rep(sc_short(x$scenario)),
+                        `ESS c / t` = blank_rep(ess_lab(x)),
+                        Statistic = ifelse(x$estimand == "loghr_fh00", "FH(0,0)", "FH(0,1)"), True = f(x$true_value, 1),
+                        Bias = f(x$bias, 4), `Emp SD` = f(x$empirical_sd, 4), `SE known` = f(x$mean_se_known, 4),
+                        `SE estimated` = f(x$mean_se_estimated, 4),
+                        `Cov known` = cov_lab(x$coverage_known, x$coverage_known_mcse),
+                        `Cov estimated` = cov_lab(x$coverage_estimated, x$coverage_estimated_mcse),
+                        `Length known` = f(x$mean_ci_length_known, 3), `Length estimated` = f(x$mean_ci_length_estimated, 3),
+                        check.names = FALSE),
+             align = "lllllrrrrrrrrr",
+             caption = "Table 3. Log hazard ratio, weighted Cox estimate under FH(0,0) and FH(0,1) (FH(0,1) not run in the 14%-treated cells).")
+```
+
+```{r simres-tab4, echo = FALSE}
+x <- main[main$estimand %in% c("delta_band_3_42", "R_band_3_42"), ]
+x <- x[order(match(x$cell, cell_order), x$estimand), ]
+knitr::kable(data.frame(Regime = blank_rep(x$regime), Cell = blank_rep(x$cell), Scenario = blank_rep(sc_short(x$scenario)),
+                        Band = ifelse(x$estimand == "delta_band_3_42", "difference", "RMST"),
+                        `Cov known` = cov_lab(x$coverage_known, x$coverage_known_mcse),
+                        `Cov estimated` = cov_lab(x$coverage_estimated, x$coverage_estimated_mcse),
+                        `Width known` = f(x$mean_ci_length_known, 3), `Width estimated` = f(x$mean_ci_length_estimated, 3),
+                        check.names = FALSE),
+             align = "llllrrrr",
+             caption = "Table 4. Simultaneous 0.95 bands on [3, 42] months: coverage (the true curve inside the band at every grid point of [3, 42] where the band has positive width) and mean width over those points.")
+```
+
+```{r simres-tab5, echo = FALSE}
+b <- res[!is.na(res$boot_replicates), ]
+b <- b[order(match(b$cell, c("E-400", cell_order)), match(b$estimand, c("delta", "R", "loghr_fh00"))), ]
+lab <- ifelse(b$estimand == "delta", paste("difference, month", b$time),
+              ifelse(b$estimand == "R", paste("RMST, month", b$time), "log HR, FH(0,0)"))
+knitr::kable(data.frame(Regime = blank_rep(b$regime), Cell = blank_rep(b$cell), Estimand = lab,
+                        `Cov known` = f(b$coverage_known_bootreps, 3), `Cov estimated` = f(b$coverage_estimated_bootreps, 3),
+                        `Cov boot normal` = cov_lab(b$coverage_boot, b$coverage_boot_mcse), `Cov boot percentile` = f(b$coverage_boot_pct, 3),
+                        `Length known` = f(b$mean_ci_length_known_bootreps, 3), `Length estimated` = f(b$mean_ci_length_estimated_bootreps, 3),
+                        `Length boot normal` = f(b$mean_ci_length_boot, 3), `Length boot percentile` = f(b$mean_ci_length_boot_pct, 3),
+                        check.names = FALSE),
+             align = "lllrrrrrrrr",
+             caption = sprintf("Table 5. Refitting bootstrap on the first %d replicates of three cells, beside \"known\" and \"estimated\" on the same replicates.", unique(b$boot_replicates)))
+```
+
+In Table 5 the bootstrap resamples subjects, refits the propensity model and rebuilds the weights in every resample (200 resamples per replicate); "normal" is the interval from the bootstrap standard deviation, "percentile" the 2.5% and 97.5% quantiles.  Cell E-400 has the data of Es-400 with inverse-probability weights from the same fitted model; its `"estimated"` column was computed by the evaluation's own script, which equals the package option on the replicates both ran.
+
+```{r simres-read, echo = FALSE}
+# quantities of the reading; each qualitative statement below is checked here
+d_kn <- function(cl, t) v(cl, "delta", "coverage_known", t) - v(cl, "delta", "coverage_estimated", t)
+gapF <- vals(cF, "delta", "coverage_known", allm) - vals(cF, "delta", "coverage_estimated", allm)
+stopifnot(all(gapF > 0))
+gapV1 <- vapply(cV, d_kn, numeric(1), t = 1); gapV48 <- vapply(cV, d_kn, numeric(1), t = 48)
+bias9 <- max(abs(vals(c9, "delta", "bias", allm)))
+ser9 <- vals(c9, "delta", "mean_se_estimated", allm) / vals(c9, "delta", "empirical_sd", allm)
+ser9k <- vals(c9, "delta", "mean_se_known", allm) / vals(c9, "delta", "empirical_sd", allm)
+mid <- c(3, 6, 9, 12, 18, 24, 30)
+stopifnot(all(vals("Fe-400", "delta", "bias", allm) < 0), v("Fe-400", "delta", "bias", 48) < v("Fe-400", "delta", "bias", 1),
+          v("Fe-400", "R", "bias", 48) < v("Fe-400", "R", "bias", 36))
+short <- 0.95 - 2 * mcse95(nrep)
+stopifnot(all(vals(cF, "delta", "coverage_known", c(1, 48)) < short), all(vals(cF, "delta", "coverage_estimated", c(1, 48)) < short))
+for (o in c("coverage_known", "coverage_estimated")) stopifnot(all(vals(cV, "delta", o, 48) < vals(cV, "delta", o, 24)), all(vals(cV, "delta", o, 24) < vals(cV, "delta", o, 1)))
+bt <- res[!is.na(res$boot_replicates), ]
+dboot <- abs(bt$coverage_estimated_bootreps - bt$coverage_boot)
+lboot <- bt$mean_ci_length_estimated_bootreps / bt$mean_ci_length_boot
+kboot <- bt$coverage_known_bootreps - bt$coverage_boot
+```
+
+**Reading.**
+
+*Near 0.9 (treated ESS ratio `r ess_t(c9)`).*  The survival difference is covered at `r rg(c9, "delta", "coverage_estimated", allm)` under `"estimated"` and `r rg(c9, "delta", "coverage_known", allm)` under `"known"` across all `r length(allm)` months (Figure 1).  The `"estimated"` standard error is `r rgx(ser9, 2)` times the empirical SD, the `"known"` one `r rgx(ser9k, 2)` times.  The bias is at most `r f(bias9, 4)` in absolute value at every month.  RMST difference: `r rg(c9, "R", "coverage_estimated", allm)` (`"estimated"`) and `r rg(c9, "R", "coverage_known", allm)` (`"known"`).  Log hazard ratio under FH(0,0): `r rg(c9, "loghr_fh00", "coverage_estimated", NA)` and `r rg(c9, "loghr_fh00", "coverage_known", NA)`.  Bands: `r rg(c9, "delta_band_3_42", "coverage_estimated", NA)` and `r rg(c9, "delta_band_3_42", "coverage_known", NA)` for the difference, `r rg(c9, "R_band_3_42", "coverage_estimated", NA)` and `r rg(c9, "R_band_3_42", "coverage_known", NA)` for RMST.  Interval length under `"estimated"` is `r rgx(vals(c9, "delta", "mean_ci_length_estimated", allm) / vals(c9, "delta", "mean_ci_length_known", allm), 2)` of `"known"` for the difference.
+
+*About 0.69 (treated ESS ratio `r ess_t(c69)`).*  At months 3 to 30 the difference is covered at `r rg(c69, "delta", "coverage_estimated", mid)` (`"estimated"`) and `r rg(c69, "delta", "coverage_known", mid)` (`"known"`).  At month 1: `r rg(c69, "delta", "coverage_estimated", 1)` and `r rg(c69, "delta", "coverage_known", 1)`; at month 48: `r rg(c69, "delta", "coverage_estimated", 48)` and `r rg(c69, "delta", "coverage_known", 48)`.  The bias at month 48 is `r f(v("Es-400", "delta", "bias", 48), 4)` (PH) and `r f(v("Es-400-null", "delta", "bias", 48), 4)` (null), against at most `r f(max(abs(vals(c69, "delta", "bias", mid))), 4)` in absolute value at months 3 to 30.
+
+*Strong confounding (treated ESS ratio `r ess_t(cF)`).*  Both options fall short at month 1 (`r rg(cF, "delta", "coverage_estimated", 1)` `"estimated"`, `r rg(cF, "delta", "coverage_known", 1)` `"known"`) and at month 48 (`r rg(cF, "delta", "coverage_estimated", 48)` and `r rg(cF, "delta", "coverage_known", 48)`); at months 6 to 24 they cover `r rg(cF, "delta", "coverage_estimated", c(6, 9, 12, 18, 24))` and `r rg(cF, "delta", "coverage_known", c(6, 9, 12, 18, 24))`.  `"estimated"` is below `"known"` at every month, by `r rgx(gapF)`.  The bias is negative and grows with time: `r f(v("Fe-400", "delta", "bias", 1), 4)` at month 1 to `r f(v("Fe-400", "delta", "bias", 48), 4)` at month 48 in Fe-400 (`r f(abs(v("Fe-400", "delta", "bias", 48)) / v("Fe-400", "delta", "bias_mcse", 48), 1)` MCSE from zero).  For the RMST difference it accumulates: `r f(v("Fe-400", "R", "bias", 36), 2)` months at month 36 and `r f(v("Fe-400", "R", "bias", 48), 2)` at month 48 (true values `r f(v("Fe-400", "R", "true_value", 36), 2)` and `r f(v("Fe-400", "R", "true_value", 48), 2)`).
+
+*14% treated (treated ESS ratio `r ess_t(cV)`).*  Coverage of the difference falls with time under both options: `r rg(cV, "delta", "coverage_estimated", 1)` (`"estimated"`) and `r rg(cV, "delta", "coverage_known", 1)` (`"known"`) at month 1, `r rg(cV, "delta", "coverage_estimated", 24)` and `r rg(cV, "delta", "coverage_known", 24)` at month 24, `r rg(cV, "delta", "coverage_estimated", 48)` and `r rg(cV, "delta", "coverage_known", 48)` at month 48.  The two options are `r rgx(gapV1)` apart at month 1 and `r rgx(gapV48)` at month 48.  The bias reaches `r f(v("V-1450-ph", "delta", "bias", 48), 4)` at month 48 (PH).
+
+*True weights against estimated weights in the same design.*  With strong confounding, `"estimated"` on fitted weights (Fe-400) and `"known"` on true weights (F-400) cover the difference at `r f(v("Fe-400", "delta", "coverage_estimated", 1))` and `r f(v("F-400", "delta", "coverage_known", 1))` at month 1, `r f(v("Fe-400", "delta", "coverage_estimated", 24))` and `r f(v("F-400", "delta", "coverage_known", 24))` at month 24, `r f(v("Fe-400", "delta", "coverage_estimated", 48))` and `r f(v("F-400", "delta", "coverage_known", 48))` at month 48.  In the design of the About-0.69 regime (Es-400 against D-400): `r f(v("Es-400", "delta", "coverage_estimated", 1))` and `r f(v("D-400", "delta", "coverage_known", 1))` at month 1, `r f(v("Es-400", "delta", "coverage_estimated", 24))` and `r f(v("D-400", "delta", "coverage_known", 24))` at month 24, `r f(v("Es-400", "delta", "coverage_estimated", 48))` and `r f(v("D-400", "delta", "coverage_known", 48))` at month 48.  `"known"` on the fitted weights of the same data covers `r f(v("Es-400", "delta", "coverage_known", 24))` at month 24.
+
+*Log hazard ratio and bands (Tables 3 and 4).*  Under FH(0,0), `"estimated"` covers `r rg(c(c9, c69), "loghr_fh00", "coverage_estimated", NA)` in the near-0.9 and 0.69 regimes and `r rg(c(cF, cV), "loghr_fh00", "coverage_estimated", NA)` with concentrated weights; `"known"` `r rg(c(c9, c69), "loghr_fh00", "coverage_known", NA)` and `r rg(c(cF, cV), "loghr_fh00", "coverage_known", NA)`.  The band for the difference: `"estimated"` `r rg(c(c9, c69), "delta_band_3_42", "coverage_estimated", NA)` and `r rg(c(cF, cV), "delta_band_3_42", "coverage_estimated", NA)`, `"known"` `r rg(c(c9, c69), "delta_band_3_42", "coverage_known", NA)` and `r rg(c(cF, cV), "delta_band_3_42", "coverage_known", NA)`.
+
+*Bootstrap (Table 5).*  On the same `r unique(bt$boot_replicates)` replicates, the coverage under `"estimated"` and that of the refitting bootstrap (normal interval) differ by at most `r f(max(dboot), 3)`, and the `"estimated"` interval is `r rgx(lboot, 2)` times the bootstrap's length.  `"known"` covers `r rgx(kboot)` more than the bootstrap.
+
+Which option is nearer the nominal level differs by regime and by month (Figure 1).
 
 # Numerical illustration
 

@@ -1,0 +1,109 @@
+G6 code chunks in the article: 17 ; chunks containing 'dev/': 0
+G6 read calls in the article: [('read.csv', '"sim_results/ps_weight_results_by_time.csv", stringsAsFactors = FALSE')]
+G6 rendered: Table 1. present
+G6 rendered: Table 2. present
+G6 rendered: Table 3. present
+G6 rendered: Table 4. present
+G6 rendered: Table 5. present
+G6 rendered: Figure 1. present
+G6 old month-18 table ('Survival difference, month 18' header / 'Source: `dev/audit/REPORT_km_fixes_stage2e.md`'): False False
+G7 numerals in the new prose outside inline R: 99
+  '0,'       ... model.  A covariate $X \sim N(0, 1)$ drives both treatmen
+  '1'        ... el.  A covariate $X \sim N(0, 1)$ drives both treatment 
+  '-1'       ... ect in arm $a$ is $\Lambda_a^{-1}(H)$ with $H = -\log \Ph
+  '0.6'      ... {-1}(H)$ with $H = -\log \Phi(0.6 X + 0.8 Z)$, $Z \sim N(0
+  '0.8'      ...  with $H = -\log \Phi(0.6 X + 0.8 Z)$, $Z \sim N(0, 1)$ in
+  '0,'       ... hi(0.6 X + 0.8 Z)$, $Z \sim N(0, 1)$ independent of $X$; 
+  '1'        ... 0.6 X + 0.8 Z)$, $Z \sim N(0, 1)$ independent of $X$; $H
+  '0.04'     ... _a(t)\}$, with control hazard 0.04 per month and treated ha
+  '0.04'     ... per month and treated hazard $0.04 \exp(-0.4)$ (proportiona
+  '-0.4'     ... and treated hazard $0.04 \exp(-0.4)$ (proportional hazards,
+  '0.670'    ... rtional hazards, hazard ratio 0.670) or 0.04 (null).  Censor
+  '0.04'     ... zards, hazard ratio 0.670) or 0.04 (null).  Censoring is un
+  '0,'       ... l).  Censoring is uniform on (0, 72) months.  Treatment i
+  '72'       ...   Censoring is uniform on (0, 72) months.  Treatment is B
+  '0.9'      ... ted in the tables):  - **Near 0.9**: $\text{logit}\, e = -
+  '-0.44'    ... ar 0.9**: $\text{logit}\, e = -0.44 + 0.51 X$, $N = 400$, st
+  '0.51'     ... : $\text{logit}\, e = -0.44 + 0.51 X$, $N = 400$, stabilize
+  '400'      ... }\, e = -0.44 + 0.51 X$, $N = 400$, stabilized weights (tr
+  '8'        ...  Rotterdam example of section 8 has weights spread about
+  '0.91'     ... o of the treated arm is about 0.91 and the treated proporti
+  '0.69'     ... of the next regime. - **About 0.69**: $\text{logit}\, e = -
+  '-0.5'     ... t 0.69**: $\text{logit}\, e = -0.5 + X$, $N = 400$, stabili
+  '400'      ... {logit}\, e = -0.5 + X$, $N = 400$, stabilized weights (tr
+  '-0.5'     ... unding**: $\text{logit}\, e = -0.5 + 2X$, $N = 400$, invers
+  '2'        ... *: $\text{logit}\, e = -0.5 + 2X$, $N = 400$, inverse-pr
+  '400'      ... logit}\, e = -0.5 + 2X$, $N = 400$, inverse-probability we
+  '14'       ...  (treated ESS ratio <R>). - **14% treated**: $\text{logit
+  '-2.3'     ... reated**: $\text{logit}\, e = -2.3 + 1.3 X$ (<R>% treated),
+  '1.3'      ... *: $\text{logit}\, e = -2.3 + 1.3 X$ (<R>% treated), $N = 
+  '1'        ... + 1.3 X$ (<R>% treated), $N = 1{,}450$, stabilized weigh
+  '450'      ... 3 X$ (<R>% treated), $N = 1{,}450$, stabilized weights (tr
+  '-0.4'     ... \, du$; the log hazard ratio $-0.4$ or 0 (both arms are exp
+  '0'        ... he log hazard ratio $-0.4$ or 0 (both arms are exponenti
+  '0.95'     ... verage is that of the nominal 0.95 pointwise interval; an i
+  '0.95'     ... ror (MCSE) of a coverage near 0.95 is <R> at <R> replicates
+  '500.'     ...  at <R> replicates and <R> at 500.  Where the reported mont
+  '10'       ... model is the same): <R>.  The 10th and 90th percentiles a
+  '90'       ... the same): <R>.  The 10th and 90th percentiles are months
+  '1'        ... and <R> (treated, PH); months 1 and 48 lie outside them.
+  '48'       ... > (treated, PH); months 1 and 48 lie outside them.  Prove
+  '0.2.0'    ... venance: run for weightedsurv 0.2.0 (the near-0.9 cells at p
+  '0.9'      ...  weightedsurv 0.2.0 (the near-0.9 cells at package commit 
+  '5001'     ... 0.9 cells at package commit f55001f; the other cells with e
+  '95953'    ... s with estimated weights at c195953 and the true-weight cell
+  '558'      ...  the true-weight cells at d9b7558); the scripts and record
+  '1'        ... time.csv`.  Columns of Tables 1 to 3: true value; bias (
+  '3'        ... csv`.  Columns of Tables 1 to 3: true value; bias (mean 
+  '5'        ... nth <R>).            In Table 5 the bootstrap resamples 
+  '200'      ... he weights in every resample (200 resamples per replicate)
+  '2.5'      ... d deviation, "percentile" the 2.5% and 97.5% quantiles.  C
+  '97.5'     ... on, "percentile" the 2.5% and 97.5% quantiles.  Cell E-400 
+  '400'      ...  and 97.5% quantiles.  Cell E-400 has the data of Es-400 w
+  '400'      ... Cell E-400 has the data of Es-400 with inverse-probability
+  '0.9'      ... h ran.    **Reading.**  *Near 0.9 (treated ESS ratio <R>).
+  '1'        ... across all <R> months (Figure 1).  The `"estimated"` sta
+  '0,0'      ... ).  Log hazard ratio under FH(0,0): <R> and <R>.  Bands: <
+  '0.69'     ... ` for the difference.  *About 0.69 (treated ESS ratio <R>).
+  '3'        ... d ESS ratio <R>).*  At months 3 to 30 the difference is 
+  '30'       ...  ratio <R>).*  At months 3 to 30 the difference is covere
+  '1'        ... nd <R> (`"known"`).  At month 1: <R> and <R>; at month 4
+  '48'       ... onth 1: <R> and <R>; at month 48: <R> and <R>.  The bias 
+  '48'       ... > and <R>.  The bias at month 48 is <R> (PH) and <R> (nul
+  '3'        ... > in absolute value at months 3 to 30.  *Strong confound
+  '30.'      ... absolute value at months 3 to 30.  *Strong confounding (tr
+  '1'        ... h options fall short at month 1 (<R> `"estimated"`, <R> 
+  '48'       ... , <R> `"known"`) and at month 48 (<R> and <R>); at months
+  '6'        ... h 48 (<R> and <R>); at months 6 to 24 they cover <R> and
+  '24'       ... (<R> and <R>); at months 6 to 24 they cover <R> and <R>. 
+  '1'        ... grows with time: <R> at month 1 to <R> at month 48 in Fe
+  '48'       ... R> at month 1 to <R> at month 48 in Fe-400 (<R> MCSE from
+  '400'      ... th 1 to <R> at month 48 in Fe-400 (<R> MCSE from zero).  F
+  '36'       ... umulates: <R> months at month 36 and <R> at month 48 (tru
+  '48'       ...  at month 36 and <R> at month 48 (true values <R> and <R>
+  '14'       ...  (true values <R> and <R>).  *14% treated (treated ESS ra
+  '1,'       ...  and <R> (`"known"`) at month 1, <R> and <R> at month 24,
+  '24,'      ... month 1, <R> and <R> at month 24, <R> and <R> at month 48.
+  '48.'      ... onth 24, <R> and <R> at month 48.  The two options are <R>
+  '1'        ... ptions are <R> apart at month 1 and <R> at month 48.  Th
+  '48.'      ... t at month 1 and <R> at month 48.  The bias reaches <R> at
+  '48'       ... The bias reaches <R> at month 48 (PH).  *True weights aga
+  '400'      ... mated"` on fitted weights (Fe-400) and `"known"` on true w
+  '400'      ...  `"known"` on true weights (F-400) cover the difference at
+  '1,'       ... rence at <R> and <R> at month 1, <R> and <R> at month 24,
+  '24,'      ... month 1, <R> and <R> at month 24, <R> and <R> at month 48.
+  '48.'      ... onth 24, <R> and <R> at month 48.  In the design of the Ab
+  '0.69'     ... .  In the design of the About-0.69 regime (Es-400 against D
+  '400'      ...  of the About-0.69 regime (Es-400 against D-400): <R> and 
+  '400'      ... 0.69 regime (Es-400 against D-400): <R> and <R> at month 1
+  '1,'       ...  D-400): <R> and <R> at month 1, <R> and <R> at month 24,
+  '24,'      ... month 1, <R> and <R> at month 24, <R> and <R> at month 48.
+  '48.'      ... onth 24, <R> and <R> at month 48.  `"known"` on the fitted
+  '24.'      ... same data covers <R> at month 24.  *Log hazard ratio and b
+  '3'        ... azard ratio and bands (Tables 3 and 4).*  Under FH(0,0),
+  '4'        ... ratio and bands (Tables 3 and 4).*  Under FH(0,0), `"est
+  '0,0'      ...  (Tables 3 and 4).*  Under FH(0,0), `"estimated"` covers <
+  '0.9'      ... ated"` covers <R> in the near-0.9 and 0.69 regimes and <R>
+  '0.69'     ... overs <R> in the near-0.9 and 0.69 regimes and <R> with con
+  '5'        ... > and <R>.  *Bootstrap (Table 5).*  On the same <R> repl
+  '1'        ... y regime and by month (Figure 1).  

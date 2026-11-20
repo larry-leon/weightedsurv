@@ -198,7 +198,7 @@ $$\sqrt{n}\bigl(\hat{\Lambda}^a(t) - \Lambda^a(t)\bigr) = \frac{1}{\sqrt{n}} \su
 
 where $\psi_i^a(t)$ is the influence function that incorporates both the martingale term (from the counting process) and the correction term (from estimating $e(X)$).
 
-In `weightedsurv` the argument `weight_variance` says which of the two terms enter the standard errors, intervals, bands and tests.  With `weight_variance = "known"` (the default) the weights are treated as fixed, known numbers and only the first term is used.  With `weight_variance = "estimated"` the correction term for a logistic propensity model is added, from the object returned by `ps_weights()` (formulas in the next section).  No estimate differs between the two options.  How the two behave (coverage, test size, interval length) was evaluated by simulation for this version of the package; the results are in `dev/audit/REPORT_km_fixes_stage2e.md` in the package repository.
+In `weightedsurv` the argument `weight_variance` says which of the two terms enter the standard errors, intervals, bands and tests.  With `weight_variance = "known"` (the default) the weights are treated as fixed, known numbers and only the first term is used.  With `weight_variance = "estimated"` the correction term for a logistic propensity model is added, from the object returned by `ps_weights()` (formulas in the next section).  No estimate differs between the two options.  How the two behave (coverage, test size, interval length) was evaluated by simulation for this version of the package; the results are in the section "Simulation results by time" of the article `estimated_weights_methodology`.
 
 ## Variance Estimation in `weightedsurv`
 
