@@ -151,6 +151,13 @@ cox_score_rhogamma <- function(beta, time, delta, z, w_hat = rep(1,length(time))
   sig2_beta_asy <- score_stats$sig2_beta_asy
   K_wt_rg <- score_stats$K_wt_rg
   i_bhat <- score_stats$i_bhat
+  # Subject weights not all equal: the variance of the score is the sum of squared per-subject
+  # score contributions psi_i(beta) (see ws_score_psi()), and the variance of the estimate is that
+  # sum over the squared information. Score, information and K are unchanged.
+  if (length(unique(w_hat)) > 1) {
+    sig2U <- sum(ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = beta)$psi^2)
+    sig2_beta_asy <- sig2U / i_bhat^2
+  }
   return(list(score = score, sig2_score = sig2U, sig2_beta_asy = sig2_beta_asy, K_wt_rg = K_wt_rg, i_bhat = i_bhat))
   }
 }
