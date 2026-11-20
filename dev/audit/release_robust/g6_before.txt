@@ -1,0 +1,2 @@
+knit seconds: 7.9 
+objects: 87 

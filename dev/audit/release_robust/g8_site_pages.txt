@@ -1,0 +1,3 @@
+site_live: <img> 3; <table> 5; lines with 'Completed:' (1 = driver code only, 2 = code + live-run output) 2; figures: all-fh-plot-1.png main-3tests-plot-1.png simtrial-comparison-plot-1.png 
+site_skip: <img> 3; <table> 5; lines with 'Completed:' (1 = driver code only, 2 = code + live-run output) 1; figures: all-fh-plot-1.png main-3tests-plot-1.png simtrial-comparison-plot-1.png 
+every article indexed in _pkgdown.yml has articles/<name>.html in both builds: TRUE TRUE

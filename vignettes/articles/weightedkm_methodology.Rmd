@@ -362,7 +362,7 @@ The weighted KM estimator provides a principled nonparametric approach to estima
 2. **Counting process formulation** enabling martingale-based variance estimation and resampling inference.
 3. **Martingale resampling** for simultaneous confidence bands, extending naturally to the weighted setting and to cumulative RMST curves.
 
-The `weightedsurv` package provides an integrated implementation of these methods, with careful attention to numerical validation against established packages.
+The `weightedsurv` package provides an integrated implementation of these methods.  What is checked against other packages (in the `weightedsurv_examples` vignette): with weights that are not all equal, the weighted K-M standard errors equal those of `survival::survfit()` with the same weights; the weighted K-M curves equal those of `adjustedCurves` (`method = "iptw_km"`), whose standard errors differ from those of `weightedsurv`.
 
 
 # References {-}

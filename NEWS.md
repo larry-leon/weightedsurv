@@ -230,3 +230,4 @@
 * The vignettes and articles were revised for 0.2.0: the Rotterdam example now uses postmenopausal
   women without chemotherapy and `ps_weights()` with `weight_variance = "estimated"`; effective
   sample size tables were added; a new article gives the statistical details of estimated weights.
+* Vignette chunks that use a suggested package run only when it is installed; website-only packages are listed in `Config/Needs/website`.

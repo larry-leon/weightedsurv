@@ -10,6 +10,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r suggested-packages, include = FALSE}
+# Packages in Suggests: a chunk that uses one is evaluated only when it is installed
+has <- vapply(c("DiagrammeR", "dplyr", "data.table", "gt", "adjustedCurves", "pammtools"),
+              requireNamespace, logical(1), quietly = TRUE)
+# numbers in the text that need such a package
+if_has <- function(pkg, x) if (all(has[pkg])) x else paste0("(needs ", paste(pkg, collapse = " and "), ")")
+```
+
 # Overview
 
 In this vignette of the `weightedsurv` package [@weightedsurv] we illustrate various weighted survival analyses with two breast cancer datasets available in the base R `survival` library [@survival], both comparing hormonal therapy with no hormonal therapy.  The 
@@ -70,7 +78,7 @@ Subject-specific (case-weights) are also included in order to implement propensi
 - Supports exponential variants of Fleming-Harrington weights (`scheme = "fh_exp1"`, `scheme = "fh_exp2"`).
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = has[["DiagrammeR"]]}
 library(DiagrammeR)
 # Define the flowchart in DOT syntax with horizontal layout
 flowchart <- grViz('digraph wt_rg_S_flowchart {
@@ -153,7 +161,7 @@ library(survival)
 # or the development version from GitHub
 # devtools::install_github("larry-leon/weightedsurv")
 library(weightedsurv)
-library(dplyr)
+if (has[["dplyr"]]) library(dplyr)
 # formatting of the numbers quoted in the text
 fmt <- function(x, digits = 2) formatC(x, format = "f", digits = digits)
 ```
@@ -273,8 +281,8 @@ df_rotterdam_np <- subset(gbsg_validate, nodes > 0)
 
 Time and event definition. Every Rotterdam analysis in this vignette uses the time `tte`, which is `rfstime` in months (the time of recurrence when there was one, otherwise the time of death or last follow-up), and the event indicator `event`, which is `status2`: a recurrence, or a death without recurrence, except that a death recorded after the end of the recurrence follow-up (`rtime < dtime`) is not counted as an event. Among the node-positive women `status2` differs from `status = pmax(recur, death)` in `r sum(df_rotterdam_np$status != df_rotterdam_np$status2)` of `r nrow(df_rotterdam_np)` rows.
 
-Baseline demographics table (all node-positive women)
-```{r}
+Baseline demographics table (all node-positive women). This table needs the dplyr package.
+```{r, eval = has[["dplyr"]]}
 library(dplyr)
 rotterdam2 <- df_rotterdam_np %>%
   mutate(
@@ -297,7 +305,7 @@ baseline_table <- create_baseline_table(
 
 ```
 
-```{r results = 'asis'}
+```{r results = 'asis', eval = has[["dplyr"]]}
 baseline_table
 ```
 
@@ -529,10 +537,10 @@ Neither option is the better one in general. In the evaluation of this version o
 
 # Compare GBSG experimental to Rotterdam control
 
-This cross-trial comparison (GBSG treated against Rotterdam node-positive control) is kept as a hard case for weighting: see the effective sample size table and the caveats below. The controls are all node-positive Rotterdam women without hormonal therapy (`df_rotterdam_np`, not the restricted population above), and the weights are treated as known (`weight_variance = "known"`, the default).
+This cross-trial comparison (GBSG treated against Rotterdam node-positive control) is kept as a hard case for weighting: see the effective sample size table and the caveats below. The controls are all node-positive Rotterdam women without hormonal therapy (`df_rotterdam_np`, not the restricted population above), and the weights are treated as known (`weight_variance = "known"`, the default). The code of this section uses the dplyr package: its tables, figures and numbers need that package.
 
 Propensity score model
-```{r}
+```{r, eval = has[["dplyr"]]}
 
 df_gbsg_treat <- subset(df_gbsg, treat == 1)
 df_rotterdam_control <- subset(df_rotterdam_np, treat == 0)
@@ -562,7 +570,7 @@ df_CTC$sw.weights <- ifelse(df_CTC$treat == 1, wt.1, wt.0)
 ```
 
 Baseline demographics table
-```{r}
+```{r, eval = has[["dplyr"]]}
 
 df_CTC$er_negative <- ifelse(df_CTC$er == 0, 1, 0) 
 
@@ -578,11 +586,11 @@ baseline_table <- create_baseline_table(
 
 ```
 
-```{r results = 'asis'}
+```{r results = 'asis', eval = has[["dplyr"]]}
 baseline_table
 ```
 
-```{r}
+```{r, eval = has[["dplyr"]]}
 dfcount_CTC_unwtd <- get_dfcounting(df = df_CTC, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24)
 
 dfcount_CTC_wtd <- get_dfcounting(df=df_CTC, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
@@ -591,7 +599,7 @@ dfcount_CTC_wtd <- get_dfcounting(df=df_CTC, tte.name=tte.name, event.name=event
 knitr::kable(dfcount_CTC_wtd$ess, digits = c(0, 0, 1, 3))
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = has[["dplyr"]]}
 # numbers quoted in the text
 ess_CTC <- dfcount_CTC_wtd$ess
 gbsg_treated <- subset(gbsg, hormon == 1)
@@ -601,20 +609,20 @@ treated_at_risk <- function(t) sum(df_CTC$tte[df_CTC$treat == 1] >= t)
 horizon <- 60
 ```
 
-The effective sample size of the treated arm is `r fmt(ess_CTC$ess[1], 0)` of `r ess_CTC$n[1]` (ratio `r fmt(ess_CTC$ratio[1], 2)`), and the largest weight is `r fmt(max(df_CTC$sw.weights), 1)`: a few GBSG patients carry most of the weight of the treated arm.
+The effective sample size of the treated arm is `r if_has("dplyr", fmt(ess_CTC$ess[1], 0))` of `r if_has("dplyr", ess_CTC$n[1])` (ratio `r if_has("dplyr", fmt(ess_CTC$ratio[1], 2))`), and the largest weight is `r if_has("dplyr", fmt(max(df_CTC$sw.weights), 1))`: a few GBSG patients carry most of the weight of the treated arm.
 
 Caveats. Weighting does not make these two studies comparable.
 
-* Grade 3 tumours are `r pct(gbsg_treated$grade == 3)` of the GBSG treated arm and `r pct(rott_control$grade == 3)` of the Rotterdam control arm, and grade is recorded differently in the two studies (values `r paste(sort(unique(gbsg$grade)), collapse = "/")` in `gbsg`, `r paste(sort(unique(rotterdam$grade)), collapse = "/")` in `rotterdam`).
-* `r pct(gbsg_treated$meno == 1)` of the GBSG treated arm are postmenopausal, against `r pct(rott_control$meno == 1)` of the Rotterdam control arm.
-* The effective sample size ratio of the treated arm is `r fmt(ess_CTC$ratio[1], 2)`; with weights this concentrated, standard errors, intervals and tests can be too optimistic.
-* Few treated patients are at risk late: `r treated_at_risk(48)` at 48 months, `r treated_at_risk(horizon)` at `r horizon` months and `r treated_at_risk(72)` at 72 months (of `r ess_CTC$n[1]`).
+* Grade 3 tumours are `r if_has("dplyr", pct(gbsg_treated$grade == 3))` of the GBSG treated arm and `r if_has("dplyr", pct(rott_control$grade == 3))` of the Rotterdam control arm, and grade is recorded differently in the two studies (values `r if_has("dplyr", paste(sort(unique(gbsg$grade)), collapse = "/"))` in `gbsg`, `r if_has("dplyr", paste(sort(unique(rotterdam$grade)), collapse = "/"))` in `rotterdam`).
+* `r if_has("dplyr", pct(gbsg_treated$meno == 1))` of the GBSG treated arm are postmenopausal, against `r if_has("dplyr", pct(rott_control$meno == 1))` of the Rotterdam control arm.
+* The effective sample size ratio of the treated arm is `r if_has("dplyr", fmt(ess_CTC$ratio[1], 2))`; with weights this concentrated, standard errors, intervals and tests can be too optimistic.
+* Few treated patients are at risk late: `r if_has("dplyr", treated_at_risk(48))` at 48 months, `r if_has("dplyr", treated_at_risk(horizon))` at `r if_has("dplyr", horizon)` months and `r if_has("dplyr", treated_at_risk(72))` at 72 months (of `r if_has("dplyr", ess_CTC$n[1])`).
 
-For these reasons the results below are read up to `r horizon` months.
+For these reasons the results below are read up to `r if_has("dplyr", horizon)` months.
 
 
 
-```{r, fig.width = 10, fig.height=6}
+```{r, fig.width = 10, fig.height=6, eval = has[["dplyr"]]}
 par(mfrow=c(2,2))
 plot_weighted_km(dfcount=dfcount_gbsg, conf.int = TRUE, xmed.fraction = 0.65, show.logrank = TRUE, ymax = 1.2, show.med = FALSE)
 title(main="GBSG (trial) data un-weighted K-M curves")
@@ -629,7 +637,7 @@ title(main="CTC un-weighted K-M curves")
 
 The log-rank statistic only accumulates at times when both groups have subjects at risk.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = has[["dplyr"]]}
 # cumulative log-rank z; the curve is drawn from the 10th event in each arm
 cum_lr <- wlr_cumulative(dfcount_CTC_wtd, scheme_params = list(rho = 0, gamma = 0), scheme = "fh", return_cumulative = TRUE)
 event_times <- function(a) sort(df_CTC$tte[df_CTC$treat == a & df_CTC$event == 1])
@@ -638,9 +646,9 @@ z_at <- function(t) cum_lr$z.score[findInterval(t, cum_lr$time)]
 last_treated <- max(df_CTC$tte[df_CTC$treat == 1])
 ```
 
-The figure below shows the cumulative log-rank z-statistic as a function of time. The curve is drawn from the time at which each arm has had 10 events (`r fmt(t_start, 1)` months; before that the statistic rests on very few events). The dashed vertical line is at `r horizon` months, where z = `r fmt(z_at(horizon), 2)`; the solid horizontal line is at `r fmt(qnorm(0.975), 2)`. The follow-up of the GBSG treated arm ends at `r fmt(last_treated, 1)` months; from then on no treated patient is at risk and the curve is constant, at z = `r fmt(dfcount_CTC_wtd$z.score, 2)`, the value of the test on all the data. Between `r horizon` months and the end of the treated follow-up the curve rests on the few treated patients still at risk (see the caveats above).
+The figure below shows the cumulative log-rank z-statistic as a function of time. The curve is drawn from the time at which each arm has had 10 events (`r if_has("dplyr", fmt(t_start, 1))` months; before that the statistic rests on very few events). The dashed vertical line is at `r if_has("dplyr", horizon)` months, where z = `r if_has("dplyr", fmt(z_at(horizon), 2))`; the solid horizontal line is at `r if_has("dplyr", fmt(qnorm(0.975), 2))`. The follow-up of the GBSG treated arm ends at `r if_has("dplyr", fmt(last_treated, 1))` months; from then on no treated patient is at risk and the curve is constant, at z = `r if_has("dplyr", fmt(dfcount_CTC_wtd$z.score, 2))`, the value of the test on all the data. Between `r if_has("dplyr", horizon)` months and the end of the treated follow-up the curve rests on the few treated patients still at risk (see the caveats above).
 
-```{r cumulative-logrank, fig.width = 8, fig.height=6, fig.cap = paste0("Cumulative weighted log-rank z-statistic (cross-trial comparison), drawn from the 10th event in each arm (", fmt(t_start, 1), " months). Dashed line: ", horizon, " months.")}
+```{r cumulative-logrank, fig.width = 8, fig.height=6, fig.cap = if (has[["dplyr"]]) paste0("Cumulative weighted log-rank z-statistic (cross-trial comparison), drawn from the 10th event in each arm (", fmt(t_start, 1), " months). Dashed line: ", horizon, " months."), eval = has[["dplyr"]]}
 par(mfrow=c(1,1))
 temp <- wlr_cumulative(dfcount_CTC_wtd, scheme_params = list(rho = 0, gamma = 0), scheme = "fh", return_cumulative = TRUE)
 shown <- temp$time >= t_start
@@ -656,9 +664,9 @@ abline(v = horizon, lwd=1, col="blue", lty=2)
 
 ## Reading the cross-trial comparison at a common horizon
 
-The two arms differ strongly in follow-up: the GBSG treated arm ends at `r fmt(last_treated, 1)` months, the Rotterdam control arm at `r fmt(max(df_CTC$tte[df_CTC$treat == 0]), 1)` months. The survival-difference and cumulative RMST plots below run to the smaller of the two arms' last event times (`r fmt(min(max(event_times(0)), max(event_times(1))), 1)` months for the cross-trial data), as called; for the reasons given above we read them at `r horizon` months. The hazard ratio and the log-rank test are also computed with follow-up cut at `r horizon` months (events after `r horizon` months censored at `r horizon`).
+The two arms differ strongly in follow-up: the GBSG treated arm ends at `r if_has("dplyr", fmt(last_treated, 1))` months, the Rotterdam control arm at `r if_has("dplyr", fmt(max(df_CTC$tte[df_CTC$treat == 0]), 1))` months. The survival-difference and cumulative RMST plots below run to the smaller of the two arms' last event times (`r if_has("dplyr", fmt(min(max(event_times(0)), max(event_times(1))), 1))` months for the cross-trial data), as called; for the reasons given above we read them at `r if_has("dplyr", horizon)` months. The hazard ratio and the log-rank test are also computed with follow-up cut at `r if_has("dplyr", horizon)` months (events after `r if_has("dplyr", horizon)` months censored at `r if_has("dplyr", horizon)`).
 
-```{r ctc-horizon}
+```{r ctc-horizon, eval = has[["dplyr"]]}
 # follow-up cut at the horizon
 df_CTC_cut <- df_CTC
 df_CTC_cut$event <- ifelse(df_CTC_cut$tte > horizon, 0, df_CTC_cut$event)
@@ -677,7 +685,7 @@ knitr::kable(rbind(ctc_row(dfcount_CTC_wtd, "all"), ctc_row(dfcount_CTC_cut, pas
 ```
 
 ---- Simultaneous CI bands ----
-```{r ctc-bands, fig.width = 10, fig.height = 10}
+```{r ctc-bands, fig.width = 10, fig.height = 10, eval = has[["dplyr"]]}
 draws <- 1000
 par(mfrow=c(2,2))
  
@@ -728,7 +736,7 @@ rmst_CTC <- get_bands
 
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = has[["dplyr"]]}
 # cross-trial estimates at the horizon (pointwise 95% limits), from the fits plotted above
 at_h <- function(x, at) x[findInterval(horizon, at)]
 f <- band_CTC$fit_itt
@@ -737,7 +745,7 @@ rmst_h <- paste0(fmt(at_h(rmst_CTC$rmst_time, rmst_CTC$at_points), 1), " (", fmt
                  fmt(at_h(rmst_CTC$rmst_time_upper, rmst_CTC$at_points), 1), ")")
 ```
 
-At `r horizon` months the weighted cross-trial survival difference is `r diff_h` and the cumulative RMST difference is `r rmst_h` months (estimates with pointwise 95% limits, weights treated as known).
+At `r if_has("dplyr", horizon)` months the weighted cross-trial survival difference is `r if_has("dplyr", diff_h)` and the cumulative RMST difference is `r if_has("dplyr", rmst_h)` months (estimates with pointwise 95% limits, weights treated as known).
 
 
 
@@ -794,9 +802,9 @@ par(mfrow=c(1,2))
 
 # Weighted Cox Analysis of Rotterdam data with time-dependent, and subject-specific [ps weighting] weighting
 
-The FH(0,0) analysis (the Cox model with propensity-score weights) is shown with the weights treated as estimated, with the asymptotic interval, and with the weights treated as known, with the resampling interval. The analyses with time-dependent weights (FH(0,1), FH_exp2, MB(12), zero_one(6)) treat the propensity-score weights as known and show the resampling interval (1000 draws).
+The FH(0,0) analysis (the Cox model with propensity-score weights) is shown with the weights treated as estimated, with the asymptotic interval, and with the weights treated as known, with the resampling interval. The analyses with time-dependent weights (FH(0,1), FH_exp2, MB(12), zero_one(6)) treat the propensity-score weights as known and show the resampling interval (1000 draws). The table needs the data.table and gt packages.
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, eval = has[["data.table"]] && has[["gt"]]}
 library(data.table)
 library(gt)
 
@@ -871,9 +879,9 @@ dfcount_rotterdam_draws <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, ev
 
 ## Compare with the adjustedCurves package
 
-The `adjustedCurves` call uses the same time and event variables as the weightedsurv analysis (`tte` and `event`, defined in the data preparation above) and the same propensity model.
+The `adjustedCurves` call uses the same time and event variables as the weightedsurv analysis (`tte` and `event`, defined in the data preparation above) and the same propensity model. This comparison needs the adjustedCurves and pammtools packages.
 
-```{r}
+```{r, eval = has[["adjustedCurves"]] && has[["pammtools"]]}
 # Compare with adjustedCurves
 library(adjustedCurves)
 library(pammtools)
@@ -893,13 +901,13 @@ plot_weighted_km(dfcount=dfcount_rotterdam_known, conf.int = TRUE)
  title(main="Rotterdam weighted K-M curves")
 ```
 
-```{r, fig.width = 8, fig.height = 6}
+```{r, fig.width = 8, fig.height = 6, eval = has[["adjustedCurves"]] && has[["pammtools"]]}
  plot(iptw, conf_int = TRUE, legend.title = "Hormonal therapy")
 ```
 
 
 ## Compare SE's with adjustedCurves package
-```{r, fig.width = 12, fig.height = 6}
+```{r, fig.width = 12, fig.height = 6, eval = has[["adjustedCurves"]] && has[["pammtools"]]}
 # Check SEs
 par(mfrow=c(1,2))
 
@@ -926,7 +934,7 @@ title(main = "Treat SEs")
 
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = has[["adjustedCurves"]] && has[["pammtools"]]}
 # weightedsurv (grey) against adjustedCurves iptw_km (red) at the times adjustedCurves reports
 vs_adjustedCurves <- function(group, surv, sig2) {
   ad <- subset(iptw$adj, group == group & time > 0)
@@ -939,7 +947,7 @@ ac0 <- vs_adjustedCurves("No", dfcount_rotterdam_known$surv0, dfcount_rotterdam_
 ac1 <- vs_adjustedCurves("Yes", dfcount_rotterdam_known$surv1, dfcount_rotterdam_known$sig2_surv1)
 ```
 
-The weighted K-M curves of the two packages agree (largest absolute difference `r signif(max(ac0$surv_diff, ac1$surv_diff), 1)`). The standard errors still differ: the ratio of the weightedsurv standard error (grey) to the `iptw_km` standard error of `adjustedCurves` (red) ranges from `r fmt(ac0$se_ratio[1], 2)` to `r fmt(ac0$se_ratio[2], 2)` in the control arm and from `r fmt(ac1$se_ratio[1], 2)` to `r fmt(ac1$se_ratio[2], 2)` in the treated arm. The weighted K-M standard errors of `survfit()` agree with those of weightedsurv (see the check above).
+The weighted K-M curves of the two packages agree (largest absolute difference `r if_has(c("adjustedCurves", "pammtools"), signif(max(ac0$surv_diff, ac1$surv_diff), 1))`). The standard errors still differ: the ratio of the weightedsurv standard error (grey) to the `iptw_km` standard error of `adjustedCurves` (red) ranges from `r if_has(c("adjustedCurves", "pammtools"), fmt(ac0$se_ratio[1], 2))` to `r if_has(c("adjustedCurves", "pammtools"), fmt(ac0$se_ratio[2], 2))` in the control arm and from `r if_has(c("adjustedCurves", "pammtools"), fmt(ac1$se_ratio[1], 2))` to `r if_has(c("adjustedCurves", "pammtools"), fmt(ac1$se_ratio[2], 2))` in the treated arm. The weighted K-M standard errors of `survfit()` agree with those of weightedsurv (see the check above).
 
 ## Check log-rank statistics
 

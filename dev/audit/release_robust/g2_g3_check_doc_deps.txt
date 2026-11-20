@@ -1,0 +1,70 @@
+== Packages used by vignettes/ (R chunks and inline R) and tests/
+
+adjustedCurves   declared: Suggests               on CRAN: yes    guarded uses: 1 of 1
+    vignettes/weightedsurv_examples.Rmd:886
+data.table       declared: Suggests               on CRAN: yes    guarded uses: 2 of 5
+    vignettes/articles/weightedcox_methodology.Rmd:201; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:67,401,431; vignettes/weightedsurv_examples.Rmd:808
+DiagrammeR       declared: Suggests               on CRAN: yes    guarded uses: 1 of 1
+    vignettes/weightedsurv_examples.Rmd:82
+doFuture         declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 1
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:396
+dplyr            declared: Suggests               on CRAN: yes    guarded uses: 2 of 11
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:65,274,275,277,281,282,283,285,294; vignettes/weightedsurv_examples.Rmd:164,286
+foreach          declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 1
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:399
+future           declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 2
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:115,437
+future.callr     declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 1
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:135
+ggplot2          declared: Imports                on CRAN: yes    guarded uses: 0 of 2
+    vignettes/articles/martingale_resampling_applications.Rmd:28; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:855
+grDevices        declared: base R                 on CRAN: base R guarded uses: 0 of 15
+    tests/testthat/test-b10-km-rendering.R:53; tests/testthat/test-b11-band-transparency.R:9,12,14,15; tests/testthat/test-b12-band-default-draws.R:3; tests/testthat/test-b4-validation.R:4,5,6; tests/testthat/test-b8-rmst-mean-rule.R:53; tests/testthat/test-b9-show-resamples.R:11; tests/testthat/test-rc-band-default-draws-band.R:6,17; tests/testthat/test-w2-estimated-km.R:130,167
+gsDesign2        declared: Config/Needs/website   on CRAN: yes    guarded uses: 1 of 4
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:291,293,299,481
+gt               declared: Suggests               on CRAN: yes    guarded uses: 2 of 4
+    vignettes/articles/weightedcox_methodology.Rmd:305; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:601,857; vignettes/weightedsurv_examples.Rmd:809
+htmltools        declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 1
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:41
+knitr            declared: Suggests               on CRAN: yes    guarded uses: 3 of 27
+    vignettes/articles/estimated_weights_methodology.Rmd:19,363,388,395,411,426,509,604,634; vignettes/articles/martingale_resampling_applications.Rmd:19,192,261; vignettes/articles/weightedcox_methodology.Rmd:16,381,401; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:18,37,40,488; vignettes/articles/weightedkm_methodology.Rmd:19; vignettes/articles/weightedrmst_methodology.Rmd:19; vignettes/weightedsurv_examples.Rmd:323,363,375,528,599,683
+pammtools        declared: Suggests               on CRAN: yes    guarded uses: 1 of 1
+    vignettes/weightedsurv_examples.Rmd:887
+parallelly       declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 2
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:117,139
+simtrial         declared: Config/Needs/website   on CRAN: yes    guarded uses: 1 of 1
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:482
+stats            declared: base R                 on CRAN: base R guarded uses: 0 of 70
+    tests/testthat/helper-data.R:7,8,12; tests/testthat/helper-ew-ref.R:6,7,40,41; tests/testthat/helper-score-resid.R:23,24,31; tests/testthat/test-b2-curve-values.R:8,9; tests/testthat/test-b3-quantiles.R:6,25; tests/testthat/test-b4-validation.R:62; tests/testthat/test-b5-inference.R:8,9; tests/testthat/test-l2-weighted-cox-se.R:14,16; tests/testthat/test-l3-weighted-cox-resampling.R:13,23,26,37,59; tests/testthat/test-l4-wlr-dhat-weighted.R:13; tests/testthat/test-r2-weighted-resampling.R:25,26,37,47,56,67,84,86; tests/testthat/test-rb-weighted-survival-outputs.R:19,22,55; tests/testthat/test-w1-ps-weights.R:15,19,26,27,28,33,54,55,56,57,58,59,64,67; tests/testthat/test-w2-estimated-km.R:25,67,75,129; tests/testthat/test-w3-estimated-logrank.R:17,22,27,30,32,38,106,120,148; tests/testthat/test-w4-estimated-cox.R:18,20,29,30,59,63; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:170
+survival         declared: Imports                on CRAN: yes    guarded uses: 0 of 44
+    tests/testthat/helper-data.R:16; tests/testthat/test-b1-arbitrary-points.R:5,6; tests/testthat/test-b10-km-rendering.R:5,17,33; tests/testthat/test-b11-band-transparency.R:4; tests/testthat/test-b3-quantiles.R:4,5,29; tests/testthat/test-b4-validation.R:53,61,65; tests/testthat/test-b8-rmst-mean-rule.R:4,10; tests/testthat/test-l1-weighted-logrank.R:9,10; tests/testthat/test-l2-weighted-cox-se.R:10; tests/testthat/test-m-weighted-greenwood.R:19; tests/testthat/test-r1-robust-variance.R:21,22,57; tests/testthat/test-rb-weighted-survival-outputs.R:9,10,11,43,48; tests/testthat/test-rd-zero-weights.R:72; tests/testthat/test-w2-estimated-km.R:16,47,70,110; tests/testthat/test-w3-estimated-logrank.R:18,19,20,21; tests/testthat/test-w4-estimated-cox.R:17,19; vignettes/articles/estimated_weights_methodology.Rmd:482; vignettes/articles/martingale_resampling_applications.Rmd:27; vignettes/articles/weightedcox_methodology.Rmd:199; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:64; vignettes/weightedsurv_examples.Rmd:158,175
+testthat         declared: Suggests               on CRAN: yes    guarded uses: 0 of 1
+    tests/testthat.R:9
+tibble           declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 4
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:66,211,603,690
+tictoc           declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 2
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:397,439
+tidyr            declared: Config/Needs/website   on CRAN: yes    guarded uses: 0 of 4
+    vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:856,873,1050,1117
+utils            declared: base R                 on CRAN: base R guarded uses: 0 of 9
+    tests/testthat/helper-score-resid.R:28,33; tests/testthat/test-b10-km-rendering.R:19,25; tests/testthat/test-b2-curve-values.R:18,26,27; tests/testthat/test-b6-side-effects.R:45; tests/testthat/test-w1-ps-weights.R:74
+weightedsurv     declared: (this package)         on CRAN: yes    guarded uses: 0 of 6
+    tests/testthat.R:10; vignettes/articles/estimated_weights_methodology.Rmd:483; vignettes/articles/martingale_resampling_applications.Rmd:29; vignettes/articles/weightedcox_methodology.Rmd:200; vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd:63; vignettes/weightedsurv_examples.Rmd:163
+
+== Uses of Suggests packages (other than knitr, rmarkdown, testthat) in the CRAN-built vignette and in tests/
+
+                                file line            pkg guarded                                                      guard
+ vignettes/weightedsurv_examples.Rmd   82     DiagrammeR    TRUE                           chunk eval = has[["DiagrammeR"]]
+ vignettes/weightedsurv_examples.Rmd  164          dplyr    TRUE                                           conditional line
+ vignettes/weightedsurv_examples.Rmd  286          dplyr    TRUE                                chunk eval = has[["dplyr"]]
+ vignettes/weightedsurv_examples.Rmd  808     data.table    TRUE            chunk eval = has[["data.table"]] && has[["gt"]]
+ vignettes/weightedsurv_examples.Rmd  809             gt    TRUE            chunk eval = has[["data.table"]] && has[["gt"]]
+ vignettes/weightedsurv_examples.Rmd  886 adjustedCurves    TRUE chunk eval = has[["adjustedCurves"]] && has[["pammtools"]]
+ vignettes/weightedsurv_examples.Rmd  887      pammtools    TRUE chunk eval = has[["adjustedCurves"]] && has[["pammtools"]]
+
+G3: every such use guarded: TRUE 
+
+Undeclared packages: none 
+Packages not on CRAN:  
+  with an unguarded use: none 
+exit 0

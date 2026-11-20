@@ -1,0 +1,8 @@
+.github/workflows/pkgdown.yaml : parses: TRUE 
+   job pkgdown setup-r-dependencies needs: website 
+   triggers: push, pull_request, release, workflow_dispatch 
+.github/workflows/R-CMD-check.yaml : parses: TRUE 
+   job R-CMD-check setup-r-dependencies needs: check 
+   job R-CMD-check matrix: macos-latest/release, windows-latest/release, ubuntu-latest/release 
+   triggers: push, pull_request, workflow_dispatch 
+^\.github$ in .Rbuildignore: TRUE 
