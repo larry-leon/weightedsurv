@@ -1,0 +1,7 @@
+draw: X ~ N(0, 1), n = 1e6, seed 20261120
+cells 31/32, logit e = -0.5 + X: P(treated) = 0.3978, population ESS ratio treated = 0.6766, control = 0.8307
+solution for treated ESS ratio 0.91: a = -0.438943, b = 0.505434
+fixed for the run (two decimals): a = -0.44, b = 0.51
+  P(treated) = 0.3977 (cells 31/32: 0.3978; difference -0.0001)
+  population ESS ratio treated = 0.9084, control = 0.9579
+PARAMS a=-0.44 b=0.51

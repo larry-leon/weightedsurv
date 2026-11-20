@@ -1,0 +1,4 @@
+ps9_sim.R weightedsurv 0.2.0 at f55001f; logit e = -0.44 + 0.51 X; functions from stage2e/oc_sim.R: 22
+  pilot cell 41 Es9-400       25 replicates on 12 cores: 1.7 s (0.069 s per replicate wall-clock); mean ESS ratio c / t 0.951 / 0.900; ps failures 0
+  pilot cell 42 Es9-400-null  25 replicates on 12 cores: 1.5 s (0.061 s per replicate wall-clock); mean ESS ratio c / t 0.960 / 0.917; ps failures 0
+projected wall-clock of the full run (2 cells x 2000 replicates, 12 cores): 4.3 min

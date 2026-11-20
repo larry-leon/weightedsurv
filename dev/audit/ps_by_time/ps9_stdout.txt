@@ -1,0 +1,5 @@
+ps9_sim.R weightedsurv 0.2.0 at f55001f; logit e = -0.44 + 0.51 X; functions from stage2e/oc_sim.R: 22
+run: cells 41, 42; 2000 replicates; 12 cores; out=raw; seeds 1e6 * k + r; started 2026-11-20 10:27:44
+  cell 41 Es9-400       2000 replicates    84.0 s  failures: none
+  cell 42 Es9-400-null  2000 replicates    78.5 s  failures: none
+ps9_sim.R done 2026-11-20 10:30:27: wall-clock 162.8 s (2.7 min)
