@@ -169,6 +169,7 @@ result_band <- KM_diff(
 Other survival_analysis:
 \code{\link[=cox_rhogamma]{cox_rhogamma()}},
 \code{\link[=df_counting]{df_counting()}},
+\code{\link[=ps_weights]{ps_weights()}},
 \code{\link[=wt.rg.S]{wt.rg.S()}}
 }
 \concept{plotting_functions}

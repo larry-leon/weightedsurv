@@ -114,7 +114,8 @@ by weighted Cox regression. Statistics in Medicine, 28(19), 2473-2489.
 Other survival_analysis:
 \code{\link[=KM_diff]{KM_diff()}},
 \code{\link[=cox_rhogamma]{cox_rhogamma()}},
-\code{\link[=df_counting]{df_counting()}}
+\code{\link[=df_counting]{df_counting()}},
+\code{\link[=ps_weights]{ps_weights()}}
 
 Other weighted_tests:
 \code{\link[=cox_rhogamma]{cox_rhogamma()}},

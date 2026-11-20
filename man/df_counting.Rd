@@ -261,6 +261,7 @@ Statistics in Medicine, 38(20), 3782-3790.
 Other survival_analysis:
 \code{\link[=KM_diff]{KM_diff()}},
 \code{\link[=cox_rhogamma]{cox_rhogamma()}},
+\code{\link[=ps_weights]{ps_weights()}},
 \code{\link[=wt.rg.S]{wt.rg.S()}}
 
 Other weighted_tests:
