@@ -288,16 +288,18 @@ plot_weighted_km(
 title(main = "Rotterdam PS-weighted")
 ```
 
-The propensity-score weighted Rotterdam analysis shows a treatment effect pattern broadly consistent with the randomized GBSG trial, supporting the validity of the observational comparison after confounding adjustment.
+Hazard ratios (FH(0,0), with asymptotic 95% intervals): in the restricted Rotterdam population the propensity-score weighted estimate is `r with(cox_rhogamma(dfcount = dfcount_rotterdam_wtd, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy, paste0(fmt(hr, 2), " (", fmt(lower, 2), ", ", fmt(upper, 2), ")"))` and the unweighted estimate is `r with(cox_rhogamma(dfcount = dfcount_rotterdam_unwtd, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy, paste0(fmt(hr, 2), " (", fmt(lower, 2), ", ", fmt(upper, 2), ")"))`; in the GBSG trial data the estimate is `r with(cox_rhogamma(dfcount = dfcount_gbsg, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy, paste0(fmt(hr, 2), " (", fmt(lower, 2), ", ", fmt(upper, 2), ")"))`. The weighted Rotterdam estimate is `r ifelse(cox_rhogamma(dfcount = dfcount_rotterdam_wtd, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy$hr < cox_rhogamma(dfcount = dfcount_rotterdam_unwtd, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy$hr, "below", "not below")` the unweighted one and `r ifelse(cox_rhogamma(dfcount = dfcount_rotterdam_wtd, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy$hr < cox_rhogamma(dfcount = dfcount_gbsg, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy$hr, "below", "not below")` the GBSG estimate. The two datasets differ in population and follow-up, and weighting adjusts only for the covariates of the propensity model.
 
 
 # Simultaneous Confidence Bands for Survival Differences
 
 ## Rotterdam Weighted Survival Difference Bands
 
-The `plotKM.band_subgroups()` function computes KM survival difference estimates along with pointwise and simultaneous confidence bands using martingale resampling.  The simultaneous band provides uniform coverage:
+The `plotKM.band_subgroups()` function computes KM survival difference estimates along with pointwise and simultaneous confidence bands using martingale resampling.  The simultaneous band provides uniform coverage.  With $\hat{\Delta}(t) = \widehat{S}_1(t) - \widehat{S}_0(t)$, $\Delta(t) = S_1(t) - S_0(t)$ and $\widehat{\text{se}}[\hat{\Delta}(t)]$ the standard error of the difference, the critical value $c_{1-\alpha}$ is the $(1-\alpha)$ quantile of the resampled supremum of the standardized process, so that
 
-$$P\left(\sup_{t \leq \tau} \left|(\widehat{S}_1 - \widehat{S}_0)(t) - (S_1 - S_0)(t)\right| \leq c_{\alpha}\right) \approx 1 - \alpha.$$
+$$P\left(\sup_{t \leq \tau} \frac{\left|\hat{\Delta}(t) - \Delta(t)\right|}{\widehat{\text{se}}[\hat{\Delta}(t)]} \leq c_{1-\alpha}\right) \approx 1 - \alpha,$$
+
+and the band is $\hat{\Delta}(t) \pm c_{1-\alpha} \cdot \widehat{\text{se}}[\hat{\Delta}(t)]$, as in `KM_diff()`: wider where the standard error is larger.
 
 ```{r rotterdam-bands, fig.width=8, fig.height=6}
 par(mfrow = c(1, 1))
@@ -436,7 +438,7 @@ legend("topleft",
 
 **Top row (GBSG trial):** The KM survival difference (left) shows the instantaneous treatment gap at each time point, while the cumulative RMST difference (right) shows the accumulated treatment benefit in months gained.  The RMST curve integrates the KM difference, providing a clinically interpretable time-scale summary.
 
-**Bottom row (Rotterdam weighted):** The same pair of analyses using propensity-score weighted estimation from the observational Rotterdam data.  The weighted RMST curve shows a cumulative treatment benefit that grows steadily over follow-up, consistent with the GBSG trial findings.
+**Bottom row (Rotterdam weighted):** The same pair of analyses using propensity-score weighted estimation from the observational Rotterdam data.  The weighted cumulative RMST difference at the last time point of its grid is `r fmt(get_bands_rotterdam$rmst_maxtau_ci[1], 1)` months (pointwise 95% limits `r fmt(get_bands_rotterdam$rmst_maxtau_ci[2], 1)`, `r fmt(get_bands_rotterdam$rmst_maxtau_ci[3], 1)`) at `r fmt(max(get_bands_rotterdam$at_points), 1)` months; in the GBSG trial data (top row) it is `r fmt(get_bands_gbsg$rmst_maxtau_ci[1], 1)` months (pointwise 95% limits `r fmt(get_bands_gbsg$rmst_maxtau_ci[2], 1)`, `r fmt(get_bands_gbsg$rmst_maxtau_ci[3], 1)`) at `r fmt(max(get_bands_gbsg$at_points), 1)` months. The two values are taken at different time points and are not on a common horizon.
 
 
 # Workflow Summary

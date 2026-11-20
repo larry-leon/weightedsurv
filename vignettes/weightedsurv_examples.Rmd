@@ -13,7 +13,7 @@ vignette: >
 # Overview
 
 In this vignette of the `weightedsurv` package [@weightedsurv] we illustrate various weighted survival analyses with two breast cancer datasets available in the base R `survival` library [@survival], both comparing hormonal therapy with no hormonal therapy.  The 
-`gbsg` trial [@gbsg1994] was randomized, whereas the `rotterdam` study [@royston2013external] was observational; wherein for comparisons of the non-randomized therapy, in contrast to un-adjusted comparisons, propensity-score adjustment [@cole2004adjusted] appears to suggest a stronger impact consistent with the randomized trial.
+`gbsg` trial [@gbsg1994] was randomized, whereas the `rotterdam` study [@royston2013external] was observational; for the non-randomized comparison the hazard ratio is estimated with and without propensity-score weighting [@cole2004adjusted] in a restricted Rotterdam population, and shown next to the hazard ratio of the GBSG trial data, each with its confidence interval. The three values are given in the section "Restricted population: postmenopausal women without chemotherapy".
 
 # Survival Analysis and KM Plotting 
 
@@ -138,7 +138,7 @@ Key Features
 
 * Computes cumulative RMST over time for each group.
 
-* Uses resampling (bootstrap or similar) to estimate confidence bands for the RMST curves.
+* Uses multiplier (martingale) resampling to estimate confidence bands for the RMST curves.
 
 * Supports weighted analyses (optional).
 
@@ -796,7 +796,7 @@ par(mfrow=c(1,2))
 
 The FH(0,0) analysis (the Cox model with propensity-score weights) is shown with the weights treated as estimated, with the asymptotic interval, and with the weights treated as known, with the resampling interval. The analyses with time-dependent weights (FH(0,1), FH_exp2, MB(12), zero_one(6)) treat the propensity-score weights as known and show the resampling interval (1000 draws).
 
-```{r, messages = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE}
 library(data.table)
 library(gt)
 
