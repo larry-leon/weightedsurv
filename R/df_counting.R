@@ -241,7 +241,14 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
                  cox_text = "HR = NA", se = NA_real_)
   # Subject weights whose positive values are not all equal (Rb): the survival-based outputs are the
   # robust ones of the weighted Cox model (score test of cox_fit; robust score test at 0 as log-rank).
-  rb_unequal <- !is.null(weight.name) && ws_weights_unequal(vin$weight)
+  rb_unequal <- (!is.null(weight.name) && ws_weights_unequal(vin$weight)) || ew_on
+  # Estimated weights: a vector r of weighted residuals of a coxph fit (rows of df) gets the term through
+  # the propensity model, r + IF (sum_j (r_j / w_j) dw_j)
+  ew_df <- ew                                   # rows in the order of df (before sorting by time)
+  ew_adj <- function(r) {
+    r <- as.numeric(r)
+    as.numeric(r + ew_df$IF %*% colSums((r / vin$weight) * ew_df$dw))
+  }
   treat.name.strata <- treat.name
   if (!is.null(strata.name)) {
     treat.name.strata <- paste(treat.name,"+",paste("strata(",eval(strata.name),")"))
@@ -270,6 +277,26 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     hr <- exp(cox_fit$coef)
     hr_ci <- exp(confint(cox_fit))
     pval <- cox_summary$coefficients[1, "Pr(>|z|)"]
+    cox_se <- sqrt(cox_fit$var[1, 1])
+    if (ew_on) {
+      # Estimated weights: the same adjustment through survival's residuals. Standard error from the
+      # dfbeta residuals of cox_fit; score test from the score residuals of the fit at 0 (cox_fit's ties).
+      ew_cox <- tryCatch({
+        se <- sqrt(sum(ew_adj(stats::residuals(cox_fit, type = "dfbeta", weighted = TRUE))^2))
+        fit0 <- survival::coxph(cox_formula, data = df_fit, weights = df_fit[[weight.name]], init = 0,
+                                control = survival::coxph.control(iter.max = 0), robust = TRUE)
+        r0 <- as.numeric(stats::residuals(fit0, type = "score", weighted = TRUE))
+        list(se = se, score = sum(r0)^2 / sum(ew_adj(r0)^2))
+      }, error = function(e) {
+        na_reasons <<- c(na_reasons, paste("Cox model with estimated weights failed:", conditionMessage(e)))
+        list(se = NA_real_, score = NA_real_)
+      })
+      cox_se <- ew_cox$se
+      cox_score[1] <- ew_cox$score
+      bh <- unname(cox_fit$coef[1])
+      hr_ci[] <- exp(bh + c(-1, 1) * stats::qnorm(0.975) * cox_se)
+      pval <- 2 * stats::pnorm(-abs(bh / cox_se))
+    }
     cox_text <- paste0("HR = ", round(hr, cox.digits),
                         " (", round(hr_ci[1], cox.digits), ", ", round(hr_ci[2], cox.digits), ")")
 
@@ -280,7 +307,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       pval = pval,
       score = cox_score,
       cox_text = cox_text,
-      se = sqrt(cox_fit$var[1, 1])
+      se = cox_se
     )
   }
   ans$cox_results <- cox_results
@@ -302,7 +329,10 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     logrank_fit <- tryCatch({
       lr_fit <- survival::coxph(cox_formula, data = df_fit, weights = df_fit[[weight.name]], init = 0,
                                 control = survival::coxph.control(iter.max = 0), robust = TRUE, ties = "breslow")
-      list(chisq = as.numeric(lr_fit$rscore))
+      if (ew_on) {
+        r <- as.numeric(stats::residuals(lr_fit, type = "score", weighted = TRUE))
+        list(chisq = sum(r)^2 / sum(ew_adj(r)^2))
+      } else list(chisq = as.numeric(lr_fit$rscore))
     }, error = function(e) {
       na_reasons <<- c(na_reasons, paste("log-rank test (robust score test of coxph) failed:", conditionMessage(e)))
       list(chisq = NA_real_)
@@ -461,8 +491,11 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   df_weights <- data.frame(at_points, nbar0, nbar1, ybar0, ybar1, surv1, surv0, survP, survG)
   # Subject weights not all equal: hand the subject-level data to wlr_cumulative(), which then uses
   # the score-residual variance (in every stratum too). Otherwise nothing is attached.
-  lr_unequal <- ws_weights_unequal(wgt)
-  if (lr_unequal) attr(df_weights, "ws_subject") <- list(time = time, delta = delta, z = z, w_hat = wgt, unequal = TRUE)
+  # With weight_variance = "estimated" the influence-based formulas always run, with the term through the
+  # propensity model (the pieces of the model go along with the subject-level data).
+  lr_unequal <- ws_weights_unequal(wgt) || ew_on
+  if (lr_unequal) attr(df_weights, "ws_subject") <- list(time = time, delta = delta, z = z, w_hat = wgt, unequal = TRUE,
+                                                         ew = if (ew_on) list(IF = ew$IF, dw = ew$dw) else NULL)
 
   get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)
 
@@ -626,6 +659,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     sig2_lr_stratified <- 0.0
     score_stratified <- 0.0
     sig2_score_stratified <- 0.0
+    psi_strata <- numeric(length(time))      # estimated weights: the score contributions, computed within stratum
     for (ss in seq_along(stratum)) {
       this_stratum <- stratum[ss]
       U0_s <- time[z == 0 & strata == this_stratum]
@@ -683,6 +717,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
         attr(df_weights, "ws_subject") <- list(time = time[in_s], delta = delta[in_s], z = z[in_s], w_hat = wgt[in_s], unequal = TRUE)
       }
       get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)
+      if (ew_on) psi_strata[in_s] <- ws_lr_psi(df_weights, scheme, scheme_params)
 
       score_stratified <- score_stratified + get_score$score
       sig2_score_stratified <- sig2_score_stratified + get_score$sig2.score
@@ -712,6 +747,9 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     ans$survP_stratum      <- survP_mat[cbind(id_time, id_stratum)]
     ans$sig2_survP_stratum <- sig2_survP_mat[cbind(id_time, id_stratum)]
 
+    # Estimated weights: one sum over all subjects of (psi_i + IF_i' B)^2, B summed over all strata
+    # (not a sum of per-stratum variances: the model's coefficients are shared)
+    if (ew_on) sig2_lr_stratified <- sig2_score_stratified <- sum(ws_score_ew(psi_strata, wgt, ew$IF, ew$dw)^2)
     ans$lr_stratified <- lr_stratified
     ans$sig2_lr_stratified <- sig2_lr_stratified
     ans$z.score_stratified <- score_stratified/sqrt(sig2_score_stratified)

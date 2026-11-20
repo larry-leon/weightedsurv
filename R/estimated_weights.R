@@ -72,3 +72,43 @@ ws_km_ew_sig2 <- function(U, D, W, rows, at_points, ybar, nbar, S, ew) {
   v[S == 0] <- 0
   v
 }
+
+# Score contributions with estimated weights: psi^ew_i = psi_i + IF_i' B, B = sum_j (psi_j / a_j) dw_j.
+# psi: the contributions of ws_score_psi() (computed within stratum), a: the weights, all n subjects.
+#' @noRd
+ws_score_ew <- function(psi, a, IF, dw) {
+  as.numeric(psi + IF %*% colSums((psi / a) * dw))
+}
+
+# Per-subject score contributions psi_i(0) of the weighted log-rank statistic for the subject-level data
+# attached to a table of counts (the time weights of the scheme are those wlr_cumulative() uses).
+#' @noRd
+ws_lr_psi <- function(df_weights, scheme, scheme_params) {
+  at_points <- df_weights[["at_points"]]
+  dfwlr <- data.frame(at_points, S.pool = df_weights[["survP"]], Ybar = df_weights[["ybar0"]] + df_weights[["ybar1"]])
+  if (!is.null(df_weights[["survG"]])) dfwlr$G.pool <- df_weights[["survG"]]
+  wt_rg <- get_validated_weights(dfwlr, scheme, scheme_params)
+  subj <- ws_lr_subject_data(df_weights, at_points)
+  ws_score_psi(subj$time, subj$delta, subj$z, subj$w_hat, K = wt_rg[match(subj$time, at_points)], beta = 0)$psi
+}
+
+# Cumulative variance of the weighted log-rank score with estimated weights on a sorted grid:
+#   V^ew(t) = sum_i (c_i(t) + IF_i' B(t))^2 = V(t) + 2 B(t)' C(t) + B(t)' {sum_i IF_i IF_i'} B(t),
+# with c_i(t) the contribution of subject i up to t (psi_i when U_i <= t, -a_i (Z_i cK(t) - cKz(t)) otherwise),
+#   B(t) = sum_{U_j <= t} (psi_j / a_j) dw_j - cK(t) sum_{U_j > t, Z_j = 1} dw_j + cKz(t) sum_{U_j > t} dw_j,
+#   C(t) = sum_{U_i <= t} psi_i IF_i - cK(t) sum_{U_i > t, Z_i = 1} a_i IF_i + cKz(t) sum_{U_i > t} a_i IF_i.
+#' @noRd
+ws_lr_cumvar_ew <- function(sp, time, z, a, at_points, IF, dw) {
+  V <- ws_lr_cumvar(sp, time, z, a, at_points)
+  m <- length(at_points)
+  k <- match(time, at_points)
+  upto <- function(x) ws_colcumsum(ws_rowsum_grid(x, k, m))             # sum over U_j <= t
+  after <- function(x) -sweep(upto(x), 2, colSums(x), "-")              # sum over U_j > t
+  j <- findInterval(at_points, sp$times)
+  cK <- c(0, sp$cK)[j + 1]
+  cKz <- c(0, sp$cKz)[j + 1]
+  z1 <- as.numeric(z == 1)
+  B <- upto((sp$psi / a) * dw) - cK * after(z1 * dw) + cKz * after(dw)
+  C <- upto(sp$psi * IF) - cK * after((a * z1) * IF) + cKz * after(a * IF)
+  V + 2 * rowSums(B * C) + rowSums((B %*% crossprod(IF)) * B)
+}

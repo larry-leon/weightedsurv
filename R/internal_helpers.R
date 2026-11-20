@@ -311,7 +311,15 @@ ws_lr_subject_data <- function(x, at_points) {
     if (!is.list(x) || !all(nms %in% names(x))) return(NULL)
     s <- list(time = x[["time"]], delta = x[["delta"]], z = x[["z"]], w_hat = x[["w_hat"]])
     s$unequal <- ws_weights_unequal(s$w_hat)
+    # a df_counting() result made with weight_variance = "estimated": the pieces of the propensity model
+    # (rows in the order of `time`); the influence-based formulas then run whatever the weights
+    if (identical(x[["weight_variance"]], "estimated") && is.list(x[["ew_parts"]])) {
+      s$ew <- x[["ew_parts"]]
+      s$unequal <- TRUE
+    }
   }
+  if (!is.null(s$ew) && !(is.matrix(s$ew$IF) && is.matrix(s$ew$dw) && nrow(s$ew$IF) == length(s$time) &&
+                          nrow(s$ew$dw) == length(s$time))) s$ew <- NULL
   ok <- is.numeric(s$time) && is.numeric(s$delta) && is.numeric(s$z) && is.numeric(s$w_hat) &&
     length(s$delta) == length(s$time) && length(s$z) == length(s$time) && length(s$w_hat) == length(s$time)
   if (!ok || !isTRUE(s$unequal)) return(NULL)

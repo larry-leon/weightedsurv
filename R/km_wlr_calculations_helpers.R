@@ -276,17 +276,24 @@ wlr_dhat_estimates <- function(dfcounting,
   subj <- ws_lr_subject_data(dfcounting, at_points)
   if (!is.null(subj)) {
     psi <- ws_score_psi(subj$time, subj$delta, subj$z, subj$w_hat, K = wt_rg[match(subj$time, at_points)], beta = 0)$psi
+    ew <- subj$ew
+    # Estimated weights: psi_i + IF_i' B for the score, d_i + IF_i' (S0 Dg0 - S1 Dg1) for the difference
+    if (!is.null(ew)) psi <- ws_score_ew(psi, subj$w_hat, ew$IF, ew$dw)
     sig2_lr <- sum(psi^2)
     if (!is.null(tzero)) {
       d <- numeric(length(psi))
       if (length(le_tzero) > 0) {
+        dDg <- 0
         for (arm in c(0, 1)) {
           ia <- which(subj$z == arm)
           parts <- ws_km_psi_parts(subj$time[ia], subj$delta[ia], at_points,
                                    if (arm == 1) ybar1 else ybar0, if (arm == 1) nbar1 else nbar0)
           psi_km <- ifelse(parts$k <= loc_tzero, parts$exit, -parts$H[loc_tzero])
-          d[ia] <- (if (arm == 1) -S1[loc_tzero] else S0[loc_tzero]) * subj$w_hat[ia] * psi_km
+          sgnS <- if (arm == 1) -S1[loc_tzero] else S0[loc_tzero]
+          d[ia] <- sgnS * subj$w_hat[ia] * psi_km
+          if (!is.null(ew)) dDg <- dDg + sgnS * colSums(psi_km * ew$dw[ia, , drop = FALSE])
         }
+        if (!is.null(ew)) d <- d + as.numeric(ew$IF %*% dDg)
       }
       sig2_dhat <- sum(d^2)
       cov_wlr_dhat <- sum(-psi * d)
@@ -770,6 +777,12 @@ wlr_cumulative <- function(df_weights, scheme, scheme_params = list(rho = 0, gam
   if (!is.null(subj)) {
     sp <- ws_score_psi(subj$time, subj$delta, subj$z, subj$w_hat, K = wt_rg[match(subj$time, at_points)], beta = 0)
     sig2_lr <- if (return_cumulative) ws_lr_cumvar(sp, subj$time, subj$z, subj$w_hat, at_points) else sum(sp$psi^2)
+    # Estimated weights (a df_counting() result made with weight_variance = "estimated"): the contributions
+    # carry the term through the propensity model, psi_i + IF_i' B (see ws_score_ew(), ws_lr_cumvar_ew()).
+    if (!is.null(subj$ew)) {
+      sig2_lr <- if (return_cumulative) ws_lr_cumvar_ew(sp, subj$time, subj$z, subj$w_hat, at_points, subj$ew$IF, subj$ew$dw)
+                 else sum(ws_score_ew(sp$psi, subj$w_hat, subj$ew$IF, subj$ew$dw)^2)
+    }
   }
   z <- lr / sqrt(sig2_lr)
   list(z.score = z, time = at_points, score = lr, sig2.score = sig2_lr)
