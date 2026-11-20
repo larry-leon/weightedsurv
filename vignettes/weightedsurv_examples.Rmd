@@ -12,8 +12,8 @@ vignette: >
 
 # Overview
 
-In this draft vignette of the `weightedsurv` package [@weightedsurv] we illustrate various weighted survival analyses with two breast cancer datasets available in the base R `survival` library [@survival] both evaluating hormon replacement therapy in comparison to chemotherapy.  The 
-`gbsg` trial [@gbsg1994] was randomized, whereas the `rotterdam` study [@royston2013external] was observational; Wherein for comparisons of the non-randomized therapy, in contrast to un-adjusted comparisons, propensity-score adjustment [@cole2004adjusted] appears to suggest a stronger impact consistent with the randomized trial.
+In this vignette of the `weightedsurv` package [@weightedsurv] we illustrate various weighted survival analyses with two breast cancer datasets available in the base R `survival` library [@survival], both comparing hormonal therapy with no hormonal therapy.  The 
+`gbsg` trial [@gbsg1994] was randomized, whereas the `rotterdam` study [@royston2013external] was observational; wherein for comparisons of the non-randomized therapy, in contrast to un-adjusted comparisons, propensity-score adjustment [@cole2004adjusted] appears to suggest a stronger impact consistent with the randomized trial.
 
 # Survival Analysis and KM Plotting 
 
@@ -24,29 +24,32 @@ Weighted estimation for:  Cox model; Kaplan-Meier treatment survival curves as w
 Summary: Weighted Survival Analysis Capabilities
 
 * Weighted Kaplan-Meier and Log-Rank Analyses
-  * The code provides functions to compute and plot weighted Kaplan-Meier survival curves for two or more groups, using custom weights.
-Weighted log-rank statistics can be calculated using flexible, time-dependent weighting schemes (e.g., Fleming-Harrington, Schemper, Xu & O'Quigley, Maggir-Burman, and custom schemes).
-Functions such as wlr_dhat_estimates, wlr_cumulative, and KM_estimates (in km_wlr_calculations_helpers.R) allow for the calculation of weighted risk sets, event counts, and survival probabilities.
+  * The code provides functions to compute and plot weighted Kaplan-Meier survival curves for two groups (treatment coded 0/1), using subject-specific weights.
+Weighted log-rank statistics can be calculated using flexible, time-dependent weighting schemes (e.g., Fleming-Harrington, Schemper, Xu & O'Quigley, Magirr-Burman, and custom schemes).
+`KM_estimates()` computes survival probabilities from weighted risk sets and event counts, `KM_diff()` the difference of two curves, and `wlr_cumulative()` and `wlr_dhat_estimates()` weighted log-rank statistics (all in `R/km_wlr_calculations_helpers.R`).
 
 * Weighted Cox Proportional Hazards Models
-  * The code supports fitting Cox models with custom weights, including rho-gamma weights for weighted log-rank tests.
-Functions like cox_rhogamma and cox_score_rhogamma (in weightedCox.R) implement weighted Cox regression, including score calculations, confidence intervals, and resampling for inference.
-The code allows for root-finding and score-based estimation in the presence of weights.
+  * The code supports fitting Cox models with time-dependent weights, including rho-gamma weights for weighted log-rank tests, with or without subject-specific weights.
+`cox_rhogamma()` and `cox_score_rhogamma()` (in `R/weightedCox.R`) implement weighted Cox regression, including score calculations, confidence intervals, and resampling for inference (`cox_rhogamma_resample()`).
+The estimate is the root of the weighted score equation (`find_cox_root()`).
 
 * Flexible Weighting Schemes
-  * The weighted_helpers.R file provides a framework for defining, validating, and applying a variety of weighting schemes to survival data.
-The get_weights and extract_and_calc_weights functions allow users to specify and compute weights for each subject and time point, supporting both standard and custom schemes.
-Visualization of weight functions over time is supported via plot_weight_schemes.
+  * `R/weighted_helpers.R` provides a framework for defining, validating, and applying a variety of time-dependent weighting schemes (`wt.rg.S()`, `validate_scheme_params()`, `get_validated_weights()`).
+`get_weights()` and `extract_and_calc_weights()` compute the weights of one or several schemes at each time point, supporting both standard and custom schemes.
+Visualization of weight functions over time is supported via `plot_weight_schemes()`.
 
 * Counting Process Data Preparation
   * The code can transform raw survival data into a counting process format, which is essential for weighted analyses.
-Functions in df_counting.R and df_counting_helpers.R prepare risk sets, event counts, and weighted summaries for each group, supporting both unweighted and weighted analyses.
+`df_counting()` (in `R/df_counting.R`) and the helpers in `R/df_counting_helpers.R` (`get_dfcounting()`, `extract_group_data()`, `calculate_risk_event_counts()`) prepare risk sets, event counts, and weighted summaries for each group, supporting both unweighted and weighted analyses.
+
+* Propensity-Score Weights
+  * `ps_weights()` (in `R/ps_weights.R`) fits a logistic model for the treatment and returns inverse-probability or stabilized weights, together with what is needed to carry the estimation of the weights into standard errors, intervals, bands and tests (`weight_variance = "estimated"`).
 
 * Weighted RMST (Restricted Mean Survival Time)
-  * The code includes functions for calculating cumulative RMST and confidence bands using resampling, with support for weights (rmst_calculations.R).
+  * `cumulative_rmst_bands()` (in `R/rmst_calculations.R`) calculates cumulative RMST and confidence bands using resampling, with support for weights.
 
 * Plotting and Visualization
-  * Weighted survival curves, confidence intervals, and risk tables can be plotted using functions in kmplotting_helpers.R.
+  * Weighted survival curves, confidence intervals, and risk tables can be plotted with `plot_weighted_km()`, and survival differences with bands with `plotKM.band_subgroups()` (functions in `R/kmplotting_helpers.R` and `R/df_counting_helpers.R`).
 The plotting functions support the display of weighted KM curves, weighted risk tables, and annotation of statistical results.
 
 
@@ -55,7 +58,7 @@ The plotting functions support the display of weighted KM curves, weighted risk 
 ### df_counting
 Prepares a comprehensive dataset for survival analysis using the counting process approach. Computes risk sets, event counts, Kaplan-Meier estimates, log-rank (Fleming-Harrington ($\rho,\gamma$) weights) and Cox model results, and quantile estimates for two groups (e.g., treatment and control), optionally handling (subject-specific case) weights (such as inverse probability weights) and stratification.
 
-Time-dependent weights for log-rank statistics are implemented via *wt.rg.S* function: Supporting a variety of commonly used and custom weighting schemes for weighted log-rank and related tests. The function is flexible and can be used for Fleming-Harrington, Schemper, Xu & O'Quigley (XO), Maggir-Burman (MB), custom time-based, and exponential variants of Fleming-Harrington weights.
+Time-dependent weights for log-rank statistics are implemented via *wt.rg.S* function: Supporting a variety of commonly used and custom weighting schemes for weighted log-rank and related tests. The function is flexible and can be used for Fleming-Harrington, Schemper, Xu & O'Quigley (XO), Magirr-Burman (MB), custom time-based, and exponential variants of Fleming-Harrington weights.
 
 Subject-specific (case-weights) are also included in order to implement propensity-score weighted analyses.
 
@@ -145,11 +148,14 @@ Key Features
 ```{r, message = FALSE, warning = FALSE}
 oldpar <- par(no.readonly = TRUE)
 library(survival)
-# to install weightedKMplots
-# library(devtools)
-# github_install("larry-leon/weightedsurv")
+# To install weightedsurv: the released version from CRAN
+# install.packages("weightedsurv")
+# or the development version from GitHub
+# devtools::install_github("larry-leon/weightedsurv")
 library(weightedsurv)
 library(dplyr)
+# formatting of the numbers quoted in the text
+fmt <- function(x, digits = 2) formatC(x, format = "f", digits = digits)
 ```
 
 # GBSG data analysis example
@@ -260,15 +266,17 @@ gbsg_validate <- within(rotterdam, {
   SG0 <- ifelse(er <= 0, 0, 1)
 })
 ```
-Node positive only to correspond to GBSG population  
+Node positive only to correspond to GBSG population. The node-positive data are kept as `df_rotterdam_np`; the cross-trial comparison further below uses them.
 ```{r}
-df_rotterdam <- subset(gbsg_validate, nodes > 0)
+df_rotterdam_np <- subset(gbsg_validate, nodes > 0)
 ```
 
-Baseline demographics table
+Time and event definition. Every Rotterdam analysis in this vignette uses the time `tte`, which is `rfstime` in months (the time of recurrence when there was one, otherwise the time of death or last follow-up), and the event indicator `event`, which is `status2`: a recurrence, or a death without recurrence, except that a death recorded after the end of the recurrence follow-up (`rtime < dtime`) is not counted as an event. Among the node-positive women `status2` differs from `status = pmax(recur, death)` in `r sum(df_rotterdam_np$status != df_rotterdam_np$status2)` of `r nrow(df_rotterdam_np)` rows.
+
+Baseline demographics table (all node-positive women)
 ```{r}
 library(dplyr)
-rotterdam2 <- df_rotterdam %>%
+rotterdam2 <- df_rotterdam_np %>%
   mutate(
     meno = factor(meno, levels = c(0, 1), labels = c("Pre", "Post")),
     grade3 = factor(grade3, levels = c(0, 1), labels = c("Not Grade 3", "Grade 3")),
@@ -294,26 +302,82 @@ baseline_table
 ```
 
 
-Propensity score model
-```{r}
-fit.ps <- glm(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, data=df_rotterdam, family="binomial")
-pihat <- fit.ps$fitted
-pihat.null <- glm(treat ~ 1, family="binomial", data=df_rotterdam)$fitted
-wt.1 <- pihat.null / pihat
-wt.0 <- (1 - pihat.null) / (1 - pihat)
-df_rotterdam$sw.weights <- ifelse(df_rotterdam$treat == 1, wt.1, wt.0)
-# truncated weights
-df_rotterdam$sw.weights_trunc <- with(df_rotterdam, pmin(pmax(sw.weights, quantile(sw.weights, 0.05)), quantile(sw.weights, 0.95)))
+## Effective sample size with all node-positive women
 
+Propensity score model for all node-positive women. `ps_weights()` fits the logistic model and returns the weights (here stabilized weights; the default is `type = "ipw"`).
+```{r ess-node-positive}
+pw_np <- ps_weights(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er,
+                    data = df_rotterdam_np, type = "stabilized")
+df_rotterdam_np$sw.weights <- pw_np$weights
+
+dfcount_np_wtd <- get_dfcounting(df=df_rotterdam_np, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+                                  weight.name="sw.weights")
+knitr::kable(dfcount_np_wtd$ess, digits = c(0, 0, 1, 3))
 ```
+
+```{r, echo = FALSE}
+# numbers quoted in the text
+ess_np <- dfcount_np_wtd$ess
+n_treat_np <- sum(df_rotterdam_np$treat == 1)
+n_treat_restricted <- sum(df_rotterdam_np$treat == 1 & df_rotterdam_np$meno == 1 & df_rotterdam_np$chemo == 0)
+```
+
+`df_counting()$ess` gives, by arm, the number of subjects `n`, the effective sample size `ess` $= (\sum_i w_i)^2 / \sum_i w_i^2$ and their ratio: a ratio near 1 means that the weights are spread evenly over the arm, a low ratio that a few subjects carry most of the weight. Here the ratio of the treated arm is `r fmt(ess_np$ratio[1], 2)` (the `r ess_np$n[1]` treated women count for about `r fmt(ess_np$ess[1], 0)`) and the largest weight is `r fmt(max(df_rotterdam_np$sw.weights), 1)`. In these data hormonal therapy went mostly to postmenopausal women who had no chemotherapy (`r n_treat_restricted` of the `r n_treat_np` treated women), so the few treated women who were premenopausal or had chemotherapy receive large weights. For this reason the weighted example is restricted to postmenopausal women without chemotherapy.
+
+
+## Restricted population: postmenopausal women without chemotherapy
+
+Propensity score model on the rows analysed (`meno` and `chemo` are constant in this population and leave the model). The object returned by `ps_weights()` is kept: it is passed below as `weight_model`, so that standard errors, intervals, bands and tests account for the estimation of the weights (`weight_variance = "estimated"`).
+```{r ps-weights-restricted}
+df_rotterdam <- subset(df_rotterdam_np, meno == 1 & chemo == 0)
+
+pw <- ps_weights(treat ~ age + size + grade3 + nodes + pgr + er,
+                 data = df_rotterdam, type = "stabilized")
+pw
+df_rotterdam$sw.weights <- pw$weights
+```
+
+The restricted population has `r nrow(df_rotterdam)` women: `r sum(df_rotterdam$treat == 0)` without and `r sum(df_rotterdam$treat == 1)` with hormonal therapy.
+
+Standardized differences (treated minus control, in units of the pooled unweighted standard deviation) of the model's covariates, before and after weighting:
+```{r balance-restricted}
+std_diff <- function(x, a, w) {
+  (weighted.mean(x[a == 1], w[a == 1]) - weighted.mean(x[a == 0], w[a == 0])) /
+    sqrt((var(x[a == 1]) + var(x[a == 0])) / 2)
+}
+X_ps <- model.matrix(~ age + size + grade3 + nodes + pgr + er, data = df_rotterdam)[, -1]
+balance <- data.frame(
+  covariate = colnames(X_ps),
+  unweighted = apply(X_ps, 2, std_diff, a = df_rotterdam$treat, w = rep(1, nrow(df_rotterdam))),
+  weighted = apply(X_ps, 2, std_diff, a = df_rotterdam$treat, w = df_rotterdam$sw.weights),
+  row.names = NULL
+)
+knitr::kable(balance, digits = 3)
+```
+
+The largest absolute standardized difference is `r fmt(max(abs(balance$unweighted)), 2)` before weighting and `r fmt(max(abs(balance$weighted)), 2)` after.
+
 Un-weighted and weighted analyses
 ```{r}
 dfcount_rotterdam_unwtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24)
 
 dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
-                                  weight.name="sw.weights")
+                                  weight.name="sw.weights", weight_variance = "estimated", weight_model = pw)
 
+knitr::kable(dfcount_rotterdam_wtd$ess, digits = c(0, 0, 1, 3))
 ```
+
+```{r, echo = FALSE}
+# numbers quoted in the text: hazard ratios (FH(0,0), asymptotic intervals)
+hr_text <- function(dfcount) {
+  ci <- cox_rhogamma(dfcount = dfcount, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy
+  paste0(fmt(ci$hr, 2), " (", fmt(ci$lower, 2), ", ", fmt(ci$upper, 2), ")")
+}
+```
+
+Both ratios are close to 1 (`r fmt(dfcount_rotterdam_wtd$ess$ratio[1], 2)` treated, `r fmt(dfcount_rotterdam_wtd$ess$ratio[2], 2)` control) and the largest weight is `r fmt(max(df_rotterdam$sw.weights), 1)`: the weights are spread evenly within each arm.
+
+The weighted hazard ratio is `r hr_text(dfcount_rotterdam_wtd)`, the unweighted one `r hr_text(dfcount_rotterdam_unwtd)`. For context, in the GBSG trial data analysed above it is `r hr_text(dfcount_gbsg)`.
 
 ---- Plotting Weighted vs Unweighted ----
 
@@ -338,12 +402,14 @@ title(main="Rotterdam weighted K-M curves")
 
 ### Simultaneous bands and point-wise CIs
 
-Note that the first graph displays 20 (1st 20) resampled approximations to the centered survival difference 
+The first graph displays the first 20 resampled approximations to the centered survival difference 
 
-$\Delta(t) = (\widehat{S_1} - \widehat{S_0})(t) - (S_{1} - S_{0})(t)),$ for timepoints $t$ within "qtau" quartiles of the event times (i.e., for qtau = 2.5\% we calculate $\Delta$ for time points within the 2.5\% and 97.5\% quantiles).
+$\Delta(t) = (\widehat{S_1} - \widehat{S_0})(t) - (S_{1} - S_{0})(t),$ each divided by the standard error of the difference at $t$ (the curves `Zdhat_star` of `KM_diff()`). The simultaneous band is $(\widehat{S_1} - \widehat{S_0})(t) \pm c_{\alpha}\, \widehat{se}(t)$, where $c_{\alpha}$ is the $1-\alpha$ quantile, over the `draws.band` resampled curves, of the largest absolute standardized value. The supremum, and so the band, is over the whole time range of the call: every time point up to the smaller of the two arms' last event times (or up to `tau_add`, when that is later). No quantile range is trimmed (`qtau` acts only with `modify_tau = TRUE`, which is not used here).
+
+With `weight_variance = "estimated"` and `weight_model = pw` the pointwise limits and the band account for the estimation of the weights.
 
 ---- Simultaneous CI bands ----
-```{r, fig.width = 10, fig.height = 6}
+```{r rotterdam-band-resamples, fig.width = 10, fig.height = 6}
 
 par(mfrow=c(1,2))
  
@@ -353,7 +419,8 @@ par(mfrow=c(1,2))
     yseq_length=5, cex_Yaxis=0.7, risk_cex=0.7,
     tau_add=42, by.risk = 12, risk_delta=0.075, risk.pad=0.03, ymax.pad = 0.125,
     tte.name = tte.name, treat.name = treat.name, event.name = event.name, weight.name = "sw.weights",
-    draws.band = 1000, qtau = 0.025, show_resamples = TRUE
+    draws.band = 1000, show_resamples = TRUE,
+    weight_variance = "estimated", weight_model = pw
   )
   legend("topleft", c("Difference estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.7)
@@ -366,7 +433,7 @@ par(mfrow=c(1,2))
 # Compare Rotterdam observational data with propensity-score weighting and GBSG randomized data
 
 ---- Simultaneous CI bands ----
-```{r, fig.width = 10, fig.height = 10}
+```{r rotterdam-gbsg-bands, fig.width = 10, fig.height = 10}
 
 par(mfrow=c(2,2))
  
@@ -376,7 +443,8 @@ par(mfrow=c(2,2))
     yseq_length=5, cex_Yaxis=0.7, risk_cex=0.7,
     tau_add=42, by.risk = 12, risk_delta=0.075, risk.pad=0.03, ymax.pad = 0.125,
     tte.name = tte.name, treat.name = treat.name, event.name = event.name, weight.name = "sw.weights",
-    draws.band = 1000, qtau = 0.025, show_resamples = FALSE
+    draws.band = 1000, show_resamples = FALSE,
+    weight_variance = "estimated", weight_model = pw
   )
   legend("topleft", c("Difference estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.7)
@@ -385,11 +453,15 @@ par(mfrow=c(2,2))
 
 get_bands <- cumulative_rmst_bands(df = df_rotterdam, fit = temp$fit_itt, 
 tte.name = tte.name, event.name = event.name, treat.name = treat.name , weight.name = "sw.weights", 
-draws_sb = 1000, xlab="months", rmst_max_cex = 0.7)
+draws_sb = 1000, xlab="months", rmst_max_cex = 0.7,
+weight_variance = "estimated", weight_model = pw)
 
 legend("topleft", c("Cumulative RMST estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.7)
 
+# kept for the comparison of the two weight_variance options below
+band_rotterdam <- temp
+rmst_rotterdam <- get_bands
   
 
 
@@ -400,7 +472,7 @@ temp <- plotKM.band_subgroups(
     yseq_length=5, cex_Yaxis=0.7, risk_cex=0.7,
     by.risk = 6, risk_delta=0.075, risk.pad=0.03,
     tte.name = tte.name, treat.name = treat.name, event.name = event.name, 
-    draws.band = 1000, qtau = 0.025, show_resamples = FALSE
+    draws.band = 1000, show_resamples = FALSE
   )
   legend("topleft", c("Difference estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.75)
@@ -417,14 +489,53 @@ draws_sb = 1000, xlab="months", rmst_max_cex = 0.75)
 ```
 
 
+## Weights treated as known or as estimated
+
+The Rotterdam analyses above use `weight_variance = "estimated"`: the weights come from a logistic propensity model fitted on the rows analysed, and its estimation is carried into the log-rank test, the hazard-ratio interval, the survival difference and the RMST. The default, `weight_variance = "known"`, treats the weights as fixed numbers. No estimate differs between the two options; standard errors, intervals, bands and tests do. The same analyses under both options (FH(0,0) weights; RMST difference at the last time point of the band plot):
+
+```{r known-vs-estimated}
+dfcount_rotterdam_known <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+                                  weight.name="sw.weights")
+
+# survival difference and RMST with the weights treated as known, on the time grid of the band plot
+fit_known <- KM_diff(df = df_rotterdam, tte.name = tte.name, event.name = event.name, treat.name = treat.name,
+                     weight.name = "sw.weights", at_points = band_rotterdam$fit_itt$at_points, draws.band = 1000)
+rmst_known <- cumulative_rmst_bands(df = df_rotterdam, fit = fit_known,
+                                    tte.name = tte.name, event.name = event.name, treat.name = treat.name,
+                                    weight.name = "sw.weights", draws_sb = 1000, plot = FALSE)
+
+option_row <- function(dfcount, rmst) {
+  cox <- cox_rhogamma(dfcount = dfcount, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))
+  ci <- cox$hr_ci_asy
+  r <- rmst$rmst_maxtau_ci
+  data.frame(
+    weights = cox$weight_variance,
+    z = fmt(dfcount$z.score, 2),
+    HR = paste0(fmt(ci$hr, 2), " (", fmt(ci$lower, 2), ", ", fmt(ci$upper, 2), ")"),
+    RMST = paste0(fmt(r[1], 1), " (", fmt(r[2], 1), ", ", fmt(r[3], 1), ")")
+  )
+}
+known_vs_estimated <- rbind(option_row(dfcount_rotterdam_known, rmst_known),
+                            option_row(dfcount_rotterdam_wtd, rmst_rotterdam))
+knitr::kable(known_vs_estimated, align = "lrrr",
+             col.names = c("Weights treated as", "Log-rank z", "Hazard ratio (95% CI)",
+                           paste0("RMST difference at ", fmt(max(rmst_rotterdam$at_points), 1), " months (95% CI)")))
+```
+
+Reading: the hazard ratio and the RMST difference are the same in the two rows. With the weights treated as estimated the log-rank z is larger and both intervals are shorter than with the weights treated as known.
+
+Neither option is the better one in general. In the evaluation of this version of the package (`dev/audit/REPORT_km_fixes_stage2e.md` in the package repository), with evenly spread weights `"estimated"` was close to nominal and `"known"` was conservative; with concentrated weights both fell short of nominal, mostly late in follow-up, and the shortfall came from the weights. The effective sample size table shows how the weights are spread. `"known"` is kept below for the FH(0,1) and the other time-weighted Cox analyses and for the cross-trial example.
+
+
 # Compare GBSG experimental to Rotterdam control
 
+This cross-trial comparison (GBSG treated against Rotterdam node-positive control) is kept as a hard case for weighting: see the effective sample size table and the caveats below. The controls are all node-positive Rotterdam women without hormonal therapy (`df_rotterdam_np`, not the restricted population above), and the weights are treated as known (`weight_variance = "known"`, the default).
 
 Propensity score model
 ```{r}
 
 df_gbsg_treat <- subset(df_gbsg, treat == 1)
-df_rotterdam_control <- subset(df_rotterdam, treat == 0)
+df_rotterdam_control <- subset(df_rotterdam_np, treat == 0)
 
 df_gbsg_treat <- df_gbsg_treat %>%
   mutate(
@@ -448,8 +559,6 @@ wt.1 <- pihat.null / pihat
 wt.0 <- (1 - pihat.null) / (1 - pihat)
 
 df_CTC$sw.weights <- ifelse(df_CTC$treat == 1, wt.1, wt.0)
-# truncated weights
-df_CTC$sw.weights_trunc <- with(df_CTC, pmin(pmax(sw.weights, quantile(sw.weights, 0.05)), quantile(sw.weights, 0.95)))
 ```
 
 Baseline demographics table
@@ -477,8 +586,31 @@ baseline_table
 dfcount_CTC_unwtd <- get_dfcounting(df = df_CTC, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24)
 
 dfcount_CTC_wtd <- get_dfcounting(df=df_CTC, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
-                                  weight.name="sw.weights")
+                                  weight.name="sw.weights", weight_variance = "known")
+
+knitr::kable(dfcount_CTC_wtd$ess, digits = c(0, 0, 1, 3))
 ```
+
+```{r, echo = FALSE}
+# numbers quoted in the text
+ess_CTC <- dfcount_CTC_wtd$ess
+gbsg_treated <- subset(gbsg, hormon == 1)
+rott_control <- subset(rotterdam, nodes > 0 & hormon == 0)
+pct <- function(x) paste0(fmt(100 * mean(x), 0), "%")
+treated_at_risk <- function(t) sum(df_CTC$tte[df_CTC$treat == 1] >= t)
+horizon <- 60
+```
+
+The effective sample size of the treated arm is `r fmt(ess_CTC$ess[1], 0)` of `r ess_CTC$n[1]` (ratio `r fmt(ess_CTC$ratio[1], 2)`), and the largest weight is `r fmt(max(df_CTC$sw.weights), 1)`: a few GBSG patients carry most of the weight of the treated arm.
+
+Caveats. Weighting does not make these two studies comparable.
+
+* Grade 3 tumours are `r pct(gbsg_treated$grade == 3)` of the GBSG treated arm and `r pct(rott_control$grade == 3)` of the Rotterdam control arm, and grade is recorded differently in the two studies (values `r paste(sort(unique(gbsg$grade)), collapse = "/")` in `gbsg`, `r paste(sort(unique(rotterdam$grade)), collapse = "/")` in `rotterdam`).
+* `r pct(gbsg_treated$meno == 1)` of the GBSG treated arm are postmenopausal, against `r pct(rott_control$meno == 1)` of the Rotterdam control arm.
+* The effective sample size ratio of the treated arm is `r fmt(ess_CTC$ratio[1], 2)`; with weights this concentrated, standard errors, intervals and tests can be too optimistic.
+* Few treated patients are at risk late: `r treated_at_risk(48)` at 48 months, `r treated_at_risk(horizon)` at `r horizon` months and `r treated_at_risk(72)` at 72 months (of `r ess_CTC$n[1]`).
+
+For these reasons the results below are read up to `r horizon` months.
 
 
 
@@ -495,29 +627,57 @@ title(main="CTC un-weighted K-M curves")
 
 ## Cumulative weighted log-rank statistics
 
-We note that the log-rank test restricts comparisons to where both groups have follow-up
+The log-rank statistic only accumulates at times when both groups have subjects at risk.
 
-As illustrated below we view the cumulative log-rank test.   Notice how it is flat for time points $\approx \geq 80$.
+```{r, echo = FALSE}
+# cumulative log-rank z; the curve is drawn from the 10th event in each arm
+cum_lr <- wlr_cumulative(dfcount_CTC_wtd, scheme_params = list(rho = 0, gamma = 0), scheme = "fh", return_cumulative = TRUE)
+event_times <- function(a) sort(df_CTC$tte[df_CTC$treat == a & df_CTC$event == 1])
+t_start <- max(event_times(1)[10], event_times(0)[10])
+z_at <- function(t) cum_lr$z.score[findInterval(t, cum_lr$time)]
+last_treated <- max(df_CTC$tte[df_CTC$treat == 1])
+```
 
-```{r, fig.width = 8, fig.height=6}
+The figure below shows the cumulative log-rank z-statistic as a function of time. The curve is drawn from the time at which each arm has had 10 events (`r fmt(t_start, 1)` months; before that the statistic rests on very few events). The dashed vertical line is at `r horizon` months, where z = `r fmt(z_at(horizon), 2)`; the solid horizontal line is at `r fmt(qnorm(0.975), 2)`. The follow-up of the GBSG treated arm ends at `r fmt(last_treated, 1)` months; from then on no treated patient is at risk and the curve is constant, at z = `r fmt(dfcount_CTC_wtd$z.score, 2)`, the value of the test on all the data. Between `r horizon` months and the end of the treated follow-up the curve rests on the few treated patients still at risk (see the caveats above).
+
+```{r cumulative-logrank, fig.width = 8, fig.height=6, fig.cap = paste0("Cumulative weighted log-rank z-statistic (cross-trial comparison), drawn from the 10th event in each arm (", fmt(t_start, 1), " months). Dashed line: ", horizon, " months.")}
 par(mfrow=c(1,1))
-ymin <- -1
-ymax <- 5
 temp <- wlr_cumulative(dfcount_CTC_wtd, scheme_params = list(rho = 0, gamma = 0), scheme = "fh", return_cumulative = TRUE)
-with(temp, plot(time, z.score, xlab="time", ylab="cumulative log-rank Z", type="s", ylim=c(ymin,ymax))
-)
+shown <- temp$time >= t_start
+# y-axis: the range of the plotted curve and of the reference line
+ylim <- range(c(temp$z.score[shown], qnorm(0.975)))
+ylim <- ylim + c(-0.05, 0.05) * diff(ylim)
+plot(temp$time[shown], temp$z.score[shown], xlab="time", ylab="cumulative log-rank Z", type="s", ylim=ylim)
 abline(h = qnorm(0.975), lwd=2, col="red")
-abline(v = 80, lwd=1, col="blue", lty=2)
+abline(v = horizon, lwd=1, col="blue", lty=2)
 
 ```
 
 
-## With such dramatic difference in follow-up 
+## Reading the cross-trial comparison at a common horizon
 
-It may make more sense to compare K-M differences and RMSTs over comparable 'horizon'
+The two arms differ strongly in follow-up: the GBSG treated arm ends at `r fmt(last_treated, 1)` months, the Rotterdam control arm at `r fmt(max(df_CTC$tte[df_CTC$treat == 0]), 1)` months. The survival-difference and cumulative RMST plots below run to the smaller of the two arms' last event times (`r fmt(min(max(event_times(0)), max(event_times(1))), 1)` months for the cross-trial data), as called; for the reasons given above we read them at `r horizon` months. The hazard ratio and the log-rank test are also computed with follow-up cut at `r horizon` months (events after `r horizon` months censored at `r horizon`).
+
+```{r ctc-horizon}
+# follow-up cut at the horizon
+df_CTC_cut <- df_CTC
+df_CTC_cut$event <- ifelse(df_CTC_cut$tte > horizon, 0, df_CTC_cut$event)
+df_CTC_cut$tte <- pmin(df_CTC_cut$tte, horizon)
+dfcount_CTC_cut <- get_dfcounting(df=df_CTC_cut, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+                                  weight.name="sw.weights", weight_variance = "known")
+
+ctc_row <- function(dfcount, followup) {
+  cox <- cox_rhogamma(dfcount = dfcount, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))
+  ci <- cox$hr_ci_asy
+  data.frame(followup = followup, weights = cox$weight_variance, z = fmt(dfcount$z.score, 2),
+             HR = paste0(fmt(ci$hr, 2), " (", fmt(ci$lower, 2), ", ", fmt(ci$upper, 2), ")"))
+}
+knitr::kable(rbind(ctc_row(dfcount_CTC_wtd, "all"), ctc_row(dfcount_CTC_cut, paste0("cut at ", horizon, " months"))),
+             align = "llrr", col.names = c("Follow-up", "Weights treated as", "Log-rank z", "Hazard ratio (95% CI)"))
+```
 
 ---- Simultaneous CI bands ----
-```{r, fig.width = 10, fig.height = 10}
+```{r ctc-bands, fig.width = 10, fig.height = 10}
 draws <- 1000
 par(mfrow=c(2,2))
  
@@ -528,7 +688,7 @@ temp <- plotKM.band_subgroups(
     yseq_length=5, cex_Yaxis=0.7, risk_cex=0.7,
     by.risk = 6, risk_delta=0.075, risk.pad=0.03,
     tte.name = tte.name, treat.name = treat.name, event.name = event.name, 
-    draws.band = draws, qtau = 0.025, show_resamples = FALSE
+    draws.band = draws, show_resamples = FALSE
   )
   legend("topleft", c("Difference estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.75)
@@ -549,7 +709,7 @@ draws_sb = draws, xlab="months", rmst_max_cex = 0.75)
     yseq_length=5, cex_Yaxis=0.7, risk_cex=0.7,
     tau_add=42, by.risk = 12, risk_delta=0.075, risk.pad=0.03, ymax.pad = 0.125,
     tte.name = tte.name, treat.name = treat.name, event.name = event.name, weight.name ="sw.weights",
-    draws.band = draws, qtau = 0.025, show_resamples = FALSE
+    draws.band = draws, show_resamples = FALSE, weight_variance = "known"
   )
   legend("topleft", c("Difference estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.7)
@@ -557,14 +717,27 @@ draws_sb = draws, xlab="months", rmst_max_cex = 0.75)
 
 get_bands <- cumulative_rmst_bands(df = df_CTC, fit = temp$fit_itt, 
 tte.name = tte.name, event.name = event.name, treat.name = treat.name , weight.name = "sw.weights", 
-draws_sb = draws, xlab="months", rmst_max_cex = 0.7)
+draws_sb = draws, xlab="months", rmst_max_cex = 0.7, weight_variance = "known")
 
 legend("topleft", c("Cumulative RMST estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.7)
 
-
+# kept for the reading at the horizon
+band_CTC <- temp
+rmst_CTC <- get_bands
 
 ```
+
+```{r, echo = FALSE}
+# cross-trial estimates at the horizon (pointwise 95% limits), from the fits plotted above
+at_h <- function(x, at) x[findInterval(horizon, at)]
+f <- band_CTC$fit_itt
+diff_h <- paste0(fmt(at_h(f$dhat, f$at_points), 2), " (", fmt(at_h(f$lower, f$at_points), 2), ", ", fmt(at_h(f$upper, f$at_points), 2), ")")
+rmst_h <- paste0(fmt(at_h(rmst_CTC$rmst_time, rmst_CTC$at_points), 1), " (", fmt(at_h(rmst_CTC$rmst_time_lower, rmst_CTC$at_points), 1), ", ",
+                 fmt(at_h(rmst_CTC$rmst_time_upper, rmst_CTC$at_points), 1), ")")
+```
+
+At `r horizon` months the weighted cross-trial survival difference is `r diff_h` and the cumulative RMST difference is `r rmst_h` months (estimates with pointwise 95% limits, weights treated as known).
 
 
 
@@ -610,7 +783,7 @@ par(mfrow=c(1,2))
     xlabel="Months", ylabel="Survival difference",
     yseq_length=5, cex_Yaxis=0.7, risk_cex=0.7,
     by.risk=6, risk_delta=0.075, risk.pad=0.03,
-    tte.name = tte.name, treat.name = treat.name, event.name = event.name, draws.band = 1000, qtau = 0.025, show_resamples = TRUE
+    tte.name = tte.name, treat.name = treat.name, event.name = event.name, draws.band = 1000, show_resamples = TRUE
   )
   legend("topleft", c("Difference estimate", "95% pointwise CIs"),
          lwd=c(2,1), col=c("black"), lty=c(1,2), bty="n", cex=0.75)
@@ -621,73 +794,42 @@ par(mfrow=c(1,2))
 
 # Weighted Cox Analysis of Rotterdam data with time-dependent, and subject-specific [ps weighting] weighting
 
+The FH(0,0) analysis (the Cox model with propensity-score weights) is shown with the weights treated as estimated, with the asymptotic interval, and with the weights treated as known, with the resampling interval. The analyses with time-dependent weights (FH(0,1), FH_exp2, MB(12), zero_one(6)) treat the propensity-score weights as known and show the resampling interval (1000 draws).
+
 ```{r, messages = FALSE, warning = FALSE}
 library(data.table)
 library(gt)
 
-dfcount <- dfcount_rotterdam_wtd
+# Restricted Rotterdam population, propensity-score weighted:
+#   dfcount_rotterdam_wtd    weights treated as estimated (weight_variance = "estimated")
+#   dfcount_rotterdam_known  weights treated as known (the default)
+# cox_rhogamma() takes the option from the df_counting() result it is given.
+#
+# Note: with subject weights (here propensity-score weights) that are not all equal, the asymptotic
+# SE of the log hazard ratio is the score-residual (robust) SE, and the resampling SE (draws > 0) is
+# built from the same per-subject score contributions, so the two estimate the same quantity.
+# hr_ci_asy is centred at the estimate; hr_ci_star is centred at the de-biased estimate and uses
+# the resampling SE.
 
-get_rg <- cox_rhogamma(dfcount = dfcount, scheme = "fh", scheme_params = list(rho = 0, gamma = 0), draws = 1000, verbose = FALSE)
-
-# Note: with case-weights (here propensity-score weighting) recommend asymptotic versions of SEs
-
-res <- data.table()
-res$analysis <- "FH(0,0)"
-res$z <- get_rg$z.score
-res$hr <- get_rg$hr_ci_asy$hr
-res$lower <- get_rg$hr_ci_star$lower
-res$upper <- get_rg$hr_ci_star$upper
-# res$lower <- get_rg$hr_ci_asy$lower
-# res$upper <- get_rg$hr_ci_asy$upper
+cox_row <- function(analysis, dfcount, interval = c("asymptotic", "resampling"), ...) {
+  interval <- match.arg(interval)
+  get_rg <- cox_rhogamma(dfcount = dfcount, ..., draws = if (interval == "resampling") 1000 else 0, verbose = FALSE)
+  ci <- if (interval == "resampling") get_rg$hr_ci_star else get_rg$hr_ci_asy
+  data.table(analysis = analysis, weights = get_rg$weight_variance, interval = interval,
+             z = get_rg$z.score, hr = get_rg$hr_ci_asy$hr, lower = ci$lower, upper = ci$upper)
+}
 
 # compare with coxph() 
-#cat("Comparison with coxph with weighting, coxph:", dfcount$cox_results$cox_text, "\n")
-#cat("Mine:", get_rg$cox_text_star, "\n")
+#cat("Comparison with coxph with weighting, coxph:", dfcount_rotterdam_wtd$cox_results$cox_text, "\n")
 
-res_update <- res
-
-get_rg <- cox_rhogamma(dfcount = dfcount, scheme = "fh", scheme_params = list(rho = 0, gamma = 1), draws = 1000, verbose = FALSE)
-
-res <- data.table()
-res$analysis <- "FH(0,1)"
-res$hr <- get_rg$hr_ci_asy$hr
-res$lower <- get_rg$hr_ci_star$lower
-res$upper <- get_rg$hr_ci_star$upper
-res$z <- get_rg$z.score
-
-
-res_update <- rbind(res_update, res)
-get_rg <- cox_rhogamma(dfcount = dfcount, scheme = "fh_exp2", draws = 1000, verbose = FALSE)
-res <- data.table()
-res$analysis <- "FH_exp2"
-res$hr <- get_rg$hr_ci_asy$hr
-res$lower <- get_rg$hr_ci_star$lower
-res$upper <- get_rg$hr_ci_star$upper
-res$z <- get_rg$z.score
-
-res_update <- rbind(res_update, res)
-
-get_rg <- cox_rhogamma(dfcount = dfcount, scheme = "MB", scheme_params = list(mb_tstar = 12), draws = 1000, verbose = FALSE)
-res <- data.table()
-res$analysis <- "MB(12)"
-
-
-res$hr <- get_rg$hr_ci_asy$hr
-res$lower <- get_rg$hr_ci_star$lower
-res$upper <- get_rg$hr_ci_star$upper
-res$z <- get_rg$z.score
-res_update <- rbind(res_update, res)
-
-
-get_rg <- cox_rhogamma(dfcount = dfcount, scheme = "custom_time", scheme_params = list(t.tau = 6, w0.tau = 0, w1.tau = 1), draws = 1000, verbose = FALSE)
-res <- data.table()
-res$analysis <- "zero_one(6)"
-res$hr <- get_rg$hr_ci_asy$hr
-res$lower <- get_rg$hr_ci_star$lower
-res$upper <- get_rg$hr_ci_star$upper
-res$z <- get_rg$z.score
-res_update <- rbind(res_update, res)
-
+res_update <- rbind(
+  cox_row("FH(0,0)", dfcount_rotterdam_wtd, "asymptotic", scheme = "fh", scheme_params = list(rho = 0, gamma = 0)),
+  cox_row("FH(0,0)", dfcount_rotterdam_known, "resampling", scheme = "fh", scheme_params = list(rho = 0, gamma = 0)),
+  cox_row("FH(0,1)", dfcount_rotterdam_known, "resampling", scheme = "fh", scheme_params = list(rho = 0, gamma = 1)),
+  cox_row("FH_exp2", dfcount_rotterdam_known, "resampling", scheme = "fh_exp2"),
+  cox_row("MB(12)", dfcount_rotterdam_known, "resampling", scheme = "MB", scheme_params = list(mb_tstar = 12)),
+  cox_row("zero_one(6)", dfcount_rotterdam_known, "resampling", scheme = "custom_time", scheme_params = list(t.tau = 6, w0.tau = 0, w1.tau = 1))
+)
 
 res_update %>% gt()  %>% fmt_number(decimals = 3) 
 
@@ -696,24 +838,41 @@ res_update %>% gt()  %>% fmt_number(decimals = 3)
 
 # Some checks on results
 
-
+The checks in this section treat the weights as known (`weight_variance = "known"`, the default), as `survfit(weights = )` does.
 
 ## Check weighted K-M SE's with survfit
+
+With weights that are not all equal, the standard error of a weighted K-M curve is the robust standard error, which is also what `survival::survfit(weights = )` reports. `check.seKM = TRUE` plots the two against each other.
+
 ```{r}
-dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+dfcount_rotterdam_known <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
                                   weight.name="sw.weights", check.seKM = TRUE, draws = 0)
 ```
 
+```{r, echo = FALSE}
+# largest absolute difference from survfit's weighted standard error, at survfit's event times
+se_diff_survfit <- function(a) {
+  sf <- summary(survfit(Surv(tte, event) ~ 1, data = df_rotterdam[df_rotterdam$treat == a, ], weights = sw.weights))
+  v <- if (a == 1) dfcount_rotterdam_known$sig2_surv1 else dfcount_rotterdam_known$sig2_surv0
+  max(abs(sqrt(v[findInterval(sf$time, dfcount_rotterdam_known$at_points)]) - sf$std.err))
+}
+```
+
+The weighted K-M standard errors agree with those of `survfit()`: the largest absolute difference is `r signif(se_diff_survfit(0), 1)` in the control arm and `r signif(se_diff_survfit(1), 1)` in the treated arm.
+
 ## Check SE's calculated via resampling (draws = 5000) 
 
-Note that draws = 5000 does not take much time, but can be reduced to around 500 for sufficient accuracy.
+Note that draws = 5000 does not take much time, but can be reduced to around 500 for sufficient accuracy. The resampling-based pointwise variance (`draws > 0`) is not available with `weight_variance = "estimated"`, so this check stays on `"known"`.
 
 ```{r}
-dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+dfcount_rotterdam_draws <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
                                   weight.name="sw.weights", check.seKM = TRUE, draws = 5000)
 ```
 
 ## Compare with the adjustedCurves package
+
+The `adjustedCurves` call uses the same time and event variables as the weightedsurv analysis (`tte` and `event`, defined in the data preparation above) and the same propensity model.
+
 ```{r}
 # Compare with adjustedCurves
 library(adjustedCurves)
@@ -721,16 +880,16 @@ library(pammtools)
 
 df_rotterdam$hormon2 <- with(df_rotterdam, factor(hormon, labels=c("No","Yes")))
 
-ps_model <- glm(hormon2 ~ age+meno+size+grade+nodes+pgr+chemo+er, data = df_rotterdam, family="binomial")
+ps_model <- glm(hormon2 ~ age+size+grade3+nodes+pgr+er, data = df_rotterdam, family="binomial")
 
-iptw <- adjustedsurv(data=df_rotterdam, variable="hormon2", ev_time="time_months", event = "status", method = "iptw_km", treatment_model = ps_model, conf_int = TRUE)
+iptw <- adjustedsurv(data=df_rotterdam, variable="hormon2", ev_time="tte", event = "event", method = "iptw_km", treatment_model = ps_model, conf_int = TRUE)
 
 ```
 
 ## Compare KM plots with adjustedCurves package
 
 ```{r, fig.width = 8, fig.height = 6}
-plot_weighted_km(dfcount=dfcount_rotterdam_wtd, conf.int = TRUE)
+plot_weighted_km(dfcount=dfcount_rotterdam_known, conf.int = TRUE)
  title(main="Rotterdam weighted K-M curves")
 ```
 
@@ -744,7 +903,7 @@ plot_weighted_km(dfcount=dfcount_rotterdam_wtd, conf.int = TRUE)
 # Check SEs
 par(mfrow=c(1,2))
 
-df_mine <- dfcount_rotterdam_wtd
+df_mine <- dfcount_rotterdam_known
 
 df_check <- subset(iptw$adj, group == "No")
 yymax <- max(c(sqrt(df_mine$sig2_surv0[df_mine$idv0.check]), df_check$se))
@@ -767,13 +926,30 @@ title(main = "Treat SEs")
 
 ```
 
+```{r, echo = FALSE}
+# weightedsurv (grey) against adjustedCurves iptw_km (red) at the times adjustedCurves reports
+vs_adjustedCurves <- function(group, surv, sig2) {
+  ad <- subset(iptw$adj, group == group & time > 0)
+  ad <- ad[ad$group == group, ]
+  i <- findInterval(ad$time, dfcount_rotterdam_known$at_points)
+  ok <- ad$se > 0 & sig2[i] > 0
+  list(surv_diff = max(abs(surv[i] - ad$surv)), se_ratio = range(sqrt(sig2[i][ok]) / ad$se[ok]))
+}
+ac0 <- vs_adjustedCurves("No", dfcount_rotterdam_known$surv0, dfcount_rotterdam_known$sig2_surv0)
+ac1 <- vs_adjustedCurves("Yes", dfcount_rotterdam_known$surv1, dfcount_rotterdam_known$sig2_surv1)
+```
+
+The weighted K-M curves of the two packages agree (largest absolute difference `r signif(max(ac0$surv_diff, ac1$surv_diff), 1)`). The standard errors still differ: the ratio of the weightedsurv standard error (grey) to the `iptw_km` standard error of `adjustedCurves` (red) ranges from `r fmt(ac0$se_ratio[1], 2)` to `r fmt(ac0$se_ratio[2], 2)` in the control arm and from `r fmt(ac1$se_ratio[1], 2)` to `r fmt(ac1$se_ratio[2], 2)` in the treated arm. The weighted K-M standard errors of `survfit()` agree with those of weightedsurv (see the check above).
+
 ## Check log-rank statistics
 
 ```{r}
-# dfcount_gbsg contains logrank (chisq) stats from specified scheme (default is standard logrank rho=0 and gamma=0) from 3 sources:
-# (1) wlr_estimates function 
-# (2) survdiff which only provides rho options so gamma !=0 is not available
-# (3) z_score_calculations function (from a Cox score-test perspective)
+# dfcount_gbsg (un-weighted) contains logrank (chisq) stats from specified scheme (default is standard logrank rho=0 and gamma=0) from 3 sources:
+# (1) lr^2 / sig2_lr: the weighted log-rank statistic and its variance (wlr_cumulative)
+# (2) logrank_results$chisq: without subject weights (as here), survdiff, which only provides rho options
+#     so gamma != 0 is not available; with subject weights that are not all equal it is instead the
+#     robust score test of the weighted Cox model (coxph, robust = TRUE), see logrank_results$method
+# (3) z.score^2: the standardized weighted log-rank statistic (Cox score-test perspective)
 check_results(dfcount_gbsg)
 # Check wlr_dhat_estimates which calculates from any scheme based on counting dataset 
 # In addition, calculates dhat's at tzero as well as correlation with log-rank
@@ -790,7 +966,8 @@ res <- df_counting(df=df_gbsg, tte.name=tte.name, event.name=event.name, treat.n
 stratified
 ```{r}
 with(res,lr_stratified^2/sig2_lr_stratified)
-# survdiff stratified
+# logrank_results: survdiff, stratified (un-weighted data; with subject weights that are not all equal
+# this element is the stratified robust score test of the weighted Cox model)
 res$logrank_results$chisq
  # Cox score stratified
 with(res,z.score_stratified^2)
