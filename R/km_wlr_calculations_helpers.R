@@ -252,7 +252,34 @@ wlr_dhat_estimates <- function(dfcounting,
     sig2_dhat <- (Sp_tzero^2) * sum(h2 * (1 - dJ) * dL)
     # Correlation between log-rank statistic and dhat at time tzero
     cor_wlr_dhat <- if (sig2_lr > 0 && sig2_dhat > 0) cov_wlr_dhat / (sqrt(sig2_lr) * sqrt(sig2_dhat)) else NA_real_
+  }
 
+  # Subject weights not all equal (a df_counting() result): the three variances rest on the same
+  # per-subject contributions. Score: -psi_i(0) (see ws_score_psi()). Survival difference at the grid
+  # point read for tzero: d_i = -S1 a_i psiKM_i (treated), +S0 a_i psiKM_i (control), psiKM being the
+  # Kaplan-Meier influence of ws_km_psi_parts(). The score and dhat are unchanged.
+  subj <- ws_lr_subject_data(dfcounting, at_points)
+  if (!is.null(subj)) {
+    psi <- ws_score_psi(subj$time, subj$delta, subj$z, subj$w_hat, K = wt_rg[match(subj$time, at_points)], beta = 0)$psi
+    sig2_lr <- sum(psi^2)
+    if (!is.null(tzero)) {
+      d <- numeric(length(psi))
+      if (length(le_tzero) > 0) {
+        for (arm in c(0, 1)) {
+          ia <- which(subj$z == arm)
+          parts <- ws_km_psi_parts(subj$time[ia], subj$delta[ia], at_points,
+                                   if (arm == 1) ybar1 else ybar0, if (arm == 1) nbar1 else nbar0)
+          psi_km <- ifelse(parts$k <= loc_tzero, parts$exit, -parts$H[loc_tzero])
+          d[ia] <- (if (arm == 1) -S1[loc_tzero] else S0[loc_tzero]) * subj$w_hat[ia] * psi_km
+        }
+      }
+      sig2_dhat <- sum(d^2)
+      cov_wlr_dhat <- sum(-psi * d)
+      cor_wlr_dhat <- if (sig2_lr > 0 && sig2_dhat > 0) cov_wlr_dhat / (sqrt(sig2_lr) * sqrt(sig2_dhat)) else NA_real_
+    }
+  }
+
+  if(!is.null(tzero)){
     ans <- list(
       score = lr, sig2.score = sig2_lr, z.score = lr / sqrt(sig2_lr), dhat = dhat_tzero,
       cov_wlr_dhat = cov_wlr_dhat, sig2_dhat = sig2_dhat, cor_wlr_dhat = cor_wlr_dhat

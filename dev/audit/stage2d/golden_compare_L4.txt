@@ -1,0 +1,769 @@
+golden compare, whitelist 'L1,L2,L3,L4': 16829 fields in golden, 16829 in new run, 0 added
+WHITELISTED fields that moved (764):
+  veteran/df_counting_weighted/z.score: max abs diff 0.208
+  veteran/df_counting_weighted/get_score/z.score: max abs diff 0.208
+  veteran/df_counting_weighted/get_score/sig2.score: max abs diff 47.3
+  veteran/df_counting_weighted/zlogrank_text: values differ
+  veteran/df_counting_weighted/sig2_lr: max abs diff 47.3
+  veteran/df_counting_wv/z.score: max abs diff 0.208
+  veteran/df_counting_wv/get_score/z.score: max abs diff 0.208
+  veteran/df_counting_wv/get_score/sig2.score: max abs diff 47.3
+  veteran/df_counting_wv/zlogrank_text: values differ
+  veteran/df_counting_wv/sig2_lr: max abs diff 47.3
+  veteran/df_counting_fh01_wv/z.score: max abs diff 0.552
+  veteran/df_counting_fh01_wv/get_score/z.score: max abs diff 0.552
+  veteran/df_counting_fh01_wv/get_score/sig2.score: max abs diff 9.87
+  veteran/df_counting_fh01_wv/zlogrank_text: values differ
+  veteran/df_counting_fh01_wv/sig2_lr: max abs diff 9.87
+  veteran/wlr_cum_fh00_wv/z.score: max abs diff 0.605
+  veteran/wlr_cum_fh00_wv/sig2.score: max abs diff 51.3
+  veteran/wlr_cum_fh01_wv/z.score: max abs diff 0.966
+  veteran/wlr_cum_fh01_wv/sig2.score: max abs diff 12.2
+  veteran/wlr_dhat_grid_wv/sig2.score: max abs diff 47.3
+  veteran/wlr_dhat_grid_wv/z.score: max abs diff 0.208
+  veteran/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.274
+  veteran/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.00252
+  veteran/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.0133
+  veteran/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 9.87
+  veteran/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.552
+  veteran/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.142
+  veteran/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.00252
+  veteran/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.0179
+  veteran/cox_fh00_d0_wv/z.score: max abs diff 0.208
+  veteran/cox_fh00_d0_wv/zlogrank_text: values differ
+  veteran/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0606
+  veteran/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0766
+  veteran/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.151
+  veteran/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0606
+  veteran/cox_fh00_d0_wv/fit/z.score: max abs diff 0.208
+  veteran/cox_fh00_d0_wv/fit/sig2_score: max abs diff 47.3
+  veteran/cox_fh00_d0_wv/cox_text_asy: values differ
+  veteran/cox_fh01_d0_wv/z.score: max abs diff 0.552
+  veteran/cox_fh01_d0_wv/zlogrank_text: values differ
+  veteran/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0652
+  veteran/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.0601
+  veteran/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.132
+  veteran/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.0652
+  veteran/cox_fh01_d0_wv/fit/z.score: max abs diff 0.552
+  veteran/cox_fh01_d0_wv/fit/sig2_score: max abs diff 9.87
+  veteran/cox_fh01_d0_wv/cox_text_asy: values differ
+  veteran/cox_MB_d0_wv/z.score: max abs diff 0.332
+  veteran/cox_MB_d0_wv/zlogrank_text: values differ
+  veteran/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0626
+  veteran/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.0735
+  veteran/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.147
+  veteran/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.0626
+  veteran/cox_MB_d0_wv/fit/z.score: max abs diff 0.332
+  veteran/cox_MB_d0_wv/fit/sig2_score: max abs diff 123
+  veteran/cox_MB_d0_wv/cox_text_asy: values differ
+  veteran/cox_schemper_d0_wv/z.score: max abs diff 0.141
+  veteran/cox_schemper_d0_wv/zlogrank_text: values differ
+  veteran/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.065
+  veteran/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.095
+  veteran/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.198
+  veteran/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.065
+  veteran/cox_schemper_d0_wv/fit/z.score: max abs diff 0.141
+  veteran/cox_schemper_d0_wv/fit/sig2_score: max abs diff 20.2
+  veteran/cox_schemper_d0_wv/cox_text_asy: values differ
+  veteran/cox_fh00_d200_wv/z.score: max abs diff 0.208
+  veteran/cox_fh00_d200_wv/zlogrank_text: values differ
+  veteran/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0606
+  veteran/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0766
+  veteran/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.151
+  veteran/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0606
+  veteran/cox_fh00_d200_wv/fit/z.score: max abs diff 0.208
+  veteran/cox_fh00_d200_wv/fit/sig2_score: max abs diff 47.3
+  veteran/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.00667
+  veteran/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.011
+  veteran/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 0.121
+  veteran/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.0396
+  veteran/cox_fh00_d200_wv/fit/wald: max abs diff 0.213
+  veteran/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 34.5
+  veteran/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 34.7
+  veteran/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.714
+  veteran/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 4.37
+  veteran/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.00667
+  veteran/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.011
+  veteran/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.00667
+  veteran/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.0101
+  veteran/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.0147
+  veteran/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.00281
+  veteran/cox_fh00_d200_wv/sig2_score_star: max abs diff 6.4
+  veteran/cox_fh00_d200_wv/z.score_debiased: max abs diff 0.299
+  veteran/cox_fh00_d200_wv/cox_text_star: values differ
+  veteran/cox_fh00_d200_wv/cox_text_asy: values differ
+  veteran/df_counting_strata_wv/z.score: max abs diff 0.208
+  veteran/df_counting_strata_wv/get_score/z.score: max abs diff 0.208
+  veteran/df_counting_strata_wv/get_score/sig2.score: max abs diff 47.3
+  veteran/df_counting_strata_wv/zlogrank_text: values differ
+  veteran/df_counting_strata_wv/sig2_lr: max abs diff 47.3
+  veteran/df_counting_strata_wv/sig2_lr_stratified: max abs diff 27.6
+  veteran/df_counting_strata_wv/z.score_stratified: max abs diff 0.127
+  veteran/df_counting_strata_fh01_wv/z.score: max abs diff 0.552
+  veteran/df_counting_strata_fh01_wv/get_score/z.score: max abs diff 0.552
+  veteran/df_counting_strata_fh01_wv/get_score/sig2.score: max abs diff 9.87
+  veteran/df_counting_strata_fh01_wv/zlogrank_text: values differ
+  veteran/df_counting_strata_fh01_wv/sig2_lr: max abs diff 9.87
+  veteran/df_counting_strata_fh01_wv/sig2_lr_stratified: max abs diff 3.88
+  veteran/df_counting_strata_fh01_wv/z.score_stratified: max abs diff 0.0311
+  gbsg/df_counting_weighted/z.score: max abs diff 1.26
+  gbsg/df_counting_weighted/get_score/z.score: max abs diff 1.26
+  gbsg/df_counting_weighted/get_score/sig2.score: max abs diff 99.9
+  gbsg/df_counting_weighted/sig2_lr: max abs diff 99.9
+  gbsg/df_counting_wv/z.score: max abs diff 1.26
+  gbsg/df_counting_wv/get_score/z.score: max abs diff 1.26
+  gbsg/df_counting_wv/get_score/sig2.score: max abs diff 99.9
+  gbsg/df_counting_wv/sig2_lr: max abs diff 99.9
+  gbsg/df_counting_fh01_wv/z.score: max abs diff 1.08
+  gbsg/df_counting_fh01_wv/get_score/z.score: max abs diff 1.08
+  gbsg/df_counting_fh01_wv/get_score/sig2.score: max abs diff 9.02
+  gbsg/df_counting_fh01_wv/zlogrank_text: values differ
+  gbsg/df_counting_fh01_wv/sig2_lr: max abs diff 9.02
+  gbsg/wlr_cum_fh00_wv/z.score: max abs diff 1.3
+  gbsg/wlr_cum_fh00_wv/sig2.score: max abs diff 99.9
+  gbsg/wlr_cum_fh01_wv/z.score: max abs diff 1.17
+  gbsg/wlr_cum_fh01_wv/sig2.score: max abs diff 9.02
+  gbsg/wlr_dhat_grid_wv/sig2.score: max abs diff 99.9
+  gbsg/wlr_dhat_grid_wv/z.score: max abs diff 1.26
+  gbsg/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.239
+  gbsg/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.000867
+  gbsg/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.0135
+  gbsg/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 9.02
+  gbsg/wlr_dhat_fh01_grid_wv/z.score: max abs diff 1.08
+  gbsg/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0518
+  gbsg/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.000867
+  gbsg/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.0187
+  gbsg/cox_fh00_d0_wv/z.score: max abs diff 1.26
+  gbsg/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0377
+  gbsg/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0368
+  gbsg/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.0585
+  gbsg/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0377
+  gbsg/cox_fh00_d0_wv/fit/z.score: max abs diff 1.26
+  gbsg/cox_fh00_d0_wv/fit/sig2_score: max abs diff 99.9
+  gbsg/cox_fh00_d0_wv/cox_text_asy: values differ
+  gbsg/cox_fh01_d0_wv/z.score: max abs diff 1.08
+  gbsg/cox_fh01_d0_wv/zlogrank_text: values differ
+  gbsg/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.046
+  gbsg/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.0443
+  gbsg/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.0764
+  gbsg/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.046
+  gbsg/cox_fh01_d0_wv/fit/z.score: max abs diff 1.08
+  gbsg/cox_fh01_d0_wv/fit/sig2_score: max abs diff 9.02
+  gbsg/cox_fh01_d0_wv/cox_text_asy: values differ
+  gbsg/cox_MB_d0_wv/z.score: max abs diff 1.27
+  gbsg/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.039
+  gbsg/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.0382
+  gbsg/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.0611
+  gbsg/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.039
+  gbsg/cox_MB_d0_wv/fit/z.score: max abs diff 1.27
+  gbsg/cox_MB_d0_wv/fit/sig2_score: max abs diff 182
+  gbsg/cox_MB_d0_wv/cox_text_asy: values differ
+  gbsg/cox_schemper_d0_wv/z.score: max abs diff 1.5
+  gbsg/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0479
+  gbsg/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.0407
+  gbsg/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.0726
+  gbsg/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.0479
+  gbsg/cox_schemper_d0_wv/fit/z.score: max abs diff 1.5
+  gbsg/cox_schemper_d0_wv/fit/sig2_score: max abs diff 218
+  gbsg/cox_schemper_d0_wv/cox_text_asy: values differ
+  gbsg/cox_fh00_d200_wv/z.score: max abs diff 1.26
+  gbsg/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0377
+  gbsg/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0368
+  gbsg/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.0585
+  gbsg/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0377
+  gbsg/cox_fh00_d200_wv/fit/z.score: max abs diff 1.26
+  gbsg/cox_fh00_d200_wv/fit/sig2_score: max abs diff 99.9
+  gbsg/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.00204
+  gbsg/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.00398
+  gbsg/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 1.29
+  gbsg/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.0221
+  gbsg/cox_fh00_d200_wv/fit/wald: max abs diff 1.29
+  gbsg/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 30.6
+  gbsg/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 35.5
+  gbsg/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.303
+  gbsg/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 2.47
+  gbsg/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.00204
+  gbsg/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.00398
+  gbsg/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.00204
+  gbsg/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.00253
+  gbsg/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.0039
+  gbsg/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 2.06e-05
+  gbsg/cox_fh00_d200_wv/sig2_score_star: max abs diff 5.54
+  gbsg/cox_fh00_d200_wv/z.score_debiased: max abs diff 1.25
+  gbsg/cox_fh00_d200_wv/cox_text_star: values differ
+  gbsg/cox_fh00_d200_wv/cox_text_asy: values differ
+  gbsg/df_counting_strata_wv/z.score: max abs diff 1.26
+  gbsg/df_counting_strata_wv/get_score/z.score: max abs diff 1.26
+  gbsg/df_counting_strata_wv/get_score/sig2.score: max abs diff 99.9
+  gbsg/df_counting_strata_wv/sig2_lr: max abs diff 99.9
+  gbsg/df_counting_strata_wv/sig2_lr_stratified: max abs diff 101
+  gbsg/df_counting_strata_wv/z.score_stratified: max abs diff 1.22
+  gbsg/df_counting_strata_fh01_wv/z.score: max abs diff 1.08
+  gbsg/df_counting_strata_fh01_wv/get_score/z.score: max abs diff 1.08
+  gbsg/df_counting_strata_fh01_wv/get_score/sig2.score: max abs diff 9.02
+  gbsg/df_counting_strata_fh01_wv/zlogrank_text: values differ
+  gbsg/df_counting_strata_fh01_wv/sig2_lr: max abs diff 9.02
+  gbsg/df_counting_strata_fh01_wv/sig2_lr_stratified: max abs diff 8.88
+  gbsg/df_counting_strata_fh01_wv/z.score_stratified: max abs diff 0.999
+  gbsg_er_le0/df_counting_weighted/z.score: max abs diff 1
+  gbsg_er_le0/df_counting_weighted/get_score/z.score: max abs diff 1
+  gbsg_er_le0/df_counting_weighted/get_score/sig2.score: max abs diff 21.3
+  gbsg_er_le0/df_counting_weighted/zlogrank_text: values differ
+  gbsg_er_le0/df_counting_weighted/sig2_lr: max abs diff 21.3
+  gbsg_er_le0/df_counting_wv/z.score: max abs diff 1
+  gbsg_er_le0/df_counting_wv/get_score/z.score: max abs diff 1
+  gbsg_er_le0/df_counting_wv/get_score/sig2.score: max abs diff 21.3
+  gbsg_er_le0/df_counting_wv/zlogrank_text: values differ
+  gbsg_er_le0/df_counting_wv/sig2_lr: max abs diff 21.3
+  gbsg_er_le0/df_counting_fh01_wv/z.score: max abs diff 0.409
+  gbsg_er_le0/df_counting_fh01_wv/get_score/z.score: max abs diff 0.409
+  gbsg_er_le0/df_counting_fh01_wv/get_score/sig2.score: max abs diff 2.23
+  gbsg_er_le0/df_counting_fh01_wv/zlogrank_text: values differ
+  gbsg_er_le0/df_counting_fh01_wv/sig2_lr: max abs diff 2.23
+  gbsg_er_le0/wlr_cum_fh00_wv/z.score: max abs diff 2.21
+  gbsg_er_le0/wlr_cum_fh00_wv/sig2.score: max abs diff 21.3
+  gbsg_er_le0/wlr_cum_fh01_wv/z.score: max abs diff 1.75
+  gbsg_er_le0/wlr_cum_fh01_wv/sig2.score: max abs diff 2.23
+  gbsg_er_le0/wlr_dhat_grid_wv/sig2.score: max abs diff 21.3
+  gbsg_er_le0/wlr_dhat_grid_wv/z.score: max abs diff 1
+  gbsg_er_le0/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.33
+  gbsg_er_le0/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.00758
+  gbsg_er_le0/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.0176
+  gbsg_er_le0/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 2.23
+  gbsg_er_le0/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.409
+  gbsg_er_le0/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0884
+  gbsg_er_le0/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.00758
+  gbsg_er_le0/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.0544
+  gbsg_er_le0/cox_fh00_d0_wv/z.score: max abs diff 1
+  gbsg_er_le0/cox_fh00_d0_wv/zlogrank_text: values differ
+  gbsg_er_le0/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.126
+  gbsg_er_le0/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.256
+  gbsg_er_le0/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.83
+  gbsg_er_le0/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.126
+  gbsg_er_le0/cox_fh00_d0_wv/fit/z.score: max abs diff 1
+  gbsg_er_le0/cox_fh00_d0_wv/fit/sig2_score: max abs diff 21.3
+  gbsg_er_le0/cox_fh00_d0_wv/cox_text_asy: values differ
+  gbsg_er_le0/cox_fh01_d0_wv/z.score: max abs diff 0.409
+  gbsg_er_le0/cox_fh01_d0_wv/zlogrank_text: values differ
+  gbsg_er_le0/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.166
+  gbsg_er_le0/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.215
+  gbsg_er_le0/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.945
+  gbsg_er_le0/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.166
+  gbsg_er_le0/cox_fh01_d0_wv/fit/z.score: max abs diff 0.409
+  gbsg_er_le0/cox_fh01_d0_wv/fit/sig2_score: max abs diff 2.23
+  gbsg_er_le0/cox_fh01_d0_wv/cox_text_asy: values differ
+  gbsg_er_le0/cox_MB_d0_wv/z.score: max abs diff 0.923
+  gbsg_er_le0/cox_MB_d0_wv/zlogrank_text: values differ
+  gbsg_er_le0/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.133
+  gbsg_er_le0/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.255
+  gbsg_er_le0/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.853
+  gbsg_er_le0/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.133
+  gbsg_er_le0/cox_MB_d0_wv/fit/z.score: max abs diff 0.923
+  gbsg_er_le0/cox_MB_d0_wv/fit/sig2_score: max abs diff 40
+  gbsg_er_le0/cox_MB_d0_wv/cox_text_asy: values differ
+  gbsg_er_le0/cox_schemper_d0_wv/z.score: max abs diff 1.11
+  gbsg_er_le0/cox_schemper_d0_wv/zlogrank_text: values differ
+  gbsg_er_le0/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.122
+  gbsg_er_le0/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.263
+  gbsg_er_le0/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.851
+  gbsg_er_le0/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.122
+  gbsg_er_le0/cox_schemper_d0_wv/fit/z.score: max abs diff 1.11
+  gbsg_er_le0/cox_schemper_d0_wv/fit/sig2_score: max abs diff 14.7
+  gbsg_er_le0/cox_schemper_d0_wv/cox_text_asy: values differ
+  gbsg_er_le0/cox_fh00_d200_wv/z.score: max abs diff 1
+  gbsg_er_le0/cox_fh00_d200_wv/zlogrank_text: values differ
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.126
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.256
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.83
+  gbsg_er_le0/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.126
+  gbsg_er_le0/cox_fh00_d200_wv/fit/z.score: max abs diff 1
+  gbsg_er_le0/cox_fh00_d200_wv/fit/sig2_score: max abs diff 21.3
+  gbsg_er_le0/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.0133
+  gbsg_er_le0/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.0457
+  gbsg_er_le0/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 0.802
+  gbsg_er_le0/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.0583
+  gbsg_er_le0/cox_fh00_d200_wv/fit/wald: max abs diff 0.907
+  gbsg_er_le0/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 17.1
+  gbsg_er_le0/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 13.1
+  gbsg_er_le0/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.98
+  gbsg_er_le0/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 3.74
+  gbsg_er_le0/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.0133
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.0457
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.0133
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.0884
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.0195
+  gbsg_er_le0/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.27
+  gbsg_er_le0/cox_fh00_d200_wv/sig2_score_star: max abs diff 2.76
+  gbsg_er_le0/cox_fh00_d200_wv/z.score_debiased: max abs diff 1.09
+  gbsg_er_le0/cox_fh00_d200_wv/cox_text_star: values differ
+  gbsg_er_le0/cox_fh00_d200_wv/cox_text_asy: values differ
+  gbsg_er_gt0/df_counting_weighted/z.score: max abs diff 1.3
+  gbsg_er_gt0/df_counting_weighted/get_score/z.score: max abs diff 1.3
+  gbsg_er_gt0/df_counting_weighted/get_score/sig2.score: max abs diff 89.8
+  gbsg_er_gt0/df_counting_weighted/sig2_lr: max abs diff 89.8
+  gbsg_er_gt0/df_counting_wv/z.score: max abs diff 1.3
+  gbsg_er_gt0/df_counting_wv/get_score/z.score: max abs diff 1.3
+  gbsg_er_gt0/df_counting_wv/get_score/sig2.score: max abs diff 89.8
+  gbsg_er_gt0/df_counting_wv/sig2_lr: max abs diff 89.8
+  gbsg_er_gt0/df_counting_fh01_wv/z.score: max abs diff 0.917
+  gbsg_er_gt0/df_counting_fh01_wv/get_score/z.score: max abs diff 0.917
+  gbsg_er_gt0/df_counting_fh01_wv/get_score/sig2.score: max abs diff 7.15
+  gbsg_er_gt0/df_counting_fh01_wv/zlogrank_text: values differ
+  gbsg_er_gt0/df_counting_fh01_wv/sig2_lr: max abs diff 7.15
+  gbsg_er_gt0/wlr_cum_fh00_wv/z.score: max abs diff 1.44
+  gbsg_er_gt0/wlr_cum_fh00_wv/sig2.score: max abs diff 89.8
+  gbsg_er_gt0/wlr_cum_fh01_wv/z.score: max abs diff 1.26
+  gbsg_er_gt0/wlr_cum_fh01_wv/sig2.score: max abs diff 7.15
+  gbsg_er_gt0/wlr_dhat_grid_wv/sig2.score: max abs diff 89.8
+  gbsg_er_gt0/wlr_dhat_grid_wv/z.score: max abs diff 1.3
+  gbsg_er_gt0/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.242
+  gbsg_er_gt0/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.001
+  gbsg_er_gt0/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.0214
+  gbsg_er_gt0/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 7.15
+  gbsg_er_gt0/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.917
+  gbsg_er_gt0/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0489
+  gbsg_er_gt0/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.001
+  gbsg_er_gt0/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.00261
+  gbsg_er_gt0/cox_fh00_d0_wv/z.score: max abs diff 1.3
+  gbsg_er_gt0/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0429
+  gbsg_er_gt0/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0398
+  gbsg_er_gt0/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.0658
+  gbsg_er_gt0/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0429
+  gbsg_er_gt0/cox_fh00_d0_wv/fit/z.score: max abs diff 1.3
+  gbsg_er_gt0/cox_fh00_d0_wv/fit/sig2_score: max abs diff 89.8
+  gbsg_er_gt0/cox_fh00_d0_wv/cox_text_asy: values differ
+  gbsg_er_gt0/cox_fh01_d0_wv/z.score: max abs diff 0.917
+  gbsg_er_gt0/cox_fh01_d0_wv/zlogrank_text: values differ
+  gbsg_er_gt0/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0513
+  gbsg_er_gt0/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.0512
+  gbsg_er_gt0/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.0917
+  gbsg_er_gt0/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.0513
+  gbsg_er_gt0/cox_fh01_d0_wv/fit/z.score: max abs diff 0.917
+  gbsg_er_gt0/cox_fh01_d0_wv/fit/sig2_score: max abs diff 7.15
+  gbsg_er_gt0/cox_fh01_d0_wv/cox_text_asy: values differ
+  gbsg_er_gt0/cox_MB_d0_wv/z.score: max abs diff 1.25
+  gbsg_er_gt0/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0439
+  gbsg_er_gt0/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.0415
+  gbsg_er_gt0/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.069
+  gbsg_er_gt0/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.0439
+  gbsg_er_gt0/cox_MB_d0_wv/fit/z.score: max abs diff 1.25
+  gbsg_er_gt0/cox_MB_d0_wv/fit/sig2_score: max abs diff 158
+  gbsg_er_gt0/cox_MB_d0_wv/cox_text_asy: values differ
+  gbsg_er_gt0/cox_schemper_d0_wv/z.score: max abs diff 1.92
+  gbsg_er_gt0/cox_schemper_d0_wv/zlogrank_text: values differ
+  gbsg_er_gt0/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0702
+  gbsg_er_gt0/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.0528
+  gbsg_er_gt0/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.105
+  gbsg_er_gt0/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.0702
+  gbsg_er_gt0/cox_schemper_d0_wv/fit/z.score: max abs diff 1.92
+  gbsg_er_gt0/cox_schemper_d0_wv/fit/sig2_score: max abs diff 312
+  gbsg_er_gt0/cox_schemper_d0_wv/cox_text_asy: values differ
+  gbsg_er_gt0/cox_fh00_d200_wv/z.score: max abs diff 1.3
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0429
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0398
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.0658
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0429
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/z.score: max abs diff 1.3
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/sig2_score: max abs diff 89.8
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.012
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.0114
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 1.22
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.376
+  gbsg_er_gt0/cox_fh00_d200_wv/fit/wald: max abs diff 1.33
+  gbsg_er_gt0/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 25.9
+  gbsg_er_gt0/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 29.2
+  gbsg_er_gt0/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.299
+  gbsg_er_gt0/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 2.9
+  gbsg_er_gt0/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.012
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.0114
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.012
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.00695
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.00563
+  gbsg_er_gt0/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.0281
+  gbsg_er_gt0/cox_fh00_d200_wv/sig2_score_star: max abs diff 25.6
+  gbsg_er_gt0/cox_fh00_d200_wv/z.score_debiased: max abs diff 1.4
+  gbsg_er_gt0/cox_fh00_d200_wv/cox_text_star: values differ
+  gbsg_er_gt0/cox_fh00_d200_wv/cox_text_asy: values differ
+  gbsg_er_gt0/df_counting_strata_wv/z.score: max abs diff 1.3
+  gbsg_er_gt0/df_counting_strata_wv/get_score/z.score: max abs diff 1.3
+  gbsg_er_gt0/df_counting_strata_wv/get_score/sig2.score: max abs diff 89.8
+  gbsg_er_gt0/df_counting_strata_wv/sig2_lr: max abs diff 89.8
+  gbsg_er_gt0/df_counting_strata_wv/sig2_lr_stratified: max abs diff 86.2
+  gbsg_er_gt0/df_counting_strata_wv/z.score_stratified: max abs diff 1.22
+  gbsg_er_gt0/df_counting_strata_fh01_wv/z.score: max abs diff 0.917
+  gbsg_er_gt0/df_counting_strata_fh01_wv/get_score/z.score: max abs diff 0.917
+  gbsg_er_gt0/df_counting_strata_fh01_wv/get_score/sig2.score: max abs diff 7.15
+  gbsg_er_gt0/df_counting_strata_fh01_wv/zlogrank_text: values differ
+  gbsg_er_gt0/df_counting_strata_fh01_wv/sig2_lr: max abs diff 7.15
+  gbsg_er_gt0/df_counting_strata_fh01_wv/sig2_lr_stratified: max abs diff 6.99
+  gbsg_er_gt0/df_counting_strata_fh01_wv/z.score_stratified: max abs diff 0.788
+  sim_cont/df_counting_wv/z.score: max abs diff 0.617
+  sim_cont/df_counting_wv/get_score/z.score: max abs diff 0.617
+  sim_cont/df_counting_wv/get_score/sig2.score: max abs diff 50.4
+  sim_cont/df_counting_wv/zlogrank_text: values differ
+  sim_cont/df_counting_wv/sig2_lr: max abs diff 50.4
+  sim_cont/df_counting_fh01_wv/z.score: max abs diff 0.704
+  sim_cont/df_counting_fh01_wv/get_score/z.score: max abs diff 0.704
+  sim_cont/df_counting_fh01_wv/get_score/sig2.score: max abs diff 8.33
+  sim_cont/df_counting_fh01_wv/zlogrank_text: values differ
+  sim_cont/df_counting_fh01_wv/sig2_lr: max abs diff 8.33
+  sim_cont/wlr_cum_fh00_wv/z.score: max abs diff 1.16
+  sim_cont/wlr_cum_fh00_wv/sig2.score: max abs diff 50.4
+  sim_cont/wlr_cum_fh01_wv/z.score: max abs diff 0.881
+  sim_cont/wlr_cum_fh01_wv/sig2.score: max abs diff 8.33
+  sim_cont/wlr_dhat_grid_wv/sig2.score: max abs diff 50.4
+  sim_cont/wlr_dhat_grid_wv/z.score: max abs diff 0.617
+  sim_cont/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.277
+  sim_cont/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.00306
+  sim_cont/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.00541
+  sim_cont/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 8.33
+  sim_cont/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.704
+  sim_cont/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0479
+  sim_cont/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.00306
+  sim_cont/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.00574
+  sim_cont/cox_fh00_d0_wv/z.score: max abs diff 0.617
+  sim_cont/cox_fh00_d0_wv/zlogrank_text: values differ
+  sim_cont/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0671
+  sim_cont/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0687
+  sim_cont/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.14
+  sim_cont/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0671
+  sim_cont/cox_fh00_d0_wv/fit/z.score: max abs diff 0.617
+  sim_cont/cox_fh00_d0_wv/fit/sig2_score: max abs diff 50.4
+  sim_cont/cox_fh00_d0_wv/cox_text_asy: values differ
+  sim_cont/cox_fh01_d0_wv/z.score: max abs diff 0.704
+  sim_cont/cox_fh01_d0_wv/zlogrank_text: values differ
+  sim_cont/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.075
+  sim_cont/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.0642
+  sim_cont/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.149
+  sim_cont/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.075
+  sim_cont/cox_fh01_d0_wv/fit/z.score: max abs diff 0.704
+  sim_cont/cox_fh01_d0_wv/fit/sig2_score: max abs diff 8.33
+  sim_cont/cox_fh01_d0_wv/cox_text_asy: values differ
+  sim_cont/cox_MB_d0_wv/z.score: max abs diff 0.661
+  sim_cont/cox_MB_d0_wv/zlogrank_text: values differ
+  sim_cont/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0664
+  sim_cont/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.0661
+  sim_cont/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.135
+  sim_cont/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.0664
+  sim_cont/cox_MB_d0_wv/fit/z.score: max abs diff 0.661
+  sim_cont/cox_MB_d0_wv/fit/sig2_score: max abs diff 92.2
+  sim_cont/cox_MB_d0_wv/cox_text_asy: values differ
+  sim_cont/cox_schemper_d0_wv/z.score: max abs diff 0.565
+  sim_cont/cox_schemper_d0_wv/zlogrank_text: values differ
+  sim_cont/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0683
+  sim_cont/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.0714
+  sim_cont/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.146
+  sim_cont/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.0683
+  sim_cont/cox_schemper_d0_wv/fit/z.score: max abs diff 0.565
+  sim_cont/cox_schemper_d0_wv/fit/sig2_score: max abs diff 38.3
+  sim_cont/cox_schemper_d0_wv/cox_text_asy: values differ
+  sim_cont/cox_fh00_d200_wv/z.score: max abs diff 0.617
+  sim_cont/cox_fh00_d200_wv/zlogrank_text: values differ
+  sim_cont/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0671
+  sim_cont/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0687
+  sim_cont/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.14
+  sim_cont/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0671
+  sim_cont/cox_fh00_d200_wv/fit/z.score: max abs diff 0.617
+  sim_cont/cox_fh00_d200_wv/fit/sig2_score: max abs diff 50.4
+  sim_cont/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.039
+  sim_cont/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.00542
+  sim_cont/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 0.615
+  sim_cont/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.24
+  sim_cont/cox_fh00_d200_wv/fit/wald: max abs diff 0.626
+  sim_cont/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 30
+  sim_cont/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 30.9
+  sim_cont/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.663
+  sim_cont/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 3.62
+  sim_cont/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.039
+  sim_cont/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.00542
+  sim_cont/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.039
+  sim_cont/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.00399
+  sim_cont/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.0398
+  sim_cont/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.0795
+  sim_cont/cox_fh00_d200_wv/sig2_score_star: max abs diff 34
+  sim_cont/cox_fh00_d200_wv/z.score_debiased: max abs diff 0.634
+  sim_cont/cox_fh00_d200_wv/cox_text_star: values differ
+  sim_cont/cox_fh00_d200_wv/cox_text_asy: values differ
+  sim_ties/df_counting_wv/z.score: max abs diff 0.891
+  sim_ties/df_counting_wv/get_score/z.score: max abs diff 0.891
+  sim_ties/df_counting_wv/get_score/sig2.score: max abs diff 38
+  sim_ties/df_counting_wv/zlogrank_text: values differ
+  sim_ties/df_counting_wv/sig2_lr: max abs diff 38
+  sim_ties/df_counting_fh01_wv/z.score: max abs diff 0.636
+  sim_ties/df_counting_fh01_wv/get_score/z.score: max abs diff 0.636
+  sim_ties/df_counting_fh01_wv/get_score/sig2.score: max abs diff 6.28
+  sim_ties/df_counting_fh01_wv/zlogrank_text: values differ
+  sim_ties/df_counting_fh01_wv/sig2_lr: max abs diff 6.28
+  sim_ties/wlr_cum_fh00_wv/z.score: max abs diff 1.12
+  sim_ties/wlr_cum_fh00_wv/sig2.score: max abs diff 38
+  sim_ties/wlr_cum_fh01_wv/z.score: max abs diff 0.715
+  sim_ties/wlr_cum_fh01_wv/sig2.score: max abs diff 6.28
+  sim_ties/wlr_dhat_grid_wv/sig2.score: max abs diff 38
+  sim_ties/wlr_dhat_grid_wv/z.score: max abs diff 0.891
+  sim_ties/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.283
+  sim_ties/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.00367
+  sim_ties/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.0303
+  sim_ties/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 6.28
+  sim_ties/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.636
+  sim_ties/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0967
+  sim_ties/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.00367
+  sim_ties/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.0245
+  sim_ties/cox_fh00_d0_wv/z.score: max abs diff 0.891
+  sim_ties/cox_fh00_d0_wv/zlogrank_text: values differ
+  sim_ties/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0548
+  sim_ties/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0486
+  sim_ties/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.094
+  sim_ties/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0548
+  sim_ties/cox_fh00_d0_wv/fit/z.score: max abs diff 0.891
+  sim_ties/cox_fh00_d0_wv/fit/sig2_score: max abs diff 38
+  sim_ties/cox_fh00_d0_wv/cox_text_asy: values differ
+  sim_ties/cox_fh01_d0_wv/z.score: max abs diff 0.636
+  sim_ties/cox_fh01_d0_wv/zlogrank_text: values differ
+  sim_ties/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0672
+  sim_ties/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.0589
+  sim_ties/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.131
+  sim_ties/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.0672
+  sim_ties/cox_fh01_d0_wv/fit/z.score: max abs diff 0.636
+  sim_ties/cox_fh01_d0_wv/fit/sig2_score: max abs diff 6.28
+  sim_ties/cox_fh01_d0_wv/cox_text_asy: values differ
+  sim_ties/cox_MB_d0_wv/z.score: max abs diff 0.822
+  sim_ties/cox_MB_d0_wv/zlogrank_text: values differ
+  sim_ties/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.055
+  sim_ties/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.05
+  sim_ties/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.0971
+  sim_ties/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.055
+  sim_ties/cox_MB_d0_wv/fit/z.score: max abs diff 0.822
+  sim_ties/cox_MB_d0_wv/fit/sig2_score: max abs diff 66.4
+  sim_ties/cox_MB_d0_wv/cox_text_asy: values differ
+  sim_ties/cox_schemper_d0_wv/z.score: max abs diff 0.916
+  sim_ties/cox_schemper_d0_wv/zlogrank_text: values differ
+  sim_ties/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0558
+  sim_ties/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.049
+  sim_ties/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.0955
+  sim_ties/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.0558
+  sim_ties/cox_schemper_d0_wv/fit/z.score: max abs diff 0.916
+  sim_ties/cox_schemper_d0_wv/fit/sig2_score: max abs diff 28.1
+  sim_ties/cox_schemper_d0_wv/cox_text_asy: values differ
+  sim_ties/cox_fh00_d200_wv/z.score: max abs diff 0.891
+  sim_ties/cox_fh00_d200_wv/zlogrank_text: values differ
+  sim_ties/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0548
+  sim_ties/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0486
+  sim_ties/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.094
+  sim_ties/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0548
+  sim_ties/cox_fh00_d200_wv/fit/z.score: max abs diff 0.891
+  sim_ties/cox_fh00_d200_wv/fit/sig2_score: max abs diff 38
+  sim_ties/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.00478
+  sim_ties/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.0107
+  sim_ties/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 0.92
+  sim_ties/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.0023
+  sim_ties/cox_fh00_d200_wv/fit/wald: max abs diff 0.924
+  sim_ties/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 29.6
+  sim_ties/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 27.7
+  sim_ties/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.618
+  sim_ties/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 3.34
+  sim_ties/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.00478
+  sim_ties/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.0107
+  sim_ties/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.00478
+  sim_ties/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.00697
+  sim_ties/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.00883
+  sim_ties/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.00128
+  sim_ties/cox_fh00_d200_wv/sig2_score_star: max abs diff 4.4
+  sim_ties/cox_fh00_d200_wv/z.score_debiased: max abs diff 0.893
+  sim_ties/cox_fh00_d200_wv/cox_text_star: values differ
+  sim_ties/cox_fh00_d200_wv/cox_text_asy: values differ
+  sim_weighted/df_counting_weighted/z.score: max abs diff 1.08
+  sim_weighted/df_counting_weighted/get_score/z.score: max abs diff 1.08
+  sim_weighted/df_counting_weighted/get_score/sig2.score: max abs diff 84.3
+  sim_weighted/df_counting_weighted/zlogrank_text: values differ
+  sim_weighted/df_counting_weighted/sig2_lr: max abs diff 84.3
+  sim_weighted/df_counting_wv/z.score: max abs diff 1.08
+  sim_weighted/df_counting_wv/get_score/z.score: max abs diff 1.08
+  sim_weighted/df_counting_wv/get_score/sig2.score: max abs diff 84.3
+  sim_weighted/df_counting_wv/zlogrank_text: values differ
+  sim_weighted/df_counting_wv/sig2_lr: max abs diff 84.3
+  sim_weighted/df_counting_fh01_wv/z.score: max abs diff 0.555
+  sim_weighted/df_counting_fh01_wv/get_score/z.score: max abs diff 0.555
+  sim_weighted/df_counting_fh01_wv/get_score/sig2.score: max abs diff 16
+  sim_weighted/df_counting_fh01_wv/zlogrank_text: values differ
+  sim_weighted/df_counting_fh01_wv/sig2_lr: max abs diff 16
+  sim_weighted/wlr_cum_fh00_wv/z.score: max abs diff 1.44
+  sim_weighted/wlr_cum_fh00_wv/sig2.score: max abs diff 84.3
+  sim_weighted/wlr_cum_fh01_wv/z.score: max abs diff 1.58
+  sim_weighted/wlr_cum_fh01_wv/sig2.score: max abs diff 16
+  sim_weighted/wlr_dhat_grid_wv/sig2.score: max abs diff 84.3
+  sim_weighted/wlr_dhat_grid_wv/z.score: max abs diff 1.08
+  sim_weighted/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.293
+  sim_weighted/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.00211
+  sim_weighted/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.0201
+  sim_weighted/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 16
+  sim_weighted/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.555
+  sim_weighted/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0683
+  sim_weighted/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.00211
+  sim_weighted/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.00979
+  sim_weighted/cox_fh00_d0_wv/z.score: max abs diff 1.08
+  sim_weighted/cox_fh00_d0_wv/zlogrank_text: values differ
+  sim_weighted/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0503
+  sim_weighted/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0505
+  sim_weighted/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.0871
+  sim_weighted/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0503
+  sim_weighted/cox_fh00_d0_wv/fit/z.score: max abs diff 1.08
+  sim_weighted/cox_fh00_d0_wv/fit/sig2_score: max abs diff 84.3
+  sim_weighted/cox_fh00_d0_wv/cox_text_asy: values differ
+  sim_weighted/cox_fh01_d0_wv/z.score: max abs diff 0.555
+  sim_weighted/cox_fh01_d0_wv/zlogrank_text: values differ
+  sim_weighted/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0631
+  sim_weighted/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.071
+  sim_weighted/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.136
+  sim_weighted/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.0631
+  sim_weighted/cox_fh01_d0_wv/fit/z.score: max abs diff 0.555
+  sim_weighted/cox_fh01_d0_wv/fit/sig2_score: max abs diff 16
+  sim_weighted/cox_fh01_d0_wv/cox_text_asy: values differ
+  sim_weighted/cox_MB_d0_wv/z.score: max abs diff 0.95
+  sim_weighted/cox_MB_d0_wv/zlogrank_text: values differ
+  sim_weighted/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0525
+  sim_weighted/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.0552
+  sim_weighted/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.096
+  sim_weighted/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.0525
+  sim_weighted/cox_MB_d0_wv/fit/z.score: max abs diff 0.95
+  sim_weighted/cox_MB_d0_wv/fit/sig2_score: max abs diff 175
+  sim_weighted/cox_MB_d0_wv/cox_text_asy: values differ
+  sim_weighted/cox_schemper_d0_wv/z.score: max abs diff 1.18
+  sim_weighted/cox_schemper_d0_wv/zlogrank_text: values differ
+  sim_weighted/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0489
+  sim_weighted/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.0465
+  sim_weighted/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.0808
+  sim_weighted/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.0489
+  sim_weighted/cox_schemper_d0_wv/fit/z.score: max abs diff 1.18
+  sim_weighted/cox_schemper_d0_wv/fit/sig2_score: max abs diff 51.6
+  sim_weighted/cox_schemper_d0_wv/cox_text_asy: values differ
+  sim_weighted/cox_fh00_d200_wv/z.score: max abs diff 1.08
+  sim_weighted/cox_fh00_d200_wv/zlogrank_text: values differ
+  sim_weighted/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0503
+  sim_weighted/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0505
+  sim_weighted/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.0871
+  sim_weighted/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0503
+  sim_weighted/cox_fh00_d200_wv/fit/z.score: max abs diff 1.08
+  sim_weighted/cox_fh00_d200_wv/fit/sig2_score: max abs diff 84.3
+  sim_weighted/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.0129
+  sim_weighted/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.00976
+  sim_weighted/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 1.01
+  sim_weighted/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.252
+  sim_weighted/cox_fh00_d200_wv/fit/wald: max abs diff 1.07
+  sim_weighted/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 35.1
+  sim_weighted/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 35.4
+  sim_weighted/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.46
+  sim_weighted/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 3.76
+  sim_weighted/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.0129
+  sim_weighted/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.00976
+  sim_weighted/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.0129
+  sim_weighted/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.00653
+  sim_weighted/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.00757
+  sim_weighted/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.0324
+  sim_weighted/cox_fh00_d200_wv/sig2_score_star: max abs diff 24.8
+  sim_weighted/cox_fh00_d200_wv/z.score_debiased: max abs diff 1.14
+  sim_weighted/cox_fh00_d200_wv/cox_text_star: values differ
+  sim_weighted/cox_fh00_d200_wv/cox_text_asy: values differ
+  sim_strata/df_counting_wv/z.score: max abs diff 0.622
+  sim_strata/df_counting_wv/get_score/z.score: max abs diff 0.622
+  sim_strata/df_counting_wv/get_score/sig2.score: max abs diff 67.9
+  sim_strata/df_counting_wv/zlogrank_text: values differ
+  sim_strata/df_counting_wv/sig2_lr: max abs diff 67.9
+  sim_strata/df_counting_fh01_wv/z.score: max abs diff 0.517
+  sim_strata/df_counting_fh01_wv/get_score/z.score: max abs diff 0.517
+  sim_strata/df_counting_fh01_wv/get_score/sig2.score: max abs diff 10.4
+  sim_strata/df_counting_fh01_wv/zlogrank_text: values differ
+  sim_strata/df_counting_fh01_wv/sig2_lr: max abs diff 10.4
+  sim_strata/wlr_cum_fh00_wv/z.score: max abs diff 0.787
+  sim_strata/wlr_cum_fh00_wv/sig2.score: max abs diff 68.8
+  sim_strata/wlr_cum_fh01_wv/z.score: max abs diff 1.02
+  sim_strata/wlr_cum_fh01_wv/sig2.score: max abs diff 10.4
+  sim_strata/wlr_dhat_grid_wv/sig2.score: max abs diff 67.9
+  sim_strata/wlr_dhat_grid_wv/z.score: max abs diff 0.622
+  sim_strata/wlr_dhat_grid_wv/cov_wlr_dhat: max abs diff 0.295
+  sim_strata/wlr_dhat_grid_wv/sig2_dhat: max abs diff 0.00226
+  sim_strata/wlr_dhat_grid_wv/cor_wlr_dhat: max abs diff 0.00109
+  sim_strata/wlr_dhat_fh01_grid_wv/sig2.score: max abs diff 10.4
+  sim_strata/wlr_dhat_fh01_grid_wv/z.score: max abs diff 0.517
+  sim_strata/wlr_dhat_fh01_grid_wv/cov_wlr_dhat: max abs diff 0.0568
+  sim_strata/wlr_dhat_fh01_grid_wv/sig2_dhat: max abs diff 0.00226
+  sim_strata/wlr_dhat_fh01_grid_wv/cor_wlr_dhat: max abs diff 0.00339
+  sim_strata/cox_fh00_d0_wv/z.score: max abs diff 0.622
+  sim_strata/cox_fh00_d0_wv/zlogrank_text: values differ
+  sim_strata/cox_fh00_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0463
+  sim_strata/cox_fh00_d0_wv/hr_ci_asy/lower: max abs diff 0.0534
+  sim_strata/cox_fh00_d0_wv/hr_ci_asy/upper: max abs diff 0.0924
+  sim_strata/cox_fh00_d0_wv/fit/sig_bhat_asy: max abs diff 0.0463
+  sim_strata/cox_fh00_d0_wv/fit/z.score: max abs diff 0.622
+  sim_strata/cox_fh00_d0_wv/fit/sig2_score: max abs diff 67.9
+  sim_strata/cox_fh00_d0_wv/cox_text_asy: values differ
+  sim_strata/cox_fh01_d0_wv/z.score: max abs diff 0.517
+  sim_strata/cox_fh01_d0_wv/zlogrank_text: values differ
+  sim_strata/cox_fh01_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0528
+  sim_strata/cox_fh01_d0_wv/hr_ci_asy/lower: max abs diff 0.0578
+  sim_strata/cox_fh01_d0_wv/hr_ci_asy/upper: max abs diff 0.11
+  sim_strata/cox_fh01_d0_wv/fit/sig_bhat_asy: max abs diff 0.0528
+  sim_strata/cox_fh01_d0_wv/fit/z.score: max abs diff 0.517
+  sim_strata/cox_fh01_d0_wv/fit/sig2_score: max abs diff 10.4
+  sim_strata/cox_fh01_d0_wv/cox_text_asy: values differ
+  sim_strata/cox_MB_d0_wv/z.score: max abs diff 0.596
+  sim_strata/cox_MB_d0_wv/zlogrank_text: values differ
+  sim_strata/cox_MB_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0468
+  sim_strata/cox_MB_d0_wv/hr_ci_asy/lower: max abs diff 0.0541
+  sim_strata/cox_MB_d0_wv/hr_ci_asy/upper: max abs diff 0.0943
+  sim_strata/cox_MB_d0_wv/fit/sig_bhat_asy: max abs diff 0.0468
+  sim_strata/cox_MB_d0_wv/fit/z.score: max abs diff 0.596
+  sim_strata/cox_MB_d0_wv/fit/sig2_score: max abs diff 133
+  sim_strata/cox_MB_d0_wv/cox_text_asy: values differ
+  sim_strata/cox_schemper_d0_wv/z.score: max abs diff 0.589
+  sim_strata/cox_schemper_d0_wv/zlogrank_text: values differ
+  sim_strata/cox_schemper_d0_wv/hr_ci_asy/sig_bhat: max abs diff 0.0464
+  sim_strata/cox_schemper_d0_wv/hr_ci_asy/lower: max abs diff 0.054
+  sim_strata/cox_schemper_d0_wv/hr_ci_asy/upper: max abs diff 0.0938
+  sim_strata/cox_schemper_d0_wv/fit/sig_bhat_asy: max abs diff 0.0464
+  sim_strata/cox_schemper_d0_wv/fit/z.score: max abs diff 0.589
+  sim_strata/cox_schemper_d0_wv/fit/sig2_score: max abs diff 49.4
+  sim_strata/cox_schemper_d0_wv/cox_text_asy: values differ
+  sim_strata/cox_fh00_d200_wv/z.score: max abs diff 0.622
+  sim_strata/cox_fh00_d200_wv/zlogrank_text: values differ
+  sim_strata/cox_fh00_d200_wv/hr_ci_asy/sig_bhat: max abs diff 0.0463
+  sim_strata/cox_fh00_d200_wv/hr_ci_asy/lower: max abs diff 0.0534
+  sim_strata/cox_fh00_d200_wv/hr_ci_asy/upper: max abs diff 0.0924
+  sim_strata/cox_fh00_d200_wv/fit/sig_bhat_asy: max abs diff 0.0463
+  sim_strata/cox_fh00_d200_wv/fit/z.score: max abs diff 0.622
+  sim_strata/cox_fh00_d200_wv/fit/sig2_score: max abs diff 67.9
+  sim_strata/cox_fh00_d200_wv/fit/sig_bhat_star: max abs diff 0.00534
+  sim_strata/cox_fh00_d200_wv/fit/bhat_debiased: max abs diff 0.0207
+  sim_strata/cox_fh00_d200_wv/fit/wald_debiased1: max abs diff 0.454
+  sim_strata/cox_fh00_d200_wv/fit/wald_debiased2: max abs diff 0.0772
+  sim_strata/cox_fh00_d200_wv/fit/wald: max abs diff 0.623
+  sim_strata/cox_fh00_d200_wv/fit_resamples/score_star: max abs diff 31.2
+  sim_strata/cox_fh00_d200_wv/fit_resamples/score_star_null: max abs diff 31
+  sim_strata/cox_fh00_d200_wv/fit_resamples/bhat_center_star: max abs diff 0.429
+  sim_strata/cox_fh00_d200_wv/fit_resamples/Z_bstar: max abs diff 3.46
+  sim_strata/cox_fh00_d200_wv/fit_resamples/sig_bhat_star: max abs diff 0.00534
+  sim_strata/cox_fh00_d200_wv/hr_ci_star/beta: max abs diff 0.0207
+  sim_strata/cox_fh00_d200_wv/hr_ci_star/sig_bhat: max abs diff 0.00534
+  sim_strata/cox_fh00_d200_wv/hr_ci_star/hr: max abs diff 0.0161
+  sim_strata/cox_fh00_d200_wv/hr_ci_star/lower: max abs diff 0.0177
+  sim_strata/cox_fh00_d200_wv/hr_ci_star/upper: max abs diff 0.0109
+  sim_strata/cox_fh00_d200_wv/sig2_score_star: max abs diff 9.04
+  sim_strata/cox_fh00_d200_wv/z.score_debiased: max abs diff 0.791
+  sim_strata/cox_fh00_d200_wv/cox_text_star: values differ
+  sim_strata/cox_fh00_d200_wv/cox_text_asy: values differ
+  sim_strata/df_counting_strata_wv/z.score: max abs diff 0.622
+  sim_strata/df_counting_strata_wv/get_score/z.score: max abs diff 0.622
+  sim_strata/df_counting_strata_wv/get_score/sig2.score: max abs diff 67.9
+  sim_strata/df_counting_strata_wv/zlogrank_text: values differ
+  sim_strata/df_counting_strata_wv/sig2_lr: max abs diff 67.9
+  sim_strata/df_counting_strata_wv/sig2_lr_stratified: max abs diff 77.4
+  sim_strata/df_counting_strata_wv/z.score_stratified: max abs diff 0.745
+  sim_strata/df_counting_strata_fh01_wv/z.score: max abs diff 0.517
+  sim_strata/df_counting_strata_fh01_wv/get_score/z.score: max abs diff 0.517
+  sim_strata/df_counting_strata_fh01_wv/get_score/sig2.score: max abs diff 10.4
+  sim_strata/df_counting_strata_fh01_wv/zlogrank_text: values differ
+  sim_strata/df_counting_strata_fh01_wv/sig2_lr: max abs diff 10.4
+  sim_strata/df_counting_strata_fh01_wv/sig2_lr_stratified: max abs diff 14.2
+  sim_strata/df_counting_strata_fh01_wv/z.score_stratified: max abs diff 0.649
+coxph check: 33 moved FH(0,0) z-scores against coxph robust score test (max relative difference of z^2 5.38e-14); 16 moved sig_bhat_asy against coxph robust SE (max relative difference 1.71e-09)
+Warnings: no call raises a warning it did not raise in golden_s2c.rds
+GOLDEN: identical outside the whitelist
