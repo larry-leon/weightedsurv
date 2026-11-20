@@ -1,0 +1,86 @@
+── Installing package weightedsurv into temporary library ──────────────────────
+── Building pkgdown site for package weightedsurv ──────────────────────────────
+Reading from: /Users/larryleon/Documents/GitHub/weightedsurv
+Writing to: /Users/larryleon/Documents/GitHub/weightedsurv/docs
+── Sitrep ──────────────────────────────────────────────────────────────────────
+✔ URLs ok.
+✔ Favicons ok.
+✔ Open graph metadata ok.
+✔ Articles metadata ok.
+✔ Reference metadata ok.
+── Initialising site ───────────────────────────────────────────────────────────
+── Building home ───────────────────────────────────────────────────────────────
+Reading LICENSE.md
+Reading README.md
+Writing `404.html`
+── Building function reference ─────────────────────────────────────────────────
+Reading man/KM_diff.Rd
+Reading man/KM_estimates.Rd
+Reading man/KM_plot_2sample_weighted_counting.Rd
+Reading man/N_rhogamma.Rd
+Reading man/add_legends.Rd
+Reading man/add_median_annotation.Rd
+Reading man/add_risk_table.Rd
+Reading man/calculate_risk_event_counts.Rd
+Reading man/check_km_curve.Rd
+Reading man/check_results.Rd
+Reading man/ci_cox.Rd
+Reading man/count_weighted.Rd
+Reading man/cox_rhogamma.Rd
+Reading man/cox_rhogamma_resample.Rd
+Reading man/cox_score_rhogamma.Rd
+Reading man/create_baseline_table.Rd
+Reading man/cumulative_rmst_bands.Rd
+Reading man/df_counting.Rd
+Reading man/extract_and_calc_weights.Rd
+Reading man/extract_group_data.Rd
+Reading man/find_cox_root.Rd
+Reading man/format_pval.Rd
+Reading man/get_censoring_and_events.Rd
+Reading man/get_dfcounting.Rd
+Reading man/get_event_risk_matrices.Rd
+Reading man/get_riskpoints.Rd
+Reading man/get_validated_weights.Rd
+Reading man/get_weights.Rd
+Reading man/km_quantile.Rd
+Reading man/km_quantile_table.Rd
+Reading man/kmq_calculations.Rd
+Reading man/plotKM.band_subgroups.Rd
+Reading man/plot_km.Rd
+Reading man/plot_km_confint_polygon.Rd
+Reading man/plot_km_curves_counting.Rd
+Reading man/plot_weight_schemes.Rd
+Reading man/plot_weighted_km.Rd
+Reading man/ps_weights.Rd
+Reading man/resampling_survival.Rd
+Reading man/risk_weighted.Rd
+Reading man/safe_run.Rd
+Reading man/score_calculation.Rd
+Reading man/validate_input.Rd
+Reading man/validate_scheme_params.Rd
+Reading man/weightedsurv-package.Rd
+Reading man/wlr_cumulative.Rd
+Reading man/wlr_dhat_estimates.Rd
+Reading man/wt.rg.S.Rd
+── Building articles ───────────────────────────────────────────────────────────
+Reading vignettes/articles/estimated_weights_methodology.Rmd
+Writing `articles/estimated_weights_methodology.html`
+Reading vignettes/articles/martingale_resampling_applications.Rmd
+Reading vignettes/articles/weightedcox_methodology.Rmd
+Writing `articles/weightedcox_methodology.html`
+Reading vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd
+Writing `articles/weightedcox_wald-vs-logrank_simulations.html`
+Reading vignettes/articles/weightedkm_methodology.Rmd
+Writing `articles/weightedkm_methodology.html`
+Reading vignettes/articles/weightedrmst_methodology.Rmd
+Reading vignettes/weightedsurv_examples.Rmd
+Writing `articles/weightedsurv_examples.html`
+── Building news ───────────────────────────────────────────────────────────────
+── Building sitemap ────────────────────────────────────────────────────────────
+── Building docs for llms ──────────────────────────────────────────────────────
+── Building redirects ──────────────────────────────────────────────────────────
+── Building search index ───────────────────────────────────────────────────────
+── Checking for problems ───────────────────────────────────────────────────────
+── Finished building pkgdown site for package weightedsurv ─────────────────────
+── Finished building pkgdown site for package weightedsurv ─────────────────────
+Rscript -e 'pkgdown::build_site(preview = FALSE, new_process = TRUE)'  46.88s user 5.54s system 57% cpu 1:31.80 total

@@ -1,0 +1,38 @@
+$ git diff --name-only 37a0ac0..HEAD (plus files of this commit)
+dev/audit/ps_by_time/.gitignore
+dev/audit/ps_by_time/REPORT_ps_weight_simulation_inventory.md
+dev/audit/ps_by_time/calibrate.R
+dev/audit/ps_by_time/calibration.txt
+dev/audit/ps_by_time/g6_g7_checks.txt
+dev/audit/ps_by_time/g6_render.txt
+dev/audit/ps_by_time/pilot.txt
+dev/audit/ps_by_time/ps9_gates.txt
+dev/audit/ps_by_time/ps9_sim.R
+dev/audit/ps_by_time/ps9_stdout.txt
+dev/audit/ps_by_time/ps9_summarise.R
+dev/audit/ps_by_time/ps9_summarise_stdout.txt
+dev/audit/ps_by_time/ps9_summary.csv
+dev/audit/ps_by_time/ps_weight_simulation_table.csv
+dev/tasks/TASK_ps_weight_results_by_time.md
+vignettes/articles/estimated_weights_methodology.Rmd
+vignettes/articles/sim_results/ps_weight_results_by_time.csv
+vignettes/articles/weightedcox_methodology.Rmd
+vignettes/articles/weightedkm_methodology.Rmd
+vignettes/weightedsurv_examples.Rmd
+?? dev/audit/REPORT_ps_weight_results_by_time.md
+?? dev/audit/ps_by_time/g10_build_site_log.txt
+?? dev/audit/ps_by_time/g10_check_pkgdown.txt
+?? dev/audit/ps_by_time/g1_paths.txt
+?? dev/audit/ps_by_time/g9_00check.log
+?? dev/audit/ps_by_time/g9_00check_stdout.txt
+?? dev/audit/ps_by_time/g9_tarball.txt
+?? dev/audit/ps_by_time/g9_testthat.Rout
+?? dev/audit/ps_by_time/report_tables.R
+?? dev/audit/ps_by_time/report_tables.md
+$ git diff 37a0ac0..HEAD -- R/ man/ tests/ NAMESPACE DESCRIPTION dev/audit/stage2e/ dev/audit/oc/ | wc -l
+       0
+$ git diff --stat 37a0ac0..HEAD -- vignettes/articles/sim_results/wald_vs_logrank_full.rds cran-comments.md
+$ git ls-files docs | wc -l
+       0
+$ grep -rn "dev/" vignettes/ --include="*.Rmd"
+vignettes/articles/estimated_weights_methodology.Rmd:346:Provenance: run for weightedsurv 0.2.0 (the near-0.9 cells at p
