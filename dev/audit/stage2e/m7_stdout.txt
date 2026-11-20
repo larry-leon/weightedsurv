@@ -1,0 +1,22 @@
+oc_sim.R (M7) weightedsurv 0.2.0 at c195953, cells=7,8,9,15,19,31,32,33,34,35,36,37,38,39,40 cores=12 out=raw  started 2026-11-19 22:13:45
+  cell  7 E-200                500 replicates    12.5 s  failures: none
+  cell  8 E-400                500 replicates    23.0 s  failures: none
+  cell  9 E-800                500 replicates    60.4 s  failures: none
+  cell 15 E-400-null           500 replicates    23.2 s  failures: none
+  cell 19 E-400-delay          500 replicates    23.6 s  failures: none
+  cell 31 Es-400               2000 replicates   112.7 s  failures: none
+  cell 32 Es-400-null          2000 replicates   107.8 s  failures: none
+  cell 33 Es-400-null-strata   2000 replicates    30.3 s  failures: none
+  cell 34 Et-400-null          2000 replicates    43.0 s  failures: none
+  cell 35 Fe-400               2000 replicates    72.7 s  failures: none
+  cell 36 Fe-800               2000 replicates   171.6 s  failures: none
+  cell 37 Fe-400-null          2000 replicates    69.7 s  failures: none
+  cell 38 V-1450-null          2000 replicates   504.4 s  failures: none
+  cell 39 V-1450-ph            2000 replicates   480.0 s  failures: none
+  cell 40 Sub-800-null         2000 replicates    57.5 s  failures: none
+oc_sim.R (M7) done: wall-clock 1793.6 s (29.9 min)
+oc_boot.R cells=38,39 reps=500 B=200 cores=12 (survival 3.8.11)  started 2026-11-19 22:43:39
+  cell 38 V-1450-null  500 replicates x 200 resamples    68.0 s  resamples that failed: 0
+  cell 39 V-1450-ph    500 replicates x 200 resamples    66.1 s  resamples that failed: 0
+oc_boot.R done: wall-clock 134.1 s (2.2 min)
+M7_EXIT 0

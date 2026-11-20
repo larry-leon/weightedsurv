@@ -1,0 +1,228 @@
+Vignette numbers, before (START_SHA) -> after (HEAD). Times for SE / band read-off: 24, 60, 120 months.
+
+==== examples (vignettes/weightedsurv_examples.Rmd) ====
+
+-- chunk 'unnamed-chunk-4' (line 182), object dfcount_gbsg [dfcount]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-14' (line 310), object dfcount_rotterdam_unwtd [dfcount]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-14' (line 310), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'unnamed-chunk-17' (line 346), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-18' (line 369), object get_bands [rmst]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-18' (line 369), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-22' (line 476), object dfcount_CTC_unwtd [dfcount]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-22' (line 476), object dfcount_CTC_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = 0.02
+   z.score        unchanged:  2.11
+   lr             unchanged: 37.25
+   sig2_lr        unchanged: 311.5
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.66 (0.44, 0.98)
+   cox_score      13.34  ->  4.438
+   logrank_chisq  15.43  ->  4.453
+   logrank_pval   8.551e-05  ->  0.03483
+   logrank_text   Logrank p = <0.001  ->  Logrank p = 0.03
+
+-- chunk 'unnamed-chunk-24' (line 502), object temp [wlr_cumulative]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-25' (line 520), object get_bands [rmst]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-25' (line 520), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-26' (line 578), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-27' (line 606), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-28' (line 624), object dfcount [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'unnamed-chunk-28' (line 624), object get_rg [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-28' (line 624), object res [table]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-28' (line 624), object res_update [table]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-29' (line 702), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'unnamed-chunk-30' (line 711), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'unnamed-chunk-34' (line 743), object df_mine [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'unnamed-chunk-36' (line 787), object res [dfcount]: IDENTICAL before/after
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox FH(0,0) [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox FH(0,1) [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox FH_exp2 [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox MB(12) [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox zero_one(6) [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'supplement-502 (cross-trial data up to the time of the largest cumulative z)' (line NA), object ctc [note]: IDENTICAL before/after
+
+-- chunk 'supplement-299 (Rotterdam weights)' (line NA), object rot [note]: IDENTICAL before/after
+
+==== martingale (vignettes/articles/martingale_resampling_applications.Rmd) ====
+
+-- chunk 'gbsg-dfcount' (line 114), object dfcount_gbsg [dfcount]: IDENTICAL before/after
+
+-- chunk 'rotterdam-km' (line 196), object dfcount_rotterdam_unwtd [dfcount]: IDENTICAL before/after
+
+-- chunk 'rotterdam-km' (line 196), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'rotterdam-bands' (line 274), object temp_rotterdam [band]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object get_bands_gbsg [rmst]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object get_bands_rotterdam [rmst]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object temp_gbsg [band]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object temp_rotterdam2 [band]: IDENTICAL before/after
+
+==== coxmeth (vignettes/articles/weightedcox_methodology.Rmd) ====
+
+-- chunk 'dfcount' (line 182), object dfcount_gbsg [dfcount]: IDENTICAL before/after
+
+-- chunk 'cox-standard' (line 200), object fit_cox [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_custom [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_fh01 [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_fh10 [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_mb [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'rotterdam-ps' (line 315), object dfcount_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        unchanged: 3.474
+   lr             unchanged: 85.04
+   sig2_lr        unchanged: 599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   cox_score       34.7  ->  12.06
+   logrank_chisq  4.771  ->  12.07
+   logrank_pval   0.02895  ->  0.0005126
+   logrank_text   Logrank p = 0.03  ->  Logrank p = <0.001
+
+-- chunk 'rotterdam-ps' (line 315), object fit_ps_cox [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'rotterdam-ps' (line 315), object fit_ps_fh01 [cox_rhogamma]: IDENTICAL before/after
+
+==== figures (PNG files byte-identical before/after?) ====
+  examples line 70 fig-unnamed-chunk-1-1.png: identical
+  examples line 320 fig-unnamed-chunk-15-1.png: identical
+  examples line 329 fig-unnamed-chunk-16-1.png: identical
+  examples line 346 fig-unnamed-chunk-17-1.png: identical
+  examples line 369 fig-unnamed-chunk-18-1.png: identical
+  examples line 485 fig-unnamed-chunk-23-1.png: identical
+  examples line 502 fig-unnamed-chunk-24-1.png: identical
+  examples line 520 fig-unnamed-chunk-25-1.png: identical
+  examples line 578 fig-unnamed-chunk-26-1.png: identical
+  examples line 606 fig-unnamed-chunk-27-1.png: identical
+  examples line 702 fig-unnamed-chunk-29-1.png: identical
+  examples line 711 fig-unnamed-chunk-30-1.png: identical
+  examples line 732 fig-unnamed-chunk-32-1.png: identical
+  examples line 737 fig-unnamed-chunk-33-1.png: identical
+  examples line 743 fig-unnamed-chunk-34-1.png: identical
+  examples line 203 fig-unnamed-chunk-6-1.png: identical
+  examples line 213 fig-unnamed-chunk-7-1.png: identical
+  examples line 233 fig-unnamed-chunk-8-1.png: identical
+  martingale line 241 fig-compare-km-1.png: identical
+  martingale line 132 fig-gbsg-km-1.png: identical
+  martingale line 316 fig-rmst-combined-1.png: identical
+  martingale line 274 fig-rotterdam-bands-1.png: identical
+  martingale line 274 fig-rotterdam-bands-2.png: identical
+  martingale line 196 fig-rotterdam-km-1.png: identical
+  coxmeth line 305 fig-weight-plot-1.png: identical

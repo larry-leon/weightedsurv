@@ -1,0 +1,85 @@
+Step V, parts 2-4. Package at HEAD (c195953). Data frames as the vignettes build them.
+
+==== examples / Rotterdam (vignettes/weightedsurv_examples.Rmd:299), n = 1546, 339 treated ====
+part 2: ps_weights(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, type = "stabilized") against the column sw.weights: largest absolute difference 1.18e-11 (weights range 0.5016 to 12.88)
+        rows of the model = rows of the data frame: TRUE; missing values in the model's variables: 0
+part 3: effective sample size by arm (df_counting()$ess)
+   group    n    ess  ratio
+   treat  339  105.2 0.3104
+ control 1207 1162.9 0.9635
+part 4: known against estimated
+                                                             known                        estimated                   
+  log-rank z (df_counting, FH(0,0))                          3.474                        3.906                       
+    one-sided p = 1 - pnorm(z)                               0.0002563                    4.683e-05                   
+    logrank_results: chisq, two-sided p                      12.07, 0.0005126             15.26, 9.365e-05            
+  hazard ratio and 95% interval (cox_rhogamma, FH(0,0))      0.6319 (0.4868, 0.8201)      0.6319 (0.4929, 0.8100)     
+    SE of the log hazard ratio                               0.133                        0.1267                      
+    coxph: cox_results$cox_text; $se                         HR = 0.63 (0.49, 0.82); 0.1331 HR = 0.63 (0.49, 0.81); 0.1268
+  SE of the survival difference at the median time (45.2)    0.04898                      0.04598                     
+    difference at that time                                  0.1462                       0.1462                      
+  band critical value (draws.band = 1000)                    3.002                        3.028                       
+    mean width of the band                                   0.249                        0.2378                      
+  RMST difference and 95% interval at the last time (118.4)  16.823 (7.974, 25.672)       16.823 (8.540, 25.107)      
+    RMST band critical value                                 2.684                        2.711                       
+
+==== examples / cross-trial (CTC) (vignettes/weightedsurv_examples.Rmd:444), n = 1453, 246 treated ====
+part 2: ps_weights(treat ~ age + meno + size + grade3 + nodes + pgr + er, type = "stabilized") against the column sw.weights: largest absolute difference 4.08e-08 (weights range 0.2152 to 12.98)
+        rows of the model = rows of the data frame: TRUE; missing values in the model's variables: 0
+part 3: effective sample size by arm (df_counting()$ess)
+   group    n     ess  ratio
+   treat  246   72.99 0.2967
+ control 1207 1098.77 0.9103
+part 4: known against estimated
+                                                             known                        estimated                   
+  log-rank z (df_counting, FH(0,0))                           2.11                        2.302                       
+    one-sided p = 1 - pnorm(z)                               0.01742                      0.01065                     
+    logrank_results: chisq, two-sided p                      4.453, 0.03483               5.301, 0.02131              
+  hazard ratio and 95% interval (cox_rhogamma, FH(0,0))      0.6601 (0.4445, 0.9803)      0.6601 (0.4563, 0.9547)     
+    SE of the log hazard ratio                               0.2018                       0.1883                      
+    coxph: cox_results$cox_text; $se                         HR = 0.66 (0.44, 0.98); 0.202 HR = 0.66 (0.46, 0.96); 0.1885
+  SE of the survival difference at the median time (42.0)    0.05734                      0.05365                     
+    difference at that time                                  0.1469                       0.1469                      
+  band critical value (draws.band = 1000)                    3.051                        3.075                       
+    mean width of the band                                   0.3068                       0.291                       
+  RMST difference and 95% interval at the last time (77.9)   8.119 (0.955, 15.283)        8.119 (1.324, 14.914)       
+    RMST band critical value                                 2.603                        2.576                       
+
+==== martingale / Rotterdam (vignettes/articles/martingale_resampling_applications.Rmd:174), n = 1546, 339 treated ====
+part 2: ps_weights(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, type = "stabilized") against the column sw.weights: largest absolute difference 1.18e-11 (weights range 0.5016 to 12.88)
+        rows of the model = rows of the data frame: TRUE; missing values in the model's variables: 0
+part 3: effective sample size by arm (df_counting()$ess)
+   group    n    ess  ratio
+   treat  339  105.2 0.3104
+ control 1207 1162.9 0.9635
+part 4: known against estimated
+                                                             known                        estimated                   
+  log-rank z (df_counting, FH(0,0))                          3.474                        3.906                       
+    one-sided p = 1 - pnorm(z)                               0.0002563                    4.683e-05                   
+    logrank_results: chisq, two-sided p                      12.07, 0.0005126             15.26, 9.365e-05            
+  hazard ratio and 95% interval (cox_rhogamma, FH(0,0))      0.6319 (0.4868, 0.8201)      0.6319 (0.4929, 0.8100)     
+    SE of the log hazard ratio                               0.133                        0.1267                      
+    coxph: cox_results$cox_text; $se                         HR = 0.63 (0.49, 0.82); 0.1331 HR = 0.63 (0.49, 0.81); 0.1268
+  SE of the survival difference at the median time (45.2)    0.04898                      0.04598                     
+    difference at that time                                  0.1462                       0.1462                      
+  band critical value (draws.band = 1000)                    3.002                        3.028                       
+    mean width of the band                                   0.249                        0.2378                      
+  RMST difference and 95% interval at the last time (118.4)  16.823 (7.974, 25.672)       16.823 (8.540, 25.107)      
+    RMST band critical value                                 2.684                        2.711                       
+
+==== coxmeth / Rotterdam (vignettes/articles/weightedcox_methodology.Rmd:329), n = 1546, 339 treated ====
+part 2: ps_weights(treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, type = "stabilized") against the column sw.weights: largest absolute difference 1.18e-11 (weights range 0.5016 to 12.88)
+        rows of the model = rows of the data frame: TRUE; missing values in the model's variables: 0
+part 3: effective sample size by arm (df_counting()$ess)
+   group    n    ess  ratio
+   treat  339  105.2 0.3104
+ control 1207 1162.9 0.9635
+part 4: known against estimated
+                                                             known                        estimated                   
+  log-rank z (df_counting, FH(0,0))                          3.474                        3.906                       
+    one-sided p = 1 - pnorm(z)                               0.0002563                    4.683e-05                   
+    logrank_results: chisq, two-sided p                      12.07, 0.0005126             15.26, 9.365e-05            
+  hazard ratio and 95% interval (cox_rhogamma, FH(0,0))      0.6319 (0.4868, 0.8201)      0.6319 (0.4929, 0.8100)     
+    SE of the log hazard ratio                               0.133                        0.1267                      
+    coxph: cox_results$cox_text; $se                         HR = 0.63 (0.49, 0.82); 0.1331 HR = 0.63 (0.49, 0.81); 0.1268
+  FH(0,1): z; hazard ratio and 95% interval                  2.308; 0.6935 (0.5031, 0.9559) 2.438; 0.6935 (0.5060, 0.9504)
+  (this example has no band or RMST call)

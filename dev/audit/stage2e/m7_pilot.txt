@@ -1,0 +1,18 @@
+M7 pilot, one core (weightedsurv 0.2.0 at c195953)  2026-11-19 22:12:56
+  cell  7 E-200                 3 replicates:   0.38 s per replicate
+  cell  8 E-400                 3 replicates:   0.40 s per replicate
+  cell  9 E-800                 3 replicates:   0.98 s per replicate
+  cell 15 E-400-null            3 replicates:   0.32 s per replicate
+  cell 19 E-400-delay           3 replicates:   0.33 s per replicate
+  cell 31 Es-400               10 replicates:   0.41 s per replicate
+  cell 32 Es-400-null           3 replicates:   0.39 s per replicate
+  cell 33 Es-400-null-strata    3 replicates:   0.11 s per replicate
+  cell 34 Et-400-null           3 replicates:   0.16 s per replicate
+  cell 35 Fe-400                3 replicates:   0.25 s per replicate
+  cell 36 Fe-800               10 replicates:   0.73 s per replicate
+  cell 37 Fe-400-null           3 replicates:   0.27 s per replicate
+  cell 38 V-1450-null          10 replicates:   1.48 s per replicate
+  cell 39 V-1450-ph             3 replicates:   1.46 s per replicate
+  cell 40 Sub-800-null         10 replicates:   0.27 s per replicate
+simulation: 12234 core-seconds; projected wall-clock on 12 cores: 17.0 min
+M7 bootstrap pilot: 1.10 s per replicate (200 resamples); 1100 core-seconds; projected wall-clock on 12 cores: 1.5 min

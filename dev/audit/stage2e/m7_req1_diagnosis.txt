@@ -1,0 +1,66 @@
+Requirement 1 by cell (replicates 1-500):
+ cell replicates time_fix_changes_a_time alignment_not_passed
+    7        500                       0                    0
+    8        500                       1                    1
+    9        500                       2                    1
+   15        500                       2                    0
+   19        500                       0                    0
+ cox_differs_alignment_passed cox_differs_and_no_time_changed
+                            0                               0
+                            0                               0
+                            1                               0
+                            2                               0
+                            0                               0
+ largest_cox_difference_no_time_changed largest_km_band_rmst_difference
+                               3.64e-12                        2.09e-14
+                               1.09e-12                        3.62e-14
+                               5.80e-14                        6.86e-14
+                               4.07e-12                        7.33e-14
+                               2.53e-14                        3.71e-14
+
+cell 8 replicate 370: n = 400; raw times distinct: TRUE; time-fixed times with a tie: 1; raw pairs closer than 1e-7 relative: 1; rows whose time aeqSurv changed: 1
+   closest pair: 5.492478659895 and 5.492478841916 (difference 1.82e-07), status 1 and 0, arm 0 and 1
+   FH(0,0) estimated: SE package 0.1300350002, script 0.1300350002 (rel 4.44e-16), tie-aware reference 0.1300350002 (rel 4.44e-16); |z| package 2.75572830, script 2.75572830 (rel 4.22e-15), tie-aware reference 2.75572830 (rel 2.22e-16)
+            known:     SE package 0.1504766795, script cox_robust 0.1504766795 (rel 5.55e-16); |z| package 2.33075957, script 2.33075957 (rel 4.22e-15)
+            coxph residual routes (Breslow): z^2 package / coxph - 1 = -2.74e-14; SE package / coxph - 1 = -1.89e-15
+   FH(0,1) estimated: SE package 0.1717492610, script 0.1717492610 (rel 1.11e-16), tie-aware reference 0.1717492610 (rel 1.11e-16); |z| package 2.11310091, script 2.11310091 (rel 4.88e-15), tie-aware reference 2.11310091 (rel 4.66e-15)
+            known:     SE package 0.1826493375, script cox_robust 0.1826493375 (rel 3.33e-16); |z| package 1.96972373, script 1.96972373 (rel 4.66e-15)
+
+cell 9 replicate 128: n = 800; raw times distinct: TRUE; time-fixed times with a tie: 1; raw pairs closer than 1e-7 relative: 1; rows whose time aeqSurv changed: 1
+   closest pair: 12.142018949613 and 12.142019200931 (difference 2.51e-07), status 0 and 1, arm 1 and 0
+   FH(0,0) estimated: SE package 0.0916577369, script 0.0916570045 (rel 7.99e-06), tie-aware reference 0.0916577369 (rel 4.44e-16); |z| package 3.44963359, script 3.44966593 (rel 9.38e-06), tie-aware reference 3.44963359 (rel 4.22e-15)
+            known:     SE package 0.1115545313, script cox_robust 0.1115545313 (rel 4.44e-16); |z| package 2.75924673, script 2.75924673 (rel 7.88e-15)
+            coxph residual routes (Breslow): z^2 package / coxph - 1 = -8.24e-14; SE package / coxph - 1 = 6.66e-16
+   FH(0,1) estimated: SE package 0.1234084914, script 0.1234056328 (rel 2.32e-05), tie-aware reference 0.1234084914 (rel 1.11e-15); |z| package 2.61680480, script 2.61689978 (rel 3.63e-05), tie-aware reference 2.61680480 (rel 6.00e-15)
+            known:     SE package 0.1336001696, script cox_robust 0.1336001696 (rel 1.11e-15); |z| package 2.39942541, script 2.39942541 (rel 8.66e-15)
+
+cell 9 replicate 388: n = 800; raw times distinct: TRUE; time-fixed times with a tie: 2; raw pairs closer than 1e-7 relative: 2; rows whose time aeqSurv changed: 2
+   closest pair: 8.505285959691 and 8.505286162438 (difference 2.03e-07), status 0 and 1, arm 0 and 0
+   FH(0,0) estimated: SE package 0.0909686661, script 0.0909686348 (rel 3.44e-07), tie-aware reference 0.0909686661 (rel 4.44e-16); |z| package 4.58410308, script 4.58437468 (rel 5.92e-05), tie-aware reference 4.58410308 (rel 4.44e-16)
+            known:     SE package 0.1117255847, script cox_robust 0.1117258256 (rel 2.16e-06); |z| package 3.56338109, script 3.56357224 (rel 5.36e-05)
+            coxph residual routes (Breslow): z^2 package / coxph - 1 = -4.41e-14; SE package / coxph - 1 = 2.89e-15
+   FH(0,1) estimated: SE package 0.1238758776, script 0.1238787964 (rel 2.36e-05), tie-aware reference 0.1238758776 (rel 5.55e-16); |z| package 2.70008163, script 2.70061920 (rel 1.99e-04), tie-aware reference 2.70008163 (rel 1.33e-15)
+            known:     SE package 0.1351012688, script cox_robust 0.1351037037 (rel 1.80e-05); |z| package 2.43500376, script 2.43550779 (rel 2.07e-04)
+
+cell 15 replicate 104: n = 400; raw times distinct: TRUE; time-fixed times with a tie: 1; raw pairs closer than 1e-7 relative: 1; rows whose time aeqSurv changed: 1
+   closest pair: 6.816343434155 and 6.816343518872 (difference 8.47e-08), status 0 and 1, arm 1 and 0
+   FH(0,0) estimated: SE package 0.1272992054, script 0.1272985787 (rel 4.92e-06), tie-aware reference 0.1272992054 (rel 8.88e-16); |z| package 1.10863229, script 1.10845710 (rel 1.58e-04), tie-aware reference 1.10863229 (rel 7.99e-15)
+            known:     SE package 0.1488697427, script cox_robust 0.1488701582 (rel 2.79e-06); |z| package 0.93917566, script 0.93901951 (rel 1.66e-04)
+            coxph residual routes (Breslow): z^2 package / coxph - 1 = -2.51e-13; SE package / coxph - 1 = 2.00e-15
+   FH(0,1) estimated: SE package 0.1757036691, script 0.1757024239 (rel 7.09e-06), tie-aware reference 0.1757036691 (rel 3.33e-16); |z| package 1.54541114, script 1.54544906 (rel 2.45e-05), tie-aware reference 1.54541114 (rel 1.11e-16)
+            known:     SE package 0.1843395301, script cox_robust 0.1843385020 (rel 5.58e-06); |z| package 1.45494671, script 1.45497986 (rel 2.28e-05)
+
+cell 15 replicate 210: n = 400; raw times distinct: TRUE; time-fixed times with a tie: 1; raw pairs closer than 1e-7 relative: 1; rows whose time aeqSurv changed: 1
+   closest pair: 6.836445006980 and 6.836445076684 (difference 6.97e-08), status 1 and 1, arm 0 and 0
+   FH(0,0) estimated: SE package 0.1234434836, script 0.1234449740 (rel 1.21e-05), tie-aware reference 0.1234434836 (rel 8.88e-16); |z| package 2.02660458, script 2.02646642 (rel 6.82e-05), tie-aware reference 2.02660458 (rel 4.22e-15)
+            known:     SE package 0.1335209280, script cox_robust 0.1335221726 (rel 9.32e-06); |z| package 1.91209467, script 1.91196797 (rel 6.63e-05)
+            coxph residual routes (Breslow): z^2 package / coxph - 1 = 3.33e-15; SE package / coxph - 1 = 6.63e-13
+   FH(0,1) estimated: SE package 0.1493519802, script 0.1493491633 (rel 1.89e-05), tie-aware reference 0.1493519802 (rel 0.00e+00); |z| package 1.24813879, script 1.24761744 (rel 4.18e-04), tie-aware reference 1.24813879 (rel 3.77e-15)
+            known:     SE package 0.1530691769, script cox_robust 0.1530665837 (rel 1.69e-05); |z| package 1.22731141, script 1.22679685 (rel 4.19e-04)
+
+cell 8 replicate 1: n = 400; raw times distinct: TRUE; time-fixed times with a tie: 0; raw pairs closer than 1e-7 relative: 0; rows whose time aeqSurv changed: 0
+   FH(0,0) estimated: SE package 0.1465275070, script 0.1465275070 (rel 6.66e-16), tie-aware reference 0.1465275070 (rel 6.66e-16); |z| package 3.06128799, script 3.06128799 (rel 1.33e-15), tie-aware reference 3.06128799 (rel 9.99e-16)
+            known:     SE package 0.1785960402, script cox_robust 0.1785960402 (rel 6.66e-16); |z| package 2.43558533, script 2.43558533 (rel 1.33e-15)
+            coxph residual routes (Breslow): z^2 package / coxph - 1 = 1.55e-14; SE package / coxph - 1 = -2.22e-16
+   FH(0,1) estimated: SE package 0.1942029971, script 0.1942029971 (rel 3.33e-16), tie-aware reference 0.1942029971 (rel 3.33e-16); |z| package 2.17167804, script 2.17167804 (rel 1.33e-15), tie-aware reference 2.17167804 (rel 2.22e-15)
+            known:     SE package 0.2117746592, script cox_robust 0.2117746592 (rel 2.22e-16); |z| package 1.98196619, script 1.98196619 (rel 1.55e-15)

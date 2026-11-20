@@ -1,0 +1,65 @@
+B1a. Zero weights (Rd): before (golden_s2d.rds) -> after (current code) | the positive-weight rows analysed with the same weights (no weights for w01)
+| dataset | weights | zero-weight rows | log-rank z | stratified z | cox_rhogamma SE FH(0,0) | SE of the survival difference at the median grid point | band critical value (draws.band = 200) | resampling SE (draws = 200) |
+|---|---|---|---|---|---|---|---|---|
+| gbsg | w01 | 223 of 686 | 2.915839 -> 2.894557 | 2.894557 | 2.727412 -> 2.710705 | 2.710705 | 0.159712 -> 0.156658 | 0.156658 | 0.049366 -> 0.049366 | 0.049366 | 2.9731 -> 2.9286 | 3.1094 | 0.15524 -> 0.16227 | 0.15545 |
+| gbsg | wz | 223 of 686 | 2.880339 -> 2.880339 | 2.880339 | 2.687019 -> 2.687019 | 2.687019 | 0.170257 -> 0.170257 | 0.170257 | 0.053951 -> 0.053951 | 0.053951 | 3.0958 -> 3.0958 | 2.9685 | 0.17394 -> 0.17394 | 0.16428 |
+| sim_weighted | w01 | 91 of 300 | 3.011930 -> 3.025530 | 3.025530 | – | 0.180321 -> 0.179121 | 0.179121 | 0.071261 -> 0.071261 | 0.071261 | 3.1138 -> 3.0380 | 2.8901 | 0.18019 -> 0.18144 | 0.16932 |
+| sim_weighted | wz | 91 of 300 | 2.193960 -> 2.193960 | 2.193960 | – | 0.197632 -> 0.197632 | 0.197632 | 0.079298 -> 0.079298 | 0.079298 | 3.0584 -> 3.0584 | 2.9568 | 0.19064 -> 0.19064 | 0.18428 |
+| sim_strata | w01 | 96 of 300 | 0.956096 -> 0.946984 | 0.946984 | 0.999049 -> 0.979497 | 0.979497 | 0.175923 -> 0.177675 | 0.177675 | 0.072453 -> 0.072453 | 0.072453 | 3.0446 -> 2.9905 | 3.0074 | 0.18392 -> 0.17095 | 0.17159 |
+| sim_strata | wz | 96 of 300 | 0.503564 -> 0.503564 | 0.503564 | 0.335167 -> 0.335167 | 0.335167 | 0.195778 -> 0.195778 | 0.195778 | 0.080543 -> 0.080543 | 0.080543 | 2.8871 -> 2.8871 | 3.0508 | 0.19850 -> 0.19850 | 0.19287 |
+
+B1b. Weighted datasets (Rb): before (golden_s2d.rds) -> after. z^2 is df_counting()$z.score^2 (unchanged by Rb); coxph is coxph(weights = , robust = TRUE): $rscore with ties = "breslow" beside logrank chisq, summary()$robscore (default ties) beside cox score.
+| dataset | weights | z.score^2 | logrank_results$chisq: before -> after (coxph rscore, Breslow) | cox_results$score: before -> after (coxph robscore) | check_results() largest relative difference: before -> after | ess / n control | ess / n treated |
+|---|---|---|---|---|---|---|---|
+| veteran | wv | 0.2551 | 0.0082 -> 0.2551 (0.2551) | 0.4921 -> 0.2500 (0.2500) | 187.5% -> 1.6e-12% | 0.842 | 0.786 |
+| gbsg | wv | 11.9752 | 8.5648 -> 11.9752 (11.9752) | 22.2401 -> 11.9763 (11.9763) | 33.2% -> 3.3e-13% | 0.816 | 0.830 |
+| gbsg_er_le0 | wv | 2.7577 | 4.6935 -> 2.7577 (2.7577) | 6.9865 -> 2.7577 (2.7577) | 52.0% -> 1.6e-14% | 0.830 | 0.816 |
+| gbsg_er_gt0 | wv | 11.5062 | 12.8826 -> 11.5062 (11.5062) | 21.9588 -> 11.5060 (11.5060) | 11.3% -> 1.1e-13% | 0.795 | 0.826 |
+| sim_cont | wv | 1.9299 | 2.6571 -> 1.9299 (1.9299) | 3.9792 -> 1.9299 (1.9299) | 31.7% -> 2.3e-12% | 0.834 | 0.795 |
+| sim_ties | wv | 5.8211 | 6.7954 -> 5.8211 (5.8211) | 10.9067 -> 5.8089 (5.8089) | 15.4% -> 6.1e-13% | 0.804 | 0.837 |
+| sim_weighted | wv | 5.8488 | 10.9951 -> 5.8488 (5.8488) | 12.1843 -> 5.8488 (5.8488) | 61.1% -> 1.4e-13% | 0.822 | 0.820 |
+| sim_weighted | w | 5.8488 | 10.9951 -> 5.8488 (5.8488) | 12.1843 -> 5.8488 (5.8488) | 61.1% -> 1.4e-13% | 0.822 | 0.820 |
+| sim_strata | wv | 2.4930 | 4.0959 -> 2.4930 (2.4930) | 4.8108 -> 2.4930 (2.4930) | 48.7% -> 5.4e-12% | 0.835 | 0.811 |
+
+B1c. check_results() on sim_weighted (weights w), printed output
+before (START_SHA build):
+    
+    Test Statistic Comparison:
+    (These should be approximately equal)
+    
+       zlr_sq logrank_chisq  zCox_sq
+     5.848805      10.99509 5.848805
+    
+    Relative difference: 61.11%
+    Warning: Statistics differ by more than 1%. Check for computational issues. 
+after (current code):
+    
+    Test Statistic Comparison:
+    (These should be approximately equal)
+    
+       zlr_sq logrank_chisq  zCox_sq
+     5.848805      5.848805 5.848805
+    
+    Relative difference: 1.367e-13%
+    (no warning)
+ess on sim_weighted (weights w):
+       group   n      ess     ratio
+       treat 148 121.3064 0.8196377
+     control 152 125.0135 0.8224571
+
+B2. The option: "known" -> "estimated" (the coxph-route or n x m reference value under "estimated" in brackets). Data: n = 400, propensity model treat ~ x1 + x2 (set.seed(11), as in Gate G2 checks 6 and 7).
+| tied times | weights | ess / n control, treated | log-rank z FH(0,0) | stratified z FH(0,0) | cox_rhogamma SE FH(0,0) | log-rank z FH(0,1) | cox_rhogamma SE FH(0,1) | SE of the survival difference at the median time | band critical value (draws.band = 1000) | RMST difference at the last time: SE |
+|---|---|---|---|---|---|---|---|---|---|---|
+| no | ipw | 0.923, 0.732 | 2.6327 -> 2.9575 (2.9575) | 2.6009 -> 2.9288 (2.9288) | 0.15556 -> 0.14095 (0.14095) | 2.5601 -> 2.8150 | 0.18277 -> 0.16832 | 0.05532 -> 0.05299 (0.05299) | 2.989 -> 3.040 | 3.3556 -> 3.1121 |
+  check_results() on the "estimated" result (no tied times): zlr_sq 8.746812, logrank_chisq 8.746812, zCox_sq 8.746812; estimates identical under the two options: lr TRUE, bhat TRUE, dhat TRUE, rmst TRUE
+| no | stabilized | 0.923, 0.732 | 2.5342 -> 2.8569 (2.8569) | 2.5135 -> 2.8386 (2.8386) | 0.15628 -> 0.14152 (0.14152) | 2.4201 -> 2.6709 | 0.18367 -> 0.16911 | 0.05532 -> 0.05299 (0.05299) | 2.989 -> 3.040 | 3.3556 -> 3.1121 |
+| yes | ipw | 0.923, 0.732 | 2.6149 -> 2.9370 (2.9370) | 2.5785 -> 2.9043 (2.9043) | 0.15338 -> 0.13900 (0.13900) | 2.5708 -> 2.8210 | 0.18229 -> 0.16822 | 0.05661 -> 0.05432 (0.05432) | 2.824 -> 2.925 | 3.3308 -> 3.0579 |
+  check_results() on the "estimated" result (tied times): zlr_sq 8.626088, logrank_chisq 8.626088, zCox_sq 8.626088; estimates identical under the two options: lr TRUE, bhat TRUE, dhat TRUE, rmst TRUE
+| yes | stabilized | 0.923, 0.732 | 2.5204 -> 2.8399 (2.8399) | 2.4915 -> 2.8129 (2.8129) | 0.15414 -> 0.13966 (0.13966) | 2.4324 -> 2.6782 | 0.18326 -> 0.16913 | 0.05661 -> 0.05432 (0.05432) | 2.824 -> 2.925 | 3.3308 -> 3.0579 |
+
+E. All weights equal to one constant: the equal-weight formulas (gbsg, golden dataset)
+| weights | log-rank z FH(0,0) | sig2_lr | cox_rhogamma SE FH(0,0) | SE of S1 at the median grid point | logrank_results$method, chisq | cox_results$score | ess (control, treated) |
+|---|---|---|---|---|---|---|---|
+| none | 2.9265646847 | 70.984135 | 0.1250116764 | 0.0304656687 | survdiff, 8.564781 | 8.566089 | 440.0, 246.0 |
+| all 1 | 2.9265646847 | 70.984135 | 0.1250116764 | 0.0304656687 | survdiff, 8.564781 | 8.566089 | 440.0, 246.0 |
+| all 2 | 4.1424853192 | 141.714922 | 0.0882994992 | 0.0304656687 | survdiff, 8.564781 | 17.132178 | 440.0, 246.0 |
