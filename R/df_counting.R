@@ -393,6 +393,10 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
   # data for weighting
   df_weights <- data.frame(at_points, nbar0, nbar1, ybar0, ybar1, surv1, surv0, survP, survG)
+  # Subject weights not all equal: hand the subject-level data to wlr_cumulative(), which then uses
+  # the score-residual variance (in every stratum too). Otherwise nothing is attached.
+  lr_unequal <- length(unique(wgt)) > 1
+  if (lr_unequal) attr(df_weights, "ws_subject") <- list(time = time, delta = delta, z = z, w_hat = wgt, unequal = TRUE)
 
   get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)
 
@@ -607,6 +611,10 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       G_pool <- temp$S_KM
 
       df_weights <- data.frame(at_points, nbar0 = nbar0_s, nbar1 = nbar1_s, ybar0 = ybar0_s, ybar1 = ybar1_s, survP = S_pool, survG = G_pool)
+      if (lr_unequal) {
+        in_s <- strata == this_stratum
+        attr(df_weights, "ws_subject") <- list(time = time[in_s], delta = delta[in_s], z = z[in_s], w_hat = wgt[in_s], unequal = TRUE)
+      }
       get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)
 
       score_stratified <- score_stratified + get_score$score

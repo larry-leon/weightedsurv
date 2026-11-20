@@ -254,3 +254,78 @@ ws_km_ij_sorted <- function(U, D, W, at_points, ybar, nbar, G = NULL) {
     if (srt) M else M[order(o), , drop = FALSE]
   }
 }
+
+# Per-subject score contributions of the subject-weighted log-rank / Cox score (Stage 2d, L1-L4).
+# Subject i: time U_i, event D_i, arm Z_i (0/1), subject weight a_i; K(s) the time weight of the
+# scheme; sums over s run over distinct times.
+#   S0(s, b)   = sum_j a_j 1(U_j >= s) exp(b Z_j)
+#   zbar(s, b) = sum_j a_j 1(U_j >= s) Z_j exp(b Z_j) / S0(s, b)
+#   dL(s, b)   = sum_j a_j D_j 1(U_j = s) / S0(s, b)
+#   psi_i(b)   = a_i [ D_i K(U_i) (Z_i - zbar(U_i, b)) - exp(b Z_i) sum_{s <= U_i} K(s) (Z_i - zbar(s, b)) dL(s, b) ]
+# The package's score is -sum_i psi_i(b); sum_i psi_i(b)^2 estimates its variance (for FH(0,0) the
+# robust variance of coxph(weights = , robust = TRUE, ties = "breslow")), and -sum_i G_i psi_i(b) is
+# one resampled score. `K` holds one time weight per observation; the weight of a tied time is the
+# one at its first observation (the one the score uses). A term whose S0 is 0 is 0.
+# Returns psi in the order of the input, and, for the cumulative version, the distinct times with
+# cK(t) = sum_{s <= t} K(s) dL(s) and cKz(t) = sum_{s <= t} K(s) zbar(s) dL(s).
+#' @noRd
+ws_score_psi <- function(time, delta, z, a, K = rep(1, length(time)), beta = 0) {
+  n <- length(time)
+  if (n == 0) return(list(psi = numeric(0), times = numeric(0), cK = numeric(0), cKz = numeric(0)))
+  o <- order(time)
+  tt <- time[o]; D <- delta[o]; Z <- z[o]; w <- a[o]
+  first <- !duplicated(tt)
+  first_idx <- which(first)
+  grp <- cumsum(first)
+  eb <- exp(beta * Z)
+  S0 <- rev(cumsum(rev(w * eb)))[first_idx]
+  S1 <- rev(cumsum(rev(w * eb * Z)))[first_idx]
+  ok <- S0 > 0
+  zb <- ifelse(ok, S1 / S0, 0)
+  dNw <- as.vector(rowsum(w * D, grp))
+  dL <- ifelse(ok, dNw / S0, 0)
+  Kd <- K[o][first_idx]
+  Kd[dL == 0] <- 0                      # a time without (positive-weight) events contributes nothing
+  cK <- cumsum(Kd * dL)
+  cKz <- cumsum(Kd * zb * dL)
+  psi <- numeric(n)
+  psi[o] <- w * (D * Kd[grp] * (Z - zb[grp]) - eb * (Z * cK[grp] - cKz[grp]))
+  list(psi = psi, times = tt[first_idx], cK = cK, cKz = cKz)
+}
+
+# Subject-level data for the weighted log-rank variance (L1): from the attribute set by
+# df_counting(), or from a df_counting() result passed directly (elements time, delta, z, w_hat).
+# NULL when there are none, when they do not fit the grid, or when the weights are all equal --
+# the earlier formula then runs unchanged.
+#' @noRd
+ws_lr_subject_data <- function(x, at_points) {
+  s <- attr(x, "ws_subject", exact = TRUE)
+  if (is.null(s)) {
+    nms <- c("time", "delta", "z", "w_hat")
+    if (!is.list(x) || !all(nms %in% names(x))) return(NULL)
+    s <- list(time = x[["time"]], delta = x[["delta"]], z = x[["z"]], w_hat = x[["w_hat"]])
+    s$unequal <- length(unique(s$w_hat)) > 1
+  }
+  ok <- is.numeric(s$time) && is.numeric(s$delta) && is.numeric(s$z) && is.numeric(s$w_hat) &&
+    length(s$delta) == length(s$time) && length(s$z) == length(s$time) && length(s$w_hat) == length(s$time)
+  if (!ok || !isTRUE(s$unequal)) return(NULL)
+  if (is.unsorted(at_points) || anyNA(match(s$time, at_points))) return(NULL)
+  s
+}
+
+# V(t) = sum_i (contribution of subject i to the score up to t)^2 on a sorted grid (L1, cumulative
+# version, b = 0). The contribution is psi_i when U_i <= t and -a_i (Z_i cK(t) - cKz(t)) when U_i > t, so
+#   V(t) = sum_{U_i <= t} psi_i^2 + (cK(t) - cKz(t))^2 sum_{U_i > t, Z_i = 1} a_i^2 + cKz(t)^2 sum_{U_i > t, Z_i = 0} a_i^2.
+#' @noRd
+ws_lr_cumvar <- function(sp, time, z, a, at_points) {
+  m <- length(at_points)
+  k <- match(time, at_points)
+  A <- cumsum(ws_rowsum_grid(sp$psi^2, k, m)[, 1])
+  a2 <- a^2
+  R1 <- sum(a2[z == 1]) - cumsum(ws_rowsum_grid(a2 * (z == 1), k, m)[, 1])
+  R0 <- sum(a2[z == 0]) - cumsum(ws_rowsum_grid(a2 * (z == 0), k, m)[, 1])
+  j <- findInterval(at_points, sp$times)
+  cK <- c(0, sp$cK)[j + 1]
+  cKz <- c(0, sp$cKz)[j + 1]
+  A + (cK - cKz)^2 * R1 + cKz^2 * R0
+}

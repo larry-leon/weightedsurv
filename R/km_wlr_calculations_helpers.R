@@ -657,6 +657,13 @@ wlr_cumulative <- function(df_weights, scheme, scheme_params = list(rho = 0, gam
     sig2_lr <- sum((h0 + h1) * (1 - dJ) * dL)
   }
   lr <- drisk0 - drisk1
+  # Subject weights that are not all equal, subject-level data present: the variance of the score
+  # is the sum of squared per-subject score contributions (see ws_score_psi()); the score is unchanged.
+  subj <- ws_lr_subject_data(df_weights, at_points)
+  if (!is.null(subj)) {
+    sp <- ws_score_psi(subj$time, subj$delta, subj$z, subj$w_hat, K = wt_rg[match(subj$time, at_points)], beta = 0)
+    sig2_lr <- if (return_cumulative) ws_lr_cumvar(sp, subj$time, subj$z, subj$w_hat, at_points) else sum(sp$psi^2)
+  }
   z <- lr / sqrt(sig2_lr)
   list(z.score = z, time = at_points, score = lr, sig2.score = sig2_lr)
 }
