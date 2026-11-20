@@ -1,0 +1,132 @@
+## G2: rmarkdown::render() with options(warn = 2), at e95728a
+OK vignettes/articles/estimated_weights_methodology.Rmd (1 s)
+OK vignettes/weightedsurv_examples.Rmd (8 s)
+OK vignettes/articles/weightedkm_methodology.Rmd (0 s)
+OK vignettes/articles/weightedcox_methodology.Rmd (2 s)
+OK vignettes/articles/weightedrmst_methodology.Rmd (0 s)
+
+## G3, G4: Rscript dev/scratch/gates_appendix.R
+PASS G3 (time): chunks of the article run in 1.0 s (limit 60)
+PASS G3 (code): 115 code lines; lines matching replicate( | boot | for (b in | mclapply | future | glm( : 0; calls to ps_weights(): 1
+G4: by hand / package / difference
+   SE of the survival difference at 60 months    0.035166439891200  0.035166439891200  -1.39e-17
+   SE of the log hazard ratio, FH(0,0)           0.084025519440320  0.084025519440320  1.39e-17
+   Log-rank z, FH(0,0)                           4.868643752370565  4.868643752370569  -3.55e-15
+PASS G4: largest absolute difference 3.55e-15 (limit 1e-8)
+   also in the article: n = 829, treated 291; ESS ratio treated 0.9301, control 0.9837; contributions by formula against cox_rhogamma_resample() with unit multipliers: 3.1e-15
+   estimates identical under the two options: dhat TRUE, bhat TRUE
+            known         cross    quadratic    projected    estimated
+[1,]   0.00139487 -3.255491e-04 1.673572e-04 1.235468e-03 1.236678e-03
+[2,] 118.59310860 -3.689741e+01 1.879703e+01 1.003737e+02 1.004927e+02
+   Lemma 1 (dS^a/dw_i = -S^a psi_i), 10 subjects: largest relative difference from the central difference 4.4e-07
+   Lemma 2 (dU/dw_j = -psi_j / w_j at bhat), 10 subjects: largest relative difference from the central difference 4.1e-07
+   I_w(bhat) by the formula of section 4.4 against cox_score_rhogamma()$i_bhat: 4.3e-14
+
+## G6: pkgdown::check_pkgdown()
+✔ No problems found.
+check_pkgdown(): OK 
+
+## G7: R CMD check --as-cran --timings, tarballs from clean clones, same session
+0c66cbe: Status: 2 NOTEs; [ FAIL 0 | WARN 0 | SKIP 0 | PASS 1691 ]
+   * checking top-level files ... NOTE
+   * checking HTML version of manual ... NOTE
+a15ff33: Status: 2 NOTEs; [ FAIL 0 | WARN 0 | SKIP 0 | PASS 1691 ]
+   * checking top-level files ... NOTE
+   * checking HTML version of manual ... NOTE
+
+## G1
+   _pkgdown.yml
+   dev/audit/REPORT_vignette_revision.md
+   dev/audit/vignette_revision/00check_a15ff33.log
+   dev/audit/vignette_revision/00check_ac76f82_same_session.log
+   dev/audit/vignette_revision/figures_before_after.html
+   dev/audit/vignette_revision/g11_numerals.txt
+   dev/audit/vignette_revision/gates_output.txt
+   dev/audit/vignette_revision/testthat_a15ff33.Rout
+   dev/scratch/.gitignore
+   dev/scratch/figure_sheet.py
+   dev/scratch/g11_numerals.py
+   dev/scratch/gates.R
+   dev/scratch/render_vignettes.R
+   dev/scratch/vignette_after/coxmeth/fig-weight-plot-1.png
+   dev/scratch/vignette_after/coxmeth/warnings.txt
+   dev/scratch/vignette_after/examples/fig-ctc-bands-1.png
+   dev/scratch/vignette_after/examples/fig-cumulative-logrank-1.png
+   dev/scratch/vignette_after/examples/fig-rotterdam-band-resamples-1.png
+   dev/scratch/vignette_after/examples/fig-rotterdam-gbsg-bands-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-1-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-16-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-17-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-23-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-26-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-27-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-29-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-31-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-33-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-34-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-35-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-6-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-7-1.png
+   dev/scratch/vignette_after/examples/fig-unnamed-chunk-8-1.png
+   dev/scratch/vignette_after/examples/warnings.txt
+   dev/scratch/vignette_after/kmmeth/warnings.txt
+   dev/scratch/vignette_after/martingale/fig-compare-km-1.png
+   dev/scratch/vignette_after/martingale/fig-gbsg-km-1.png
+   dev/scratch/vignette_after/martingale/fig-rmst-combined-1.png
+   dev/scratch/vignette_after/martingale/fig-rotterdam-bands-1.png
+   dev/scratch/vignette_after/martingale/fig-rotterdam-bands-2.png
+   dev/scratch/vignette_after/martingale/fig-rotterdam-km-1.png
+   dev/scratch/vignette_after/martingale/warnings.txt
+   dev/scratch/vignette_after/rmstmeth/warnings.txt
+   dev/scratch/vignette_before/coxmeth/fig-weight-plot-1.png
+   dev/scratch/vignette_before/coxmeth/warnings.txt
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-1-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-15-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-16-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-17-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-18-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-23-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-24-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-25-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-26-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-27-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-29-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-30-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-32-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-33-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-34-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-6-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-7-1.png
+   dev/scratch/vignette_before/examples/fig-unnamed-chunk-8-1.png
+   dev/scratch/vignette_before/examples/warnings.txt
+   dev/scratch/vignette_before/kmmeth/warnings.txt
+   dev/scratch/vignette_before/martingale/fig-compare-km-1.png
+   dev/scratch/vignette_before/martingale/fig-gbsg-km-1.png
+   dev/scratch/vignette_before/martingale/fig-rmst-combined-1.png
+   dev/scratch/vignette_before/martingale/fig-rotterdam-bands-1.png
+   dev/scratch/vignette_before/martingale/fig-rotterdam-bands-2.png
+   dev/scratch/vignette_before/martingale/fig-rotterdam-km-1.png
+   dev/scratch/vignette_before/martingale/warnings.txt
+   dev/scratch/vignette_before/rmstmeth/warnings.txt
+   dev/scratch/vignette_before/sims/fig-all-fh-plot-1.png
+   dev/scratch/vignette_before/sims/fig-main-3tests-plot-1.png
+   dev/scratch/vignette_before/sims/fig-simtrial-comparison-plot-1.png
+   dev/scratch/vignette_before/sims/warnings.txt
+   dev/tasks/TASK_estimated_weights_appendix.md
+   vignettes/articles/estimated_weights_methodology.Rmd
+   vignettes/articles/weightedcox_methodology.Rmd
+   vignettes/articles/weightedkm_methodology.Rmd
+   vignettes/articles/weightedrmst_methodology.Rmd
+   vignettes/weightedsurv_examples.Rmd
+   vignettes/weightedsurv_references.bib
+   +      - articles/estimated_weights_methodology
+
+## G5
+   vignettes/weightedsurv_examples.Rmd
+   vignettes/articles/weightedcox_methodology.Rmd
+   vignettes/articles/weightedkm_methodology.Rmd
+   vignettes/articles/weightedrmst_methodology.Rmd
+   1	1	vignettes/weightedsurv_examples.Rmd
+   1	1	vignettes/articles/weightedkm_methodology.Rmd
+   1	1	vignettes/articles/weightedcox_methodology.Rmd
+   1	1	vignettes/articles/weightedrmst_methodology.Rmd
