@@ -34,7 +34,7 @@ Suggests:
   rmarkdown,
   testthat (>= 3.1.7)
 Config/Needs/website: doFuture, foreach, future, future.callr, gsDesign2,
-    htmltools, parallelly, simtrial, tibble, tictoc, tidyr
+    htmltools, parallelly, simtrial, tibble, tictoc, tidyr, katex
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.0
