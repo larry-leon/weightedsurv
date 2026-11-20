@@ -62,7 +62,8 @@ Not run. The simulations article was not knitted.
   start), `52053a9` (task document), `2d60636` (vignette rider), `a9c66c6` (README rider),
   `94f0085` (G2 and G7 scripts and outputs), and the commit of this report.
 - `git status`: clean after the commit of this report.
-- Ahead of `origin/km-fixes-0.2.0`: 5 commits before this report's commit, 6 after. Not pushed.
+- Ahead of `origin/km-fixes-0.2.0`: 5 commits, this report's first commit included (`52053a9`, `2d60636`,
+  `a9c66c6`, `94f0085`, `e19df63`), plus the commit that corrects this line; `1a5cf48` is on the remote. Not pushed.
 - No tag created (existing tag: `v0.1.0`). No merge.
 
 ## 8. Found, not covered by this task; listed, not changed
