@@ -13,7 +13,7 @@ plotKM.band_subgroups(
   sg_labels = NULL,
   ltype = "s",
   lty = 1,
-  draws = 20,
+  draws = 0,
   lwd = 2,
   sg_colors = NULL,
   color = "lightgrey",
@@ -66,7 +66,12 @@ plotKM.band_subgroups(
 
 \item{lty}{Line style for curves (default: 1).}
 
-\item{draws}{Number of draws for resampling (default: 20).}
+\item{draws}{Number of draws for the resampling-based pointwise variance, passed to
+\code{\link{KM_diff}} (default: 0). With the default the pointwise standard error, the
+pointwise limits and the standardisation of the simultaneous band use the analytic variance
+(Greenwood's formula; the robust variance when the weights are not all equal). \code{draws > 0}
+only has an effect when the weights are not all equal: the variance is then the variance over
+that many resampling draws. The default was 20 before version 0.2.0.}
 
 \item{lwd}{Line width for curves (default: 2).}
 

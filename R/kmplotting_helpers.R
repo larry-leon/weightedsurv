@@ -380,7 +380,12 @@ KM_plot_2sample_weighted_counting <- function(
 #' @param sg_labels Character vector of subgroup definitions (as logical expressions).
 #' @param ltype Line type for curves (default: "s").
 #' @param lty Line style for curves (default: 1).
-#' @param draws Number of draws for resampling (default: 20).
+#' @param draws Number of draws for the resampling-based pointwise variance, passed to
+#'   \code{\link{KM_diff}} (default: 0). With the default the pointwise standard error, the
+#'   pointwise limits and the standardisation of the simultaneous band use the analytic variance
+#'   (Greenwood's formula; the robust variance when the weights are not all equal). \code{draws > 0}
+#'   only has an effect when the weights are not all equal: the variance is then the variance over
+#'   that many resampling draws. The default was 20 before version 0.2.0.
 #' @param lwd Line width for curves (default: 2).
 #' @param sg_colors Colors for subgroup curves.
 #' @param color Color for confidence band polygon (default: "lightgrey").
@@ -422,7 +427,7 @@ KM_plot_2sample_weighted_counting <- function(
 plotKM.band_subgroups <- function(
     df, tte.name, event.name, treat.name, weight.name = NULL,
     sg_labels = NULL,
-    ltype = "s", lty = 1, draws = 20, lwd = 2,
+    ltype = "s", lty = 1, draws = 0, lwd = 2,
     sg_colors = NULL, color="lightgrey",
     ymax.pad = 0.01, ymin.pad = -0.01,
     taus = c(-Inf, Inf), yseq_length = 5, cex_Yaxis = 0.8, risk_cex = 0.8,
