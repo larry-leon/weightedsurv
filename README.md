@@ -32,6 +32,7 @@ devtools::install_github("larry-leon/weightedsurv")
 - **Flexible weighting schemes** for log-rank tests and Cox models
 - **Stratified analysis** support for adjusting confounders
 - **Subject-specific weights** for complex sampling designs
+- **Propensity-score weights** from `ps_weights()`, with standard errors, bands and tests that account for the estimation of the weights (`weight_variance = "estimated"`), and the effective sample size by arm (`df_counting()$ess`)
 - **Resampling-based inference** for improved small-sample properties
 - **Simultaneous confidence bands** for survival curves and differences
 - **RMST analysis** with confidence intervals
@@ -180,6 +181,22 @@ rmst_result <- cumulative_rmst_bands(
 print(rmst_result$rmst_text)
 ```
 
+### Propensity-Score Weights
+
+`ps_weights()` fits a logistic propensity model and returns the weights. Passed as `weight_model` with `weight_variance = "estimated"`, it carries the estimation of the weights into standard errors, intervals, bands and tests (the default, `"known"`, treats the weights as fixed numbers). `df_counting()$ess` gives the effective sample size by arm. The lines below are from the main vignette, where `df_rotterdam` (the restricted Rotterdam population) and the column names are defined; see the article [Estimated propensity-score weights](https://larry-leon.github.io/weightedsurv/articles/articles/estimated_weights_methodology.html) for the method.
+
+```r
+pw <- ps_weights(treat ~ age + size + grade3 + nodes + pgr + er,
+                 data = df_rotterdam, type = "stabilized")
+pw
+df_rotterdam$sw.weights <- pw$weights
+
+dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+                                  weight.name="sw.weights", weight_variance = "estimated", weight_model = pw)
+
+knitr::kable(dfcount_rotterdam_wtd$ess, digits = c(0, 0, 1, 3))
+```
+
 ### Baseline Characteristics Table
 
 ```r
@@ -235,13 +252,24 @@ You can also browse vignettes online at the [CRAN package page](https://CRAN.R-p
 ## Dependencies
 
 **Imports:**
-- survival
-- stats
+- ggplot2
 - graphics
+- grDevices
+- rlang
+- stats
+- survival
+- utils
 
 **Suggests:**
-- gt (for formatted tables
-- ggplot2 (for weight scheme visualization)
+- adjustedCurves
+- data.table
+- DiagrammeR
+- dplyr
+- gt
+- knitr
+- pammtools
+- rmarkdown
+- testthat (>= 3.1.7)
 
 ## References
 
