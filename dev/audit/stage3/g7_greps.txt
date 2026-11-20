@@ -1,0 +1,13 @@
+$ grep -rn "supporting the validity\|bootstrap or similar\|messages = FALSE" vignettes/
+vignettes/.Rhistory:2:knitr::opts_chunk$set(echo = TRUE, warning = FALSE, messages = FALSE)
+(exit 0)
+
+$ git grep -n "supporting the validity\|bootstrap or similar\|messages = FALSE" -- vignettes/
+vignettes/.Rhistory:2:knitr::opts_chunk$set(echo = TRUE, warning = FALSE, messages = FALSE)
+(exit 0)
+
+$ git ls-files vignettes/.Rhistory; git check-ignore -v vignettes/.Rhistory
+vignettes/.Rhistory
+
+$ grep -c "ps_weights(" README.md
+3

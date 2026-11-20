@@ -1,0 +1,102 @@
+### before the rider (Rmd of e95728a) vs after the rider
+objects in a: 87  in b: 87  same names: TRUE 
+                  object           class identical identical_no_env
+                     ac0            list      TRUE             TRUE
+                     ac1            list      TRUE             TRUE
+                    arms       character      TRUE             TRUE
+                    at_h        function     FALSE             TRUE
+                 balance      data.frame      TRUE             TRUE
+                band_CTC            list      TRUE             TRUE
+          band_rotterdam            list      TRUE             TRUE
+          baseline_table          gt_tbl     FALSE             TRUE
+                 cox_row        function     FALSE             TRUE
+                 ctc_row        function     FALSE             TRUE
+                  cum_lr            list      TRUE             TRUE
+                df_check      data.frame      TRUE             TRUE
+                  df_CTC      data.frame      TRUE             TRUE
+              df_CTC_cut      data.frame      TRUE             TRUE
+                 df_gbsg      data.frame      TRUE             TRUE
+           df_gbsg_treat      data.frame      TRUE             TRUE
+                 df_mine            list     FALSE             TRUE
+            df_rotterdam      data.frame      TRUE             TRUE
+    df_rotterdam_control      data.frame      TRUE             TRUE
+         df_rotterdam_np      data.frame      TRUE             TRUE
+         dfcount_CTC_cut            list     FALSE             TRUE
+       dfcount_CTC_unwtd            list     FALSE             TRUE
+         dfcount_CTC_wtd            list     FALSE             TRUE
+            dfcount_gbsg            list     FALSE             TRUE
+          dfcount_np_wtd            list     FALSE             TRUE
+ dfcount_rotterdam_draws            list     FALSE             TRUE
+ dfcount_rotterdam_known            list     FALSE             TRUE
+ dfcount_rotterdam_unwtd            list     FALSE             TRUE
+   dfcount_rotterdam_wtd            list     FALSE             TRUE
+                  diff_h       character      TRUE             TRUE
+                   draws         numeric      TRUE             TRUE
+                 ess_CTC      data.frame      TRUE             TRUE
+                  ess_np      data.frame      TRUE             TRUE
+             event_times        function     FALSE             TRUE
+              event.name       character      TRUE             TRUE
+                       f            list      TRUE             TRUE
+               fit_known            list      TRUE             TRUE
+                  fit.ps             glm     FALSE             TRUE
+               flowchart           grViz      TRUE             TRUE
+                     fmt        function     FALSE             TRUE
+                       g ggplot2::ggplot     FALSE             TRUE
+            gbsg_treated      data.frame      TRUE             TRUE
+           gbsg_validate      data.frame      TRUE             TRUE
+               get_bands            list      TRUE             TRUE
+                 horizon         numeric      TRUE             TRUE
+                 hr_text        function     FALSE             TRUE
+                    iptw    adjustedsurv      TRUE             TRUE
+      known_vs_estimated      data.frame      TRUE             TRUE
+            last_treated         numeric      TRUE             TRUE
+              n_treat_np         integer      TRUE             TRUE
+      n_treat_restricted         integer      TRUE             TRUE
+                  oldpar            list      TRUE             TRUE
+              option_row        function     FALSE             TRUE
+                     pct        function     FALSE             TRUE
+                   pihat         numeric      TRUE             TRUE
+              pihat.null         numeric      TRUE             TRUE
+                ps_model             glm     FALSE             TRUE
+                      pw      ps_weights     FALSE             TRUE
+                   pw_np      ps_weights     FALSE             TRUE
+                     res            list     FALSE             TRUE
+              res_update      data.table      TRUE             TRUE
+                rmst_CTC            list      TRUE             TRUE
+                  rmst_h       character      TRUE             TRUE
+              rmst_known            list      TRUE             TRUE
+          rmst_rotterdam            list      TRUE             TRUE
+            rott_control      data.frame      TRUE             TRUE
+              rotterdam2      data.frame      TRUE             TRUE
+         se_diff_survfit        function     FALSE             TRUE
+                 sg_cols       character      TRUE             TRUE
+                 sg_labs       character      TRUE             TRUE
+                   shown         logical      TRUE             TRUE
+                std_diff        function     FALSE             TRUE
+                 t_start         numeric      TRUE             TRUE
+                    temp            list      TRUE             TRUE
+                   toget         integer      TRUE             TRUE
+              treat.name       character      TRUE             TRUE
+         treated_at_risk        function     FALSE             TRUE
+                      tt         numeric      TRUE             TRUE
+                tte.name       character      TRUE             TRUE
+       vs_adjustedCurves        function     FALSE             TRUE
+                    wt.0         numeric      TRUE             TRUE
+                    wt.1         numeric      TRUE             TRUE
+                    X_ps          matrix      TRUE             TRUE
+                    ylim         numeric      TRUE             TRUE
+                      yy         numeric      TRUE             TRUE
+                   yymax         numeric      TRUE             TRUE
+                    z_at        function     FALSE             TRUE
+
+identical() as saved: 57 of 87 
+not identical() as saved: at_h, baseline_table, cox_row, ctc_row, df_mine, dfcount_CTC_cut, dfcount_CTC_unwtd, dfcount_CTC_wtd, dfcount_gbsg, dfcount_np_wtd, dfcount_rotterdam_draws, dfcount_rotterdam_known, dfcount_rotterdam_unwtd, dfcount_rotterdam_wtd, event_times, fit.ps, fmt, g, hr_text, option_row, pct, ps_model, pw, pw_np, res, se_diff_survfit, std_diff, treated_at_risk, vs_adjustedCurves, z_at 
+identical() with environments removed: 87 of 87 
+not identical() with environments removed:  
+
+### control: before the rider vs a second knit of the same file
+
+identical() as saved: 57 of 87 
+not identical() as saved: at_h, baseline_table, cox_row, ctc_row, df_mine, dfcount_CTC_cut, dfcount_CTC_unwtd, dfcount_CTC_wtd, dfcount_gbsg, dfcount_np_wtd, dfcount_rotterdam_draws, dfcount_rotterdam_known, dfcount_rotterdam_unwtd, dfcount_rotterdam_wtd, event_times, fit.ps, fmt, g, hr_text, option_row, pct, ps_model, pw, pw_np, res, se_diff_survfit, std_diff, treated_at_risk, vs_adjustedCurves, z_at 
+identical() with environments removed: 87 of 87 
+not identical() with environments removed:  

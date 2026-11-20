@@ -1,0 +1,4 @@
+   vignettes/weightedsurv_examples.Rmd ('removed', 'chunk header') -```{r, messages = FALSE, warning = FALSE}
+   vignettes/weightedsurv_examples.Rmd ('added', 'chunk header') +```{r, message = FALSE, warning = FALSE}
+vignettes/weightedsurv_examples.Rmd {('removed', 'prose'): 2, ('added', 'prose'): 2, ('removed', 'chunk header'): 1, ('added', 'chunk header'): 1}
+vignettes/articles/martingale_resampling_applications.Rmd {('removed', 'prose'): 4, ('added', 'prose'): 6}
