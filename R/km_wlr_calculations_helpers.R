@@ -386,7 +386,7 @@ get_event_risk_matrices <- function(U, at.points) {
 #' @export
 
 resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
-  if (length(unique(W)) > 1) {
+  if (ws_weights_unequal(W)) {
     # Weights not all equal: per-subject influence contributions, -S(t) * sum_i G_ib w_i psi_i(t)
     # (see ws_km_psi_parts()); their variance over draws is the robust variance of KM_estimates().
     ybar <- colSums(outer(U, at.points, FUN = ">=") * W)

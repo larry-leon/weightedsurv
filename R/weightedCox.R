@@ -164,7 +164,7 @@ cox_score_rhogamma <- function(beta, time, delta, z, w_hat = rep(1,length(time))
   # Subject weights not all equal: the variance of the score is the sum of squared per-subject
   # score contributions psi_i(beta) (see ws_score_psi()), and the variance of the estimate is that
   # sum over the squared information. Score, information and K are unchanged.
-  if (length(unique(w_hat)) > 1) {
+  if (ws_weights_unequal(w_hat)) {
     sig2U <- sum(ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = beta)$psi^2)
     sig2_beta_asy <- sig2U / i_bhat^2
   }
@@ -477,7 +477,7 @@ cox_rhogamma_resample <- function(fit_rhogamma, i_bhat, K_wt_rg, i_zero, K_zero,
   y1 <- time[idx1]; d1 <- delta[idx1]
   w0_hat <- w_hat[idx0]; w1_hat <- w_hat[idx1]
 
-  if (length(unique(w_hat)) > 1) {
+  if (ws_weights_unequal(w_hat)) {
     # Subject weights not all equal: each resampled score is -sum_i G_ib psi_i(b), with psi_i the
     # per-subject score contributions (see ws_score_psi()) at bhat and at 0. Row i of G is that
     # subject's row in the multiplier matrices (G0.draws for controls, G1.draws for treated).

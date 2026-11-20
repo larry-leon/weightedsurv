@@ -426,7 +426,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   df_weights <- data.frame(at_points, nbar0, nbar1, ybar0, ybar1, surv1, surv0, survP, survG)
   # Subject weights not all equal: hand the subject-level data to wlr_cumulative(), which then uses
   # the score-residual variance (in every stratum too). Otherwise nothing is attached.
-  lr_unequal <- length(unique(wgt)) > 1
+  lr_unequal <- ws_weights_unequal(wgt)
   if (lr_unequal) attr(df_weights, "ws_subject") <- list(time = time, delta = delta, z = z, w_hat = wgt, unequal = TRUE)
 
   get_score <- wlr_cumulative(df_weights, scheme, scheme_params, return_cumulative = FALSE)

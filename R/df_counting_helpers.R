@@ -264,7 +264,7 @@ extract_group_data <- function(time, delta, wgt, z, group = 1) {
 calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart = 816951) {
   ybar <- colSums(outer(U, at_points, FUN = ">=") * W)
   nbar <- colSums(outer(U[D == 1], at_points, FUN = "<=") * W[D == 1])
-  if (draws > 0 && length(unique(W)) > 1) {
+  if (draws > 0 && ws_weights_unequal(W)) {
     # Resampling (draws > 0 and weights not all equal): for multipliers G (same draws as before),
     # the variance over draws of sum_i G_ib w_i psi_i(t) at each point (see ws_km_psi_parts()),
     # returned as successive differences so that KM_estimates() reproduces it. The increments are
@@ -272,7 +272,7 @@ calculate_risk_event_counts <- function(U, D, W, at_points, draws = 0, seedstart
     G.draws <- ws_with_seed(seedstart, matrix(rnorm(draws * length(U)), ncol = draws))
     M <- ws_km_ij_sorted(U, D, W, at_points, ybar, nbar, G = G.draws)
     sig2w_multiplier <- diff(c(0, apply(M, 1, var)))
-  } else if (length(unique(W)) > 1) {
+  } else if (ws_weights_unequal(W)) {
     # Weights not all equal: robust (infinitesimal-jackknife) variance, survfit(robust = TRUE).
     # V(t) = sum_i w_i^2 psi_i(t)^2 (see ws_km_psi_parts()); KM_estimates() forms S^2 * cumsum of the
     # multiplier, so the multiplier is the successive differences of V along at_points (individual

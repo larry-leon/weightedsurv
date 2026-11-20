@@ -19,6 +19,12 @@ ws_with_seed <- function(seed, expr) {
   expr
 }
 
+# Are the weights "not all equal"? Decided on the positive weights only (Stage 2e, Rd): zero-weight
+# rows contribute nothing, so they do not decide which variance formula runs. A 0/1 weight column
+# therefore counts as equal weights, and gives the results of the positive-weight rows without weights.
+#' @noRd
+ws_weights_unequal <- function(w) length(unique(w[w > 0])) > 1
+
 # Shared input validation for KM_diff(), df_counting() and plotKM.band_subgroups().
 # Errors name the column and the problem; rows are never dropped. Returns the event
 # indicator recoded to numeric 0/1 (accepted codings: 0/1, logical, and 1/2 read as
@@ -304,7 +310,7 @@ ws_lr_subject_data <- function(x, at_points) {
     nms <- c("time", "delta", "z", "w_hat")
     if (!is.list(x) || !all(nms %in% names(x))) return(NULL)
     s <- list(time = x[["time"]], delta = x[["delta"]], z = x[["z"]], w_hat = x[["w_hat"]])
-    s$unequal <- length(unique(s$w_hat)) > 1
+    s$unequal <- ws_weights_unequal(s$w_hat)
   }
   ok <- is.numeric(s$time) && is.numeric(s$delta) && is.numeric(s$z) && is.numeric(s$w_hat) &&
     length(s$delta) == length(s$time) && length(s$z) == length(s$time) && length(s$w_hat) == length(s$time)
