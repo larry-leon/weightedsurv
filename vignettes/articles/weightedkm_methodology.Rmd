@@ -220,7 +220,7 @@ with $x_i$ the row of the model matrix (for stabilized weights $w_i$ and $dw_i$ 
 $$D_a(t) = \sum_{k: A_k = a} \psi_k(t)\, dw_k, \qquad \Phi_i^a(t) = I(A_i = a)\, w_i\, \psi_i(t) + IF_i^\top D_a(t) \quad (i = 1, \ldots, n), \qquad
 \widehat{\text{Var}}\bigl[\hat{S}^a(t)\bigr] = \hat{S}^a(t)^2 \sum_{i=1}^{n} \Phi_i^a(t)^2 .$$
 
-Every subject contributes, also those in the other arm, through the model.  `"estimated"` needs a logistic `glm` fitted on exactly the rows analysed, with the weight column equal to the weights of the object.
+Every subject contributes, also those in the other arm, through the model.  `"estimated"` needs a logistic `glm` fitted on exactly the rows analysed, with the weight column equal to the weights of the object. The derivation and the statistical properties of this option are in the article `estimated_weights_methodology` ("Estimated propensity-score weights: statistical details and properties").
 
 **Resampling variance.**  With `draws > 0` and weights that are not all equal, the pointwise variance is instead the variance over `draws` resampling draws of $\hat{S}^a(t) \sum_i G_i\, w_i\, \psi_i(t)$, with standard normal multipliers $G_i$; it estimates the same quantity as the robust variance.  This resampling-based pointwise variance is not available with `weight_variance = "estimated"` (`draws` must be 0); the simultaneous bands described below (`draws.band`) are.
 
