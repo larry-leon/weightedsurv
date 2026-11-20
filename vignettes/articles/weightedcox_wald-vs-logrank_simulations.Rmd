@@ -726,8 +726,39 @@ est_defs |>
 
 The `run_weighted_cox_sims()` driver accepts the scenario setup and analysis function, handles chunked parallel execution, and returns consolidated results.
 
-```{r run-simulations, eval = TRUE}
-# --- This chunk is NOT evaluated during vignette build ---
+The full simulation takes more than an hour on 12 workers, so it is not run when this article is built. The article does three things instead:
+
+1. it runs a **minimal illustration** (10 trials per scenario, 2 workers) at build time, only to show that the code above runs;
+2. it shows the **full-run code**, which is not evaluated here;
+3. it reads the **stored results of one full run** and draws every table and figure of the Results section from that file.
+
+## Minimal run (illustration only)
+
+The chunk below is evaluated when the article is built. Its output, `res_demo`, shows the form of the results and is **not used** for any table or figure of the Results section.
+
+```{r run-simulations-demo, eval = TRUE}
+# --- Illustration only: evaluated at build time, 10 trials per scenario, 2 workers ---
+res_demo <- run_weighted_cox_sims(
+  sim_setup    = sim_setup,
+  analysis_fn  = sim_fn_analysis,
+  n_sim        = 10,
+  dof_approach = "multisession",
+  num_workers  = 2,
+  seedstart    = 8316951,
+  mart_draws   = 200,
+  save_results = FALSE,
+  file_togo    = NULL
+)
+
+# One row per simulated trial; first columns of the first rows
+dim(res_demo$results_sims)
+head(res_demo$results_sims[, c("Scenario", "logrankz", "fh00z_mine", "fh01z_mine", "t601z")])
+```
+
+## Full run (code shown, not evaluated)
+
+```{r run-simulations-full, eval = FALSE}
+# --- This chunk is NOT evaluated when the article is built ---
 # Run in batch mode (e.g., via Rscript or an HPC scheduler)
 
 res_out <- run_weighted_cox_sims(
@@ -741,17 +772,62 @@ res_out <- run_weighted_cox_sims(
   save_results = FALSE,
   file_togo    = NULL
 )
+
+# Keep the per-trial columns that the tables and figures below use
+# (all z-statistics that are not de-biased, and the estimates of the two tables)
+z_keep   <- grep("z", colnames(res_out$results_sims), value = TRUE)
+z_keep   <- z_keep[!grepl("debiased", z_keep)]
+est_keep <- c("fh00_wald", "fh01_wald", "t601_wald",
+              "fh00_bhat", "fh00_bhatdebiased", "fh00_sigbhat", "fh00_sigbhatstar",
+              "t601_bhat", "t601_bhatdebiased", "t601_sigbhat", "t601_sigbhatstar")
+n_total  <- length(unique(sim_setup$fr$Scenario)) * res_out$number_sims
+
+stored <- list(
+  res_out = within(res_out, results_sims <- results_sims[, c("Scenario", z_keep, est_keep)]),
+  meta = list(
+    scenario_names        = unique(sim_setup$fr$Name),
+    trials_per_scenario   = res_out$number_sims,
+    seedstart             = res_out$seedstart,
+    mart_draws            = 200,
+    num_workers           = 12,
+    n_completed           = nrow(res_out$results_sims),
+    n_failed              = n_total - nrow(res_out$results_sims),
+    elapsed_minutes       = res_out$tminutes,
+    package_version       = as.character(packageVersion("weightedsurv")),
+    package_commit        = "<git commit of the weightedsurv source used>",
+    run_date              = format(Sys.Date()),
+    columns_per_trial_run = ncol(res_out$results_sims)
+  )
+)
+saveRDS(stored, "sim_results/wald_vs_logrank_full.rds", compress = "xz")
 ```
 
+## Stored full run
+
 ```{r load-results, include=TRUE}
-# Load pre-computed simulation results (if conducted)
-# Note: adjust path to match your save_results directory 
+# Read the stored results of the full run; res_out is used by every chunk below
+stored  <- readRDS("sim_results/wald_vs_logrank_full.rds")
+res_out <- stored$res_out
+meta    <- stored$meta
 n_sim <- res_out$number_sims
 time_inhours <- res_out$thours
 ```
 
+Settings of the stored run (`sim_results/wald_vs_logrank_full.rds`):
+
+- scenarios: `r length(meta$scenario_names)` (`r paste(meta$scenario_names, collapse = ", ")`);
+- trials per scenario: `r prettyNum(meta$trials_per_scenario, big.mark = ",")`;
+- seed (`seedstart`): `r format(meta$seedstart, scientific = FALSE)`; martingale draws per fit: `r meta$mart_draws`; workers: `r meta$num_workers`;
+- package: weightedsurv `r meta$package_version`, source commit `r meta$package_commit`;
+- date of the run: `r meta$run_date`;
+- completed: `r prettyNum(meta$n_completed, big.mark = ",")`; failed: `r meta$n_failed`.
+
+The file holds one row per simulated trial (`r prettyNum(nrow(res_out$results_sims), big.mark = ",")` rows) with the `r ncol(res_out$results_sims)` columns that the tables and figures below use, out of the `r meta$columns_per_trial_run` columns that `sim_fn_analysis()` returns.
+
 
 # Results
+
+All tables and figures in this section are computed from the stored full run, not from the minimal run above.
 
 Simulations are based on `r prettyNum(n_sim, big.mark=",")` trials simulated for each scenario. Type-1 error upper bounds are `r round(0.025 + 1.96*sqrt(0.025*0.975/n_sim), 4)` and 
 `r round(0.05 + 1.96*sqrt(0.05*0.95/n_sim), 4)` for $2.5\%$ (1-sided) and $5\%$ (2-sided) alpha-levels.  The computational time was `r round(time_inhours, 2)` hours.

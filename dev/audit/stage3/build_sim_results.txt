@@ -1,0 +1,35 @@
+source: dev/scratch/vignette_before/sims/env.rds 
+  size (bytes): 94922577 
+  modified: 2026-11-20 00:49:37 
+  sha256: 58f8f9ad40931e0bbcce917da098ffa2ffb9a3b1bdd4c1382bce036023f510f2  dev/scratch/vignette_before/sims/env.rds 
+res_out$results_sims: 30000 rows x 80 columns; rows by scenario: 5000 5000 5000 5000 5000 5000 ; NA values: 0 
+number_sims: 5000  seedstart: 8316951  tminutes: 71.79565 
+completed: 30000  failed: 0 
+lines of the knitted output of that run:
+  ## Scenarios: 6 | Sims per scenario: 5000 | Total tasks: 30000 
+  ## Completed: 30000 | Failed: 0 
+  ## Elapsed: 71.8 minutes
+
+kept columns ( 27 ): Scenario, logrankz, fh05z, fh01z, mb6z, mb12z, mb16z, mb6z_mine, mb16z_mine, mb12z_mine, fh00z_mine, fhe1z, fhe2z, fh01z_mine, fh05z_mine, t601z, fh00_wald, fh01_wald, t601_wald, fh00_bhat, fh00_bhatdebiased, fh00_sigbhat, fh00_sigbhatstar, t601_bhat, t601_bhatdebiased, t601_sigbhat, t601_sigbhatstar 
+dropped columns ( 53 ): maxcombop, mb12z_debiased, mb12_bhat, mb12_bhatdebiased, mb12_wald, mb12_waldstar, mb12_sigbhat, mb12_sigbhatstar, mb12_cover, mb12_coverstar, fh00z_debiased, fh00_waldstar, fh00_cover, fh00_coverstar, fhe1z_debiased, fhe1_bhat, fhe1_bhatdebiased, fhe1_wald, fhe1_waldstar, fhe1_sigbhat, fhe1_sigbhatstar, fhe1_cover, fhe1_coverstar, fhe2z_debiased, fhe2_bhat, fhe2_bhatdebiased, fhe2_wald, fhe2_waldstar, fhe2_sigbhat, fhe2_sigbhatstar, fhe2_cover, fhe2_coverstar, fh01z_debiased, fh01_bhat, fh01_bhatdebiased, fh01_waldstar, fh01_sigbhat, fh01_sigbhatstar, fh01_cover, fh01_coverstar, fh05z_debiased, fh05_bhat, fh05_bhatdebiased, fh05_wald, fh05_waldstar, fh05_sigbhat, fh05_sigbhatstar, fh05_cover, fh05_coverstar, t601z_debiased, t601_waldstar, t601_cover, t601_coverstar 
+
+compressed size, per-trial results with all 80 columns (xz): 13180664 bytes
+compressed size, kept columns (gzip): 5708351 bytes
+written: vignettes/articles/sim_results/wald_vs_logrank_full.rds 
+  size (bytes, xz): 4699236  under 5 MB: TRUE  under 5 MiB: TRUE 
+read back: kept columns identical to the source columns: TRUE 
+meta:
+List of 13
+ $ scenario_names       : chr [1:6] "PH" "3-month delay" "6-month delay" "Crossing" ...
+ $ trials_per_scenario  : num 5000
+ $ seedstart            : num 8316951
+ $ mart_draws           : num 200
+ $ num_workers          : num 12
+ $ n_completed          : int 30000
+ $ n_failed             : num 0
+ $ elapsed_minutes      : num 71.8
+ $ package_version      : chr "0.2.0"
+ $ package_commit       : chr "ac76f82"
+ $ run_date             : chr "2026-11-20"
+ $ columns_per_trial_run: int 80
+ $ source               : chr "full-size knit of this article in the vignette revision pass (dev/scratch/knit_vignettes.R)"

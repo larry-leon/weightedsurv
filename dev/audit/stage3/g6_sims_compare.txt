@@ -1,0 +1,19 @@
+fig-all-fh-plot-1.png                  byte-identical: TRUE
+fig-main-3tests-plot-1.png             byte-identical: TRUE
+fig-simtrial-comparison-plot-1.png     byte-identical: TRUE
+table_gt   data identical: TRUE
+table_gt2  data identical: TRUE
+table_gt3  data identical: TRUE
+p_fill          plot data identical: TRUE
+p_fill_all      plot data identical: TRUE
+p_fill_compare  plot data identical: TRUE
+n_sim            identical: TRUE
+pnull_threshold  identical: TRUE
+time_inhours     identical: TRUE
+ann_df           identical: TRUE
+ann_df_ws        identical: TRUE
+ann_df_Nonws     identical: TRUE
+min_z            identical: TRUE
+max_z            identical: TRUE
+res_demo (minimal run): rows 60  number_sims 10 
+res_out rows in the new knit: 30000  columns: 27 

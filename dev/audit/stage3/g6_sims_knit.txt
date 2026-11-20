@@ -1,0 +1,2 @@
+weightedsurv 0.2.0 loaded from <tmp>/fs/libB
+OK sims: 3 figure file(s), 0 warning(s) escaping the chunks, 32 s

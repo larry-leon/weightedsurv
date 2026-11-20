@@ -1,0 +1,2 @@
+weightedsurv 0.2.0 
+rmarkdown::render OK: weightedcox_wald-vs-logrank_simulations.html, 31 s (under 180 s: TRUE), output 1.9 MB
