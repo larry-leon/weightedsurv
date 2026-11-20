@@ -729,6 +729,17 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       warning("Required elements missing for stratified log-rank comparison.")
     }
   }
+  # Effective sample size by arm, (sum w)^2 / sum(w^2) over the rows with positive weight (Ra);
+  # rows in the order of quantile_results. No warning or message depends on it.
+  ess_arm <- function(a) {
+    w <- wgt[z == a & wgt > 0]
+    c(n = length(w), ess = sum(w)^2 / sum(w^2))
+  }
+  e1 <- ess_arm(1); e0 <- ess_arm(0)
+  ans$ess <- data.frame(group = arms[1:2], n = unname(c(e1["n"], e0["n"])), ess = unname(c(e1["ess"], e0["ess"])),
+                        stringsAsFactors = FALSE)
+  ans$ess$ratio <- ans$ess$ess / ans$ess$n
+
   if (length(na_reasons)) {
     warning("df_counting(): some quantities could not be computed and are NA: ",
             paste(unique(na_reasons), collapse = "; "), call. = FALSE)
