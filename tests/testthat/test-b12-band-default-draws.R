@@ -4,7 +4,8 @@ pkb <- function(d, ...) { grDevices::pdf(NULL); on.exit(grDevices::dev.off()); p
 
 test_that("B12: the default of draws is 0 and nothing else in the signature changed", {
   expect_identical(formals(plotKM.band_subgroups)$draws, 0)
-  expect_identical(formals(plotKM.band_subgroups)$draws.band, 20)
+  # Stage 2e, Rc: the default of draws.band is 1000 (it was 20)
+  expect_identical(formals(plotKM.band_subgroups)$draws.band, 1000)
 })
 
 test_that("B12: with weights and draws not supplied, the SE and the band standardisation are analytic", {

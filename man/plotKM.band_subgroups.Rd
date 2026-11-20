@@ -43,7 +43,7 @@ plotKM.band_subgroups(
   Maxtau = NULL,
   seedstart = 8316951,
   ylim = NULL,
-  draws.band = 20,
+  draws.band = 1000,
   qtau = 0.025,
   show_resamples = FALSE,
   modify_tau = FALSE
@@ -132,7 +132,10 @@ times; it must be supplied when an arm has no events.}
 
 \item{ylim}{Additional graphical and calculation parameters.}
 
-\item{draws.band}{Number of draws for simultaneous confidence bands (default: 20).}
+\item{draws.band}{Number of draws for the simultaneous confidence band (default: 1000); \code{0}
+draws the pointwise limits only. The band's critical value is a quantile of the suprema of that
+many resampled curves. The default was 20 before version 0.2.0, which left the critical value to
+20 draws; a call that supplies \code{draws.band} is unaffected.}
 
 \item{qtau}{Quantile for time range in simultaneous bands (default: 0.025).}
 

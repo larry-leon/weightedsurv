@@ -1,0 +1,514 @@
+golden compare, whitelist 'Rd,Rb,Rc' (Rd,Rb,Rc): 18946 fields in golden, 19158 in new run, 212 added
+ADDED fields (212), by element:
+  cox_results/se x 106
+  logrank_results/method x 106
+LISTS THAT GAINED ELEMENTS (212):
+  + method in 106 lists
+  + se in 106 lists
+WHITELISTED fields that moved (504):
+  veteran/df_counting_weighted/cox_results/score: max abs diff 0.242
+  veteran/df_counting_weighted/logrank_results/chisq: max abs diff 0.247
+  veteran/df_counting_weighted/logrank_results/pval: max abs diff 0.314
+  veteran/df_counting_weighted/logrank_results/logrank_text: values differ
+  veteran/df_counting_wv/cox_results/score: max abs diff 0.242
+  veteran/df_counting_wv/logrank_results/chisq: max abs diff 0.247
+  veteran/df_counting_wv/logrank_results/pval: max abs diff 0.314
+  veteran/df_counting_wv/logrank_results/logrank_text: values differ
+  veteran/df_counting_fh01_wv/cox_results/score: max abs diff 0.242
+  veteran/df_counting_fh01_wv/logrank_results/chisq: max abs diff 0.247
+  veteran/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.314
+  veteran/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  veteran/check_results_wv/logrank_chisq: max abs diff 0.247
+  veteran/pkbdef_none/fit_itt/dhat_star: length 3400 -> 170000
+  veteran/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  veteran/pkbdef_none/fit_itt/Zdhat_star: length 3400 -> 170000
+  veteran/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  veteran/pkbdef_none/fit_itt/surv0_star: length 3400 -> 170000
+  veteran/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  veteran/pkbdef_none/fit_itt/surv1_star: length 3400 -> 170000
+  veteran/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  veteran/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.103
+  veteran/pkbdef_none/fit_itt/sb_lower: max abs diff 0.00876
+  veteran/pkbdef_none/fit_itt/sb_upper: max abs diff 0.00876
+  veteran/pkbdef_wv/fit_itt/dhat_star: length 3400 -> 170000
+  veteran/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  veteran/pkbdef_wv/fit_itt/Zdhat_star: length 3400 -> 170000
+  veteran/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  veteran/pkbdef_wv/fit_itt/surv0_star: length 3400 -> 170000
+  veteran/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  veteran/pkbdef_wv/fit_itt/surv1_star: length 3400 -> 170000
+  veteran/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  veteran/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.187
+  veteran/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0177
+  veteran/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0177
+  veteran/df_counting_strata_wv/cox_results/score: max abs diff 0.106
+  veteran/df_counting_strata_wv/logrank_results/chisq: max abs diff 0.56
+  veteran/df_counting_strata_wv/logrank_results/pval: max abs diff 0.304
+  veteran/df_counting_strata_wv/logrank_results/logrank_text: values differ
+  veteran/df_counting_strata_fh01_wv/cox_results/score: max abs diff 0.106
+  veteran/df_counting_strata_fh01_wv/logrank_results/chisq: max abs diff 0.56
+  veteran/df_counting_strata_fh01_wv/logrank_results/pval: max abs diff 0.304
+  veteran/df_counting_strata_fh01_wv/logrank_results/logrank_text: values differ
+  gbsg/df_counting_weighted/cox_results/score: max abs diff 10.3
+  gbsg/df_counting_weighted/logrank_results/chisq: max abs diff 3.41
+  gbsg/df_counting_weighted/logrank_results/pval: max abs diff 0.00289
+  gbsg/df_counting_weighted/logrank_results/logrank_text: values differ
+  gbsg/df_counting_wv/cox_results/score: max abs diff 10.3
+  gbsg/df_counting_wv/logrank_results/chisq: max abs diff 3.41
+  gbsg/df_counting_wv/logrank_results/pval: max abs diff 0.00289
+  gbsg/df_counting_wv/logrank_results/logrank_text: values differ
+  gbsg/df_counting_fh01_wv/cox_results/score: max abs diff 10.3
+  gbsg/df_counting_fh01_wv/logrank_results/chisq: max abs diff 3.41
+  gbsg/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.00289
+  gbsg/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  gbsg/check_results_wv/logrank_chisq: max abs diff 3.41
+  gbsg/pkbdef_none/fit_itt/dhat_star: length 11460 -> 573000
+  gbsg/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  gbsg/pkbdef_none/fit_itt/Zdhat_star: length 11460 -> 573000
+  gbsg/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  gbsg/pkbdef_none/fit_itt/surv0_star: length 11460 -> 573000
+  gbsg/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  gbsg/pkbdef_none/fit_itt/surv1_star: length 11460 -> 573000
+  gbsg/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  gbsg/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.197
+  gbsg/pkbdef_none/fit_itt/sb_lower: max abs diff 0.0146
+  gbsg/pkbdef_none/fit_itt/sb_upper: max abs diff 0.0146
+  gbsg/pkbdef_wv/fit_itt/dhat_star: length 11460 -> 573000
+  gbsg/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  gbsg/pkbdef_wv/fit_itt/Zdhat_star: length 11460 -> 573000
+  gbsg/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  gbsg/pkbdef_wv/fit_itt/surv0_star: length 11460 -> 573000
+  gbsg/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  gbsg/pkbdef_wv/fit_itt/surv1_star: length 11460 -> 573000
+  gbsg/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  gbsg/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.139
+  gbsg/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0116
+  gbsg/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0116
+  gbsg/zw_dc_w01/z.score: max abs diff 0.0213
+  gbsg/zw_dc_w01/get_score/z.score: max abs diff 0.0213
+  gbsg/zw_dc_w01/get_score/sig2.score: max abs diff 0.693
+  gbsg/zw_dc_w01/sig2_lr: max abs diff 0.693
+  gbsg/zw_dc_w01/sig2_surv0: max abs diff 1.73e-18
+  gbsg/zw_dc_w01/sig2_surv1: max abs diff 1.73e-18
+  gbsg/zw_dc_w01/sig2_survP: max abs diff 1.3e-18
+  gbsg/zw_dcs_w01/z.score: max abs diff 0.0213
+  gbsg/zw_dcs_w01/get_score/z.score: max abs diff 0.0213
+  gbsg/zw_dcs_w01/get_score/sig2.score: max abs diff 0.693
+  gbsg/zw_dcs_w01/sig2_lr: max abs diff 0.693
+  gbsg/zw_dcs_w01/sig2_surv0: max abs diff 1.73e-18
+  gbsg/zw_dcs_w01/sig2_surv1: max abs diff 1.73e-18
+  gbsg/zw_dcs_w01/sig2_survP: max abs diff 1.3e-18
+  gbsg/zw_dcs_w01/sig2_surv0_stratum: max abs diff 3.47e-18
+  gbsg/zw_dcs_w01/sig2_surv1_stratum: max abs diff 8.67e-18
+  gbsg/zw_dcs_w01/sig2_survP_stratum: max abs diff 3.47e-18
+  gbsg/zw_dcs_w01/sig2_lr_stratified: max abs diff 0.573
+  gbsg/zw_dcs_w01/z.score_stratified: max abs diff 0.0167
+  gbsg/zw_km_w01/sig2_surv0: max abs diff 1.73e-18
+  gbsg/zw_km_w01/sig2_surv1: max abs diff 1.73e-18
+  gbsg/zw_km_w01/sig2_dhat: max abs diff 3.47e-18
+  gbsg/zw_km_w01/lower: max abs diff 4.16e-17
+  gbsg/zw_km_w01/upper: max abs diff 5.55e-17
+  gbsg/zw_km_w01/dhat_star: max abs diff 0.25
+  gbsg/zw_km_w01/Zdhat_star: max abs diff 2.07
+  gbsg/zw_km_w01/surv0_star: max abs diff 0.132
+  gbsg/zw_km_w01/surv1_star: max abs diff 0.155
+  gbsg/zw_km_w01/c_alpha_band: max abs diff 0.0445
+  gbsg/zw_km_w01/sb_lower: max abs diff 0.00536
+  gbsg/zw_km_w01/sb_upper: max abs diff 0.00536
+  gbsg/zw_cox_d0_w01/z.score: max abs diff 0.0213
+  gbsg/zw_cox_d0_w01/zlogrank_text: values differ
+  gbsg/zw_cox_d0_w01/hr_ci_asy/sig_bhat: max abs diff 0.00305
+  gbsg/zw_cox_d0_w01/hr_ci_asy/lower: max abs diff 0.0028
+  gbsg/zw_cox_d0_w01/hr_ci_asy/upper: max abs diff 0.00521
+  gbsg/zw_cox_d0_w01/fit/sig_bhat_asy: max abs diff 0.00305
+  gbsg/zw_cox_d0_w01/fit/z.score: max abs diff 0.0213
+  gbsg/zw_cox_d0_w01/fit/sig2_score: max abs diff 0.693
+  gbsg/zw_cox_d0_w01/cox_text_asy: values differ
+  gbsg/zw_cox_d200_w01/z.score: max abs diff 0.0213
+  gbsg/zw_cox_d200_w01/zlogrank_text: values differ
+  gbsg/zw_cox_d200_w01/hr_ci_asy/sig_bhat: max abs diff 0.00305
+  gbsg/zw_cox_d200_w01/hr_ci_asy/lower: max abs diff 0.0028
+  gbsg/zw_cox_d200_w01/hr_ci_asy/upper: max abs diff 0.00521
+  gbsg/zw_cox_d200_w01/fit/sig_bhat_asy: max abs diff 0.00305
+  gbsg/zw_cox_d200_w01/fit/z.score: max abs diff 0.0213
+  gbsg/zw_cox_d200_w01/fit/sig2_score: max abs diff 0.693
+  gbsg/zw_cox_d200_w01/fit/sig_bhat_star: max abs diff 0.00703
+  gbsg/zw_cox_d200_w01/fit/bhat_debiased: max abs diff 0.000336
+  gbsg/zw_cox_d200_w01/fit/wald_debiased1: max abs diff 0.0564
+  gbsg/zw_cox_d200_w01/fit/wald_debiased2: max abs diff 0.122
+  gbsg/zw_cox_d200_w01/fit/wald: max abs diff 0.0549
+  gbsg/zw_cox_d200_w01/fit_resamples/score_star: max abs diff 12.7
+  gbsg/zw_cox_d200_w01/fit_resamples/score_star_null: max abs diff 14.8
+  gbsg/zw_cox_d200_w01/fit_resamples/bhat_center_star: max abs diff 0.313
+  gbsg/zw_cox_d200_w01/fit_resamples/Z_bstar: max abs diff 1.99
+  gbsg/zw_cox_d200_w01/fit_resamples/sig_bhat_star: max abs diff 0.00703
+  gbsg/zw_cox_d200_w01/hr_ci_star/beta: max abs diff 0.000336
+  gbsg/zw_cox_d200_w01/hr_ci_star/sig_bhat: max abs diff 0.00703
+  gbsg/zw_cox_d200_w01/hr_ci_star/hr: max abs diff 0.000216
+  gbsg/zw_cox_d200_w01/hr_ci_star/lower: max abs diff 0.00663
+  gbsg/zw_cox_d200_w01/hr_ci_star/upper: max abs diff 0.0118
+  gbsg/zw_cox_d200_w01/sig2_score_star: max abs diff 3.7
+  gbsg/zw_cox_d200_w01/z.score_debiased: max abs diff 0.0257
+  gbsg/zw_cox_d200_w01/cox_text_star: values differ
+  gbsg/zw_cox_d200_w01/cox_text_asy: values differ
+  gbsg/zw_dc_wz/cox_results/score: max abs diff 7.4
+  gbsg/zw_dc_wz/logrank_results/chisq: max abs diff 0.0821
+  gbsg/zw_dc_wz/logrank_results/pval: max abs diff 0.000176
+  gbsg/zw_dcs_wz/cox_results/score: max abs diff 6.55
+  gbsg/zw_dcs_wz/logrank_results/chisq: max abs diff 0.128
+  gbsg/zw_dcs_wz/logrank_results/pval: max abs diff 0.000495
+  gbsg/df_counting_strata_wv/cox_results/score: max abs diff 9.33
+  gbsg/df_counting_strata_wv/logrank_results/chisq: max abs diff 3.35
+  gbsg/df_counting_strata_wv/logrank_results/pval: max abs diff 0.00549
+  gbsg/df_counting_strata_wv/logrank_results/logrank_text: values differ
+  gbsg/df_counting_strata_fh01_wv/cox_results/score: max abs diff 9.33
+  gbsg/df_counting_strata_fh01_wv/logrank_results/chisq: max abs diff 3.35
+  gbsg/df_counting_strata_fh01_wv/logrank_results/pval: max abs diff 0.00549
+  gbsg/df_counting_strata_fh01_wv/logrank_results/logrank_text: values differ
+  gbsg_er_le0/df_counting_weighted/cox_results/score: max abs diff 4.23
+  gbsg_er_le0/df_counting_weighted/logrank_results/chisq: max abs diff 1.94
+  gbsg_er_le0/df_counting_weighted/logrank_results/pval: max abs diff 0.0665
+  gbsg_er_le0/df_counting_weighted/logrank_results/logrank_text: values differ
+  gbsg_er_le0/df_counting_wv/cox_results/score: max abs diff 4.23
+  gbsg_er_le0/df_counting_wv/logrank_results/chisq: max abs diff 1.94
+  gbsg_er_le0/df_counting_wv/logrank_results/pval: max abs diff 0.0665
+  gbsg_er_le0/df_counting_wv/logrank_results/logrank_text: values differ
+  gbsg_er_le0/df_counting_fh01_wv/cox_results/score: max abs diff 4.23
+  gbsg_er_le0/df_counting_fh01_wv/logrank_results/chisq: max abs diff 1.94
+  gbsg_er_le0/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.0665
+  gbsg_er_le0/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  gbsg_er_le0/check_results_wv/logrank_chisq: max abs diff 1.94
+  gbsg_er_le0/pkbdef_none/fit_itt/dhat_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_none/fit_itt/Zdhat_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_none/fit_itt/surv0_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_none/fit_itt/surv1_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.347
+  gbsg_er_le0/pkbdef_none/fit_itt/sb_lower: max abs diff 0.0428
+  gbsg_er_le0/pkbdef_none/fit_itt/sb_upper: max abs diff 0.0428
+  gbsg_er_le0/pkbdef_wv/fit_itt/dhat_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_wv/fit_itt/Zdhat_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_wv/fit_itt/surv0_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_wv/fit_itt/surv1_star: length 1200 -> 60000
+  gbsg_er_le0/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  gbsg_er_le0/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.297
+  gbsg_er_le0/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0407
+  gbsg_er_le0/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0407
+  gbsg_er_gt0/df_counting_weighted/cox_results/score: max abs diff 10.5
+  gbsg_er_gt0/df_counting_weighted/logrank_results/chisq: max abs diff 1.38
+  gbsg_er_gt0/df_counting_weighted/logrank_results/pval: max abs diff 0.000362
+  gbsg_er_gt0/df_counting_wv/cox_results/score: max abs diff 10.5
+  gbsg_er_gt0/df_counting_wv/logrank_results/chisq: max abs diff 1.38
+  gbsg_er_gt0/df_counting_wv/logrank_results/pval: max abs diff 0.000362
+  gbsg_er_gt0/df_counting_fh01_wv/cox_results/score: max abs diff 10.5
+  gbsg_er_gt0/df_counting_fh01_wv/logrank_results/chisq: max abs diff 1.38
+  gbsg_er_gt0/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.000362
+  gbsg_er_gt0/check_results_wv/logrank_chisq: max abs diff 1.38
+  gbsg_er_gt0/pkbdef_none/fit_itt/dhat_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_none/fit_itt/Zdhat_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_none/fit_itt/surv0_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_none/fit_itt/surv1_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.309
+  gbsg_er_gt0/pkbdef_none/fit_itt/sb_lower: max abs diff 0.0247
+  gbsg_er_gt0/pkbdef_none/fit_itt/sb_upper: max abs diff 0.0247
+  gbsg_er_gt0/pkbdef_wv/fit_itt/dhat_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_wv/fit_itt/Zdhat_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_wv/fit_itt/surv0_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_wv/fit_itt/surv1_star: length 10320 -> 516000
+  gbsg_er_gt0/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  gbsg_er_gt0/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.251
+  gbsg_er_gt0/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0179
+  gbsg_er_gt0/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0179
+  gbsg_er_gt0/df_counting_strata_wv/cox_results/score: max abs diff 9.35
+  gbsg_er_gt0/df_counting_strata_wv/logrank_results/chisq: max abs diff 1.45
+  gbsg_er_gt0/df_counting_strata_wv/logrank_results/pval: max abs diff 0.000588
+  gbsg_er_gt0/df_counting_strata_wv/logrank_results/logrank_text: values differ
+  gbsg_er_gt0/df_counting_strata_fh01_wv/cox_results/score: max abs diff 9.35
+  gbsg_er_gt0/df_counting_strata_fh01_wv/logrank_results/chisq: max abs diff 1.45
+  gbsg_er_gt0/df_counting_strata_fh01_wv/logrank_results/pval: max abs diff 0.000588
+  gbsg_er_gt0/df_counting_strata_fh01_wv/logrank_results/logrank_text: values differ
+  sim_cont/df_counting_wv/cox_results/score: max abs diff 2.05
+  sim_cont/df_counting_wv/logrank_results/chisq: max abs diff 0.727
+  sim_cont/df_counting_wv/logrank_results/pval: max abs diff 0.0617
+  sim_cont/df_counting_wv/logrank_results/logrank_text: values differ
+  sim_cont/df_counting_fh01_wv/cox_results/score: max abs diff 2.05
+  sim_cont/df_counting_fh01_wv/logrank_results/chisq: max abs diff 0.727
+  sim_cont/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.0617
+  sim_cont/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  sim_cont/check_results_wv/logrank_chisq: max abs diff 0.727
+  sim_cont/pkbdef_none/fit_itt/dhat_star: length 3940 -> 197000
+  sim_cont/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  sim_cont/pkbdef_none/fit_itt/Zdhat_star: length 3940 -> 197000
+  sim_cont/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_cont/pkbdef_none/fit_itt/surv0_star: length 3940 -> 197000
+  sim_cont/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  sim_cont/pkbdef_none/fit_itt/surv1_star: length 3940 -> 197000
+  sim_cont/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  sim_cont/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.228
+  sim_cont/pkbdef_none/fit_itt/sb_lower: max abs diff 0.0194
+  sim_cont/pkbdef_none/fit_itt/sb_upper: max abs diff 0.0194
+  sim_cont/pkbdef_wv/fit_itt/dhat_star: length 3940 -> 197000
+  sim_cont/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  sim_cont/pkbdef_wv/fit_itt/Zdhat_star: length 3940 -> 197000
+  sim_cont/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_cont/pkbdef_wv/fit_itt/surv0_star: length 3940 -> 197000
+  sim_cont/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  sim_cont/pkbdef_wv/fit_itt/surv1_star: length 3940 -> 197000
+  sim_cont/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  sim_cont/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.112
+  sim_cont/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0107
+  sim_cont/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0107
+  sim_ties/df_counting_wv/cox_results/score: max abs diff 5.1
+  sim_ties/df_counting_wv/logrank_results/chisq: max abs diff 0.974
+  sim_ties/df_counting_wv/logrank_results/pval: max abs diff 0.0067
+  sim_ties/df_counting_wv/logrank_results/logrank_text: values differ
+  sim_ties/df_counting_fh01_wv/cox_results/score: max abs diff 5.1
+  sim_ties/df_counting_fh01_wv/logrank_results/chisq: max abs diff 0.974
+  sim_ties/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.0067
+  sim_ties/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  sim_ties/check_results_wv/logrank_chisq: max abs diff 0.974
+  sim_ties/pkbdef_none/fit_itt/dhat_star: length 980 -> 49000
+  sim_ties/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  sim_ties/pkbdef_none/fit_itt/Zdhat_star: length 980 -> 49000
+  sim_ties/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_ties/pkbdef_none/fit_itt/surv0_star: length 980 -> 49000
+  sim_ties/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  sim_ties/pkbdef_none/fit_itt/surv1_star: length 980 -> 49000
+  sim_ties/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  sim_ties/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.16
+  sim_ties/pkbdef_none/fit_itt/sb_lower: max abs diff 0.013
+  sim_ties/pkbdef_none/fit_itt/sb_upper: max abs diff 0.013
+  sim_ties/pkbdef_wv/fit_itt/dhat_star: length 980 -> 49000
+  sim_ties/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  sim_ties/pkbdef_wv/fit_itt/Zdhat_star: length 980 -> 49000
+  sim_ties/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_ties/pkbdef_wv/fit_itt/surv0_star: length 980 -> 49000
+  sim_ties/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  sim_ties/pkbdef_wv/fit_itt/surv1_star: length 980 -> 49000
+  sim_ties/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  sim_ties/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.724
+  sim_ties/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0643
+  sim_ties/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0643
+  sim_weighted/df_counting_weighted/cox_results/score: max abs diff 6.34
+  sim_weighted/df_counting_weighted/logrank_results/chisq: max abs diff 5.15
+  sim_weighted/df_counting_weighted/logrank_results/pval: max abs diff 0.0147
+  sim_weighted/df_counting_weighted/logrank_results/logrank_text: values differ
+  sim_weighted/df_counting_wv/cox_results/score: max abs diff 6.34
+  sim_weighted/df_counting_wv/logrank_results/chisq: max abs diff 5.15
+  sim_weighted/df_counting_wv/logrank_results/pval: max abs diff 0.0147
+  sim_weighted/df_counting_wv/logrank_results/logrank_text: values differ
+  sim_weighted/df_counting_fh01_wv/cox_results/score: max abs diff 6.34
+  sim_weighted/df_counting_fh01_wv/logrank_results/chisq: max abs diff 5.15
+  sim_weighted/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.0147
+  sim_weighted/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  sim_weighted/check_results_wv/logrank_chisq: max abs diff 5.15
+  sim_weighted/pkbdef_none/fit_itt/dhat_star: length 5860 -> 293000
+  sim_weighted/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  sim_weighted/pkbdef_none/fit_itt/Zdhat_star: length 5860 -> 293000
+  sim_weighted/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_weighted/pkbdef_none/fit_itt/surv0_star: length 5860 -> 293000
+  sim_weighted/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  sim_weighted/pkbdef_none/fit_itt/surv1_star: length 5860 -> 293000
+  sim_weighted/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  sim_weighted/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.337
+  sim_weighted/pkbdef_none/fit_itt/sb_lower: max abs diff 0.0214
+  sim_weighted/pkbdef_none/fit_itt/sb_upper: max abs diff 0.0214
+  sim_weighted/pkbdef_wv/fit_itt/dhat_star: length 5860 -> 293000
+  sim_weighted/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  sim_weighted/pkbdef_wv/fit_itt/Zdhat_star: length 5860 -> 293000
+  sim_weighted/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_weighted/pkbdef_wv/fit_itt/surv0_star: length 5860 -> 293000
+  sim_weighted/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  sim_weighted/pkbdef_wv/fit_itt/surv1_star: length 5860 -> 293000
+  sim_weighted/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  sim_weighted/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.357
+  sim_weighted/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0254
+  sim_weighted/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0254
+  sim_weighted/zw_dc_w01/z.score: max abs diff 0.0136
+  sim_weighted/zw_dc_w01/get_score/z.score: max abs diff 0.0136
+  sim_weighted/zw_dc_w01/get_score/sig2.score: max abs diff 0.279
+  sim_weighted/zw_dc_w01/sig2_lr: max abs diff 0.279
+  sim_weighted/zw_dc_w01/sig2_surv0: max abs diff 8.67e-19
+  sim_weighted/zw_dc_w01/sig2_surv1: max abs diff 8.67e-19
+  sim_weighted/zw_dc_w01/sig2_survP: max abs diff 1.3e-18
+  sim_weighted/zw_km_w01/sig2_surv0: max abs diff 8.67e-19
+  sim_weighted/zw_km_w01/sig2_surv1: max abs diff 8.67e-19
+  sim_weighted/zw_km_w01/sig2_dhat: max abs diff 1.73e-18
+  sim_weighted/zw_km_w01/lower: max abs diff 4.16e-17
+  sim_weighted/zw_km_w01/upper: max abs diff 5.55e-17
+  sim_weighted/zw_km_w01/dhat_star: max abs diff 0.204
+  sim_weighted/zw_km_w01/Zdhat_star: max abs diff 2.79
+  sim_weighted/zw_km_w01/surv0_star: max abs diff 0.143
+  sim_weighted/zw_km_w01/surv1_star: max abs diff 0.152
+  sim_weighted/zw_km_w01/c_alpha_band: max abs diff 0.0759
+  sim_weighted/zw_km_w01/sb_lower: max abs diff 0.00582
+  sim_weighted/zw_km_w01/sb_upper: max abs diff 0.00582
+  sim_weighted/zw_cox_d0_w01/z.score: max abs diff 0.0136
+  sim_weighted/zw_cox_d0_w01/zlogrank_text: values differ
+  sim_weighted/zw_cox_d0_w01/hr_ci_asy/sig_bhat: max abs diff 0.0012
+  sim_weighted/zw_cox_d0_w01/hr_ci_asy/lower: max abs diff 0.000968
+  sim_weighted/zw_cox_d0_w01/hr_ci_asy/upper: max abs diff 0.00196
+  sim_weighted/zw_cox_d0_w01/fit/sig_bhat_asy: max abs diff 0.0012
+  sim_weighted/zw_cox_d0_w01/fit/z.score: max abs diff 0.0136
+  sim_weighted/zw_cox_d0_w01/fit/sig2_score: max abs diff 0.279
+  sim_weighted/zw_cox_d0_w01/cox_text_asy: values differ
+  sim_weighted/zw_cox_d200_w01/z.score: max abs diff 0.0136
+  sim_weighted/zw_cox_d200_w01/zlogrank_text: values differ
+  sim_weighted/zw_cox_d200_w01/hr_ci_asy/sig_bhat: max abs diff 0.0012
+  sim_weighted/zw_cox_d200_w01/hr_ci_asy/lower: max abs diff 0.000968
+  sim_weighted/zw_cox_d200_w01/hr_ci_asy/upper: max abs diff 0.00196
+  sim_weighted/zw_cox_d200_w01/fit/sig_bhat_asy: max abs diff 0.0012
+  sim_weighted/zw_cox_d200_w01/fit/z.score: max abs diff 0.0136
+  sim_weighted/zw_cox_d200_w01/fit/sig2_score: max abs diff 0.279
+  sim_weighted/zw_cox_d200_w01/fit/sig_bhat_star: max abs diff 0.00125
+  sim_weighted/zw_cox_d200_w01/fit/bhat_debiased: max abs diff 0.0136
+  sim_weighted/zw_cox_d200_w01/fit/wald_debiased1: max abs diff 0.055
+  sim_weighted/zw_cox_d200_w01/fit/wald_debiased2: max abs diff 0.0961
+  sim_weighted/zw_cox_d200_w01/fit/wald: max abs diff 0.0199
+  sim_weighted/zw_cox_d200_w01/fit_resamples/score_star: max abs diff 15.5
+  sim_weighted/zw_cox_d200_w01/fit_resamples/score_star_null: max abs diff 15.1
+  sim_weighted/zw_cox_d200_w01/fit_resamples/bhat_center_star: max abs diff 0.496
+  sim_weighted/zw_cox_d200_w01/fit_resamples/Z_bstar: max abs diff 2.76
+  sim_weighted/zw_cox_d200_w01/fit_resamples/sig_bhat_star: max abs diff 0.00125
+  sim_weighted/zw_cox_d200_w01/hr_ci_star/beta: max abs diff 0.0136
+  sim_weighted/zw_cox_d200_w01/hr_ci_star/sig_bhat: max abs diff 0.00125
+  sim_weighted/zw_cox_d200_w01/hr_ci_star/hr: max abs diff 0.00782
+  sim_weighted/zw_cox_d200_w01/hr_ci_star/lower: max abs diff 0.0045
+  sim_weighted/zw_cox_d200_w01/hr_ci_star/upper: max abs diff 0.0132
+  sim_weighted/zw_cox_d200_w01/sig2_score_star: max abs diff 0.439
+  sim_weighted/zw_cox_d200_w01/z.score_debiased: max abs diff 0.0811
+  sim_weighted/zw_cox_d200_w01/cox_text_star: values differ
+  sim_weighted/zw_cox_d200_w01/cox_text_asy: values differ
+  sim_weighted/zw_dc_wz/cox_results/score: max abs diff 5.44
+  sim_weighted/zw_dc_wz/logrank_results/chisq: max abs diff 4.34
+  sim_weighted/zw_dc_wz/logrank_results/pval: max abs diff 0.0258
+  sim_weighted/zw_dc_wz/logrank_results/logrank_text: values differ
+  sim_strata/df_counting_wv/cox_results/score: max abs diff 2.32
+  sim_strata/df_counting_wv/logrank_results/chisq: max abs diff 1.6
+  sim_strata/df_counting_wv/logrank_results/pval: max abs diff 0.0714
+  sim_strata/df_counting_wv/logrank_results/logrank_text: values differ
+  sim_strata/df_counting_fh01_wv/cox_results/score: max abs diff 2.32
+  sim_strata/df_counting_fh01_wv/logrank_results/chisq: max abs diff 1.6
+  sim_strata/df_counting_fh01_wv/logrank_results/pval: max abs diff 0.0714
+  sim_strata/df_counting_fh01_wv/logrank_results/logrank_text: values differ
+  sim_strata/check_results_wv/logrank_chisq: max abs diff 1.6
+  sim_strata/pkbdef_none/fit_itt/dhat_star: length 5860 -> 293000
+  sim_strata/pkbdef_none/fit_itt/dhat_star@dim: max abs diff 980
+  sim_strata/pkbdef_none/fit_itt/Zdhat_star: length 5860 -> 293000
+  sim_strata/pkbdef_none/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_strata/pkbdef_none/fit_itt/surv0_star: length 5860 -> 293000
+  sim_strata/pkbdef_none/fit_itt/surv0_star@dim: max abs diff 980
+  sim_strata/pkbdef_none/fit_itt/surv1_star: length 5860 -> 293000
+  sim_strata/pkbdef_none/fit_itt/surv1_star@dim: max abs diff 980
+  sim_strata/pkbdef_none/fit_itt/c_alpha_band: max abs diff 0.483
+  sim_strata/pkbdef_none/fit_itt/sb_lower: max abs diff 0.0333
+  sim_strata/pkbdef_none/fit_itt/sb_upper: max abs diff 0.0333
+  sim_strata/pkbdef_wv/fit_itt/dhat_star: length 5860 -> 293000
+  sim_strata/pkbdef_wv/fit_itt/dhat_star@dim: max abs diff 980
+  sim_strata/pkbdef_wv/fit_itt/Zdhat_star: length 5860 -> 293000
+  sim_strata/pkbdef_wv/fit_itt/Zdhat_star@dim: max abs diff 980
+  sim_strata/pkbdef_wv/fit_itt/surv0_star: length 5860 -> 293000
+  sim_strata/pkbdef_wv/fit_itt/surv0_star@dim: max abs diff 980
+  sim_strata/pkbdef_wv/fit_itt/surv1_star: length 5860 -> 293000
+  sim_strata/pkbdef_wv/fit_itt/surv1_star@dim: max abs diff 980
+  sim_strata/pkbdef_wv/fit_itt/c_alpha_band: max abs diff 0.365
+  sim_strata/pkbdef_wv/fit_itt/sb_lower: max abs diff 0.0283
+  sim_strata/pkbdef_wv/fit_itt/sb_upper: max abs diff 0.0283
+  sim_strata/zw_dc_w01/z.score: max abs diff 0.00911
+  sim_strata/zw_dc_w01/get_score/z.score: max abs diff 0.00911
+  sim_strata/zw_dc_w01/get_score/sig2.score: max abs diff 0.598
+  sim_strata/zw_dc_w01/sig2_lr: max abs diff 0.598
+  sim_strata/zw_dc_w01/sig2_surv0: max abs diff 1.3e-18
+  sim_strata/zw_dc_w01/sig2_surv1: max abs diff 1.3e-18
+  sim_strata/zw_dc_w01/sig2_survP: max abs diff 8.67e-19
+  sim_strata/zw_dcs_w01/z.score: max abs diff 0.00911
+  sim_strata/zw_dcs_w01/get_score/z.score: max abs diff 0.00911
+  sim_strata/zw_dcs_w01/get_score/sig2.score: max abs diff 0.598
+  sim_strata/zw_dcs_w01/sig2_lr: max abs diff 0.598
+  sim_strata/zw_dcs_w01/sig2_surv0: max abs diff 1.3e-18
+  sim_strata/zw_dcs_w01/sig2_surv1: max abs diff 1.3e-18
+  sim_strata/zw_dcs_w01/sig2_survP: max abs diff 8.67e-19
+  sim_strata/zw_dcs_w01/sig2_surv0_stratum: max abs diff 1.73e-18
+  sim_strata/zw_dcs_w01/sig2_surv1_stratum: max abs diff 3.47e-18
+  sim_strata/zw_dcs_w01/sig2_survP_stratum: max abs diff 3.47e-18
+  sim_strata/zw_dcs_w01/sig2_lr_stratified: max abs diff 1.18
+  sim_strata/zw_dcs_w01/z.score_stratified: max abs diff 0.0196
+  sim_strata/zw_km_w01/sig2_surv0: max abs diff 1.3e-18
+  sim_strata/zw_km_w01/sig2_surv1: max abs diff 1.3e-18
+  sim_strata/zw_km_w01/sig2_dhat: max abs diff 1.73e-18
+  sim_strata/zw_km_w01/lower: max abs diff 2.78e-17
+  sim_strata/zw_km_w01/upper: max abs diff 5.55e-17
+  sim_strata/zw_km_w01/dhat_star: max abs diff 0.206
+  sim_strata/zw_km_w01/Zdhat_star: max abs diff 2.66
+  sim_strata/zw_km_w01/surv0_star: max abs diff 0.131
+  sim_strata/zw_km_w01/surv1_star: max abs diff 0.179
+  sim_strata/zw_km_w01/c_alpha_band: max abs diff 0.054
+  sim_strata/zw_km_w01/sb_lower: max abs diff 0.00426
+  sim_strata/zw_km_w01/sb_upper: max abs diff 0.00426
+  sim_strata/zw_cox_d0_w01/z.score: max abs diff 0.00911
+  sim_strata/zw_cox_d0_w01/zlogrank_text: values differ
+  sim_strata/zw_cox_d0_w01/hr_ci_asy/sig_bhat: max abs diff 0.00175
+  sim_strata/zw_cox_d0_w01/hr_ci_asy/lower: max abs diff 0.00205
+  sim_strata/zw_cox_d0_w01/hr_ci_asy/upper: max abs diff 0.0041
+  sim_strata/zw_cox_d0_w01/fit/sig_bhat_asy: max abs diff 0.00175
+  sim_strata/zw_cox_d0_w01/fit/z.score: max abs diff 0.00911
+  sim_strata/zw_cox_d0_w01/fit/sig2_score: max abs diff 0.598
+  sim_strata/zw_cox_d0_w01/cox_text_asy: values differ
+  sim_strata/zw_cox_d200_w01/z.score: max abs diff 0.00911
+  sim_strata/zw_cox_d200_w01/zlogrank_text: values differ
+  sim_strata/zw_cox_d200_w01/hr_ci_asy/sig_bhat: max abs diff 0.00175
+  sim_strata/zw_cox_d200_w01/hr_ci_asy/lower: max abs diff 0.00205
+  sim_strata/zw_cox_d200_w01/hr_ci_asy/upper: max abs diff 0.0041
+  sim_strata/zw_cox_d200_w01/fit/sig_bhat_asy: max abs diff 0.00175
+  sim_strata/zw_cox_d200_w01/fit/z.score: max abs diff 0.00911
+  sim_strata/zw_cox_d200_w01/fit/sig2_score: max abs diff 0.598
+  sim_strata/zw_cox_d200_w01/fit/sig_bhat_star: max abs diff 0.013
+  sim_strata/zw_cox_d200_w01/fit/bhat_debiased: max abs diff 0.0132
+  sim_strata/zw_cox_d200_w01/fit/wald_debiased1: max abs diff 0.0841
+  sim_strata/zw_cox_d200_w01/fit/wald_debiased2: max abs diff 0.00623
+  sim_strata/zw_cox_d200_w01/fit/wald: max abs diff 0.00942
+  sim_strata/zw_cox_d200_w01/fit_resamples/score_star: max abs diff 15.2
+  sim_strata/zw_cox_d200_w01/fit_resamples/score_star_null: max abs diff 15.1
+  sim_strata/zw_cox_d200_w01/fit_resamples/bhat_center_star: max abs diff 0.479
+  sim_strata/zw_cox_d200_w01/fit_resamples/Z_bstar: max abs diff 2.7
+  sim_strata/zw_cox_d200_w01/fit_resamples/sig_bhat_star: max abs diff 0.013
+  sim_strata/zw_cox_d200_w01/hr_ci_star/beta: max abs diff 0.0132
+  sim_strata/zw_cox_d200_w01/hr_ci_star/sig_bhat: max abs diff 0.013
+  sim_strata/zw_cox_d200_w01/hr_ci_star/hr: max abs diff 0.0112
+  sim_strata/zw_cox_d200_w01/hr_ci_star/lower: max abs diff 0.0231
+  sim_strata/zw_cox_d200_w01/hr_ci_star/upper: max abs diff 0.0146
+  sim_strata/zw_cox_d200_w01/sig2_score_star: max abs diff 4.62
+  sim_strata/zw_cox_d200_w01/z.score_debiased: max abs diff 0.0651
+  sim_strata/zw_cox_d200_w01/cox_text_star: values differ
+  sim_strata/zw_cox_d200_w01/cox_text_asy: values differ
+  sim_strata/zw_dc_wz/cox_results/score: max abs diff 0.252
+  sim_strata/zw_dc_wz/logrank_results/chisq: max abs diff 0.643
+  sim_strata/zw_dc_wz/logrank_results/pval: max abs diff 0.271
+  sim_strata/zw_dc_wz/logrank_results/logrank_text: values differ
+  sim_strata/zw_dcs_wz/cox_results/score: max abs diff 0.113
+  sim_strata/zw_dcs_wz/logrank_results/chisq: max abs diff 0.847
+  sim_strata/zw_dcs_wz/logrank_results/pval: max abs diff 0.41
+  sim_strata/zw_dcs_wz/logrank_results/logrank_text: values differ
+  sim_strata/df_counting_strata_wv/cox_results/score: max abs diff 2.85
+  sim_strata/df_counting_strata_wv/logrank_results/chisq: max abs diff 3.79
+  sim_strata/df_counting_strata_wv/logrank_results/pval: max abs diff 0.0952
+  sim_strata/df_counting_strata_wv/logrank_results/logrank_text: values differ
+  sim_strata/df_counting_strata_fh01_wv/cox_results/score: max abs diff 2.85
+  sim_strata/df_counting_strata_fh01_wv/logrank_results/chisq: max abs diff 3.79
+  sim_strata/df_counting_strata_fh01_wv/logrank_results/pval: max abs diff 0.0952
+  sim_strata/df_counting_strata_fh01_wv/logrank_results/logrank_text: values differ
+Warnings: no call raises a warning it did not raise in golden_s2d.rds
+GOLDEN: identical outside the whitelist

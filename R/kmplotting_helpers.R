@@ -416,7 +416,10 @@ KM_plot_2sample_weighted_counting <- function(
 #'   times; it must be supplied when an arm has no events.
 #' @param seedstart Additional graphical and calculation parameters.
 #' @param ylim Additional graphical and calculation parameters.
-#' @param draws.band Number of draws for simultaneous confidence bands (default: 20).
+#' @param draws.band Number of draws for the simultaneous confidence band (default: 1000); \code{0}
+#'   draws the pointwise limits only. The band's critical value is a quantile of the suprema of that
+#'   many resampled curves. The default was 20 before version 0.2.0, which left the critical value to
+#'   20 draws; a call that supplies \code{draws.band} is unaffected.
 #' @param qtau Quantile for time range in simultaneous bands (default: 0.025).
 #' @param show_resamples Logical; whether to plot resampled curves (default: FALSE).
 #' @param modify_tau Logical; restrict time range for bands.
@@ -442,7 +445,7 @@ plotKM.band_subgroups <- function(
     y.risk1 = NULL, y.risk2 = NULL, ymin2 = NULL, risk_offset = NULL, risk.pad = 0.01,
     risk_delta = 0.0275, tau_add = NULL, time.zero.pad = 0, time.zero.label = 0.0,
     xlabel = NULL, ylabel = NULL, Maxtau = NULL, seedstart = 8316951,
-    ylim = NULL, draws.band = 20, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE
+    ylim = NULL, draws.band = 1000, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE
 ) {
   # Input checks
 
