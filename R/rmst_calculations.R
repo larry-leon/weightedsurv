@@ -25,6 +25,13 @@
 #'   time grid holds every event time, which it does for the default \code{KM_diff()} grid; it does
 #'   not when the fit was made with \code{modify_tau = TRUE}. The rule applies to the estimate and
 #'   to both sets of resampled curves; nothing else changes.
+#' @param weight_variance How the weights are treated in standard errors, intervals, bands and tests.
+#'   \code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+#'   propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+#'   never change. See the section "Estimated weights".
+#' @param weight_model With \code{weight_variance = "estimated"}, the object returned by
+#'   \code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+#'   \code{weight.name}. Ignored with \code{"known"}.
 #'
 #' @details The pointwise variance of the cumulative RMST difference and the simultaneous band come
 #' from the resampled survival-difference curves of \code{fit} (\code{fit$dhat_star}) and of a
@@ -55,8 +62,10 @@
 
 cumulative_rmst_bands <- function(df, fit, tte.name, event.name, treat.name, weight.name = NULL, draws_sb = 1000, xlab="months", ylim_pad = 0.5,
                                   rmst_max_legend = "left", rmst_max_cex = 0.7, plot = TRUE,
-                                  mean_rule = c("trapezoid", "rectangle")) {
+                                  mean_rule = c("trapezoid", "rectangle"),
+                                  weight_variance = c("known", "estimated"), weight_model = NULL) {
   mean_rule <- match.arg(mean_rule)
+  weight_variance <- match.arg(weight_variance)
   # Input validation
   if (!is.data.frame(df)) stop("df must be a data frame.")
   required_names <- c(tte.name, event.name, treat.name, weight.name)
@@ -65,6 +74,12 @@ cumulative_rmst_bands <- function(df, fit, tte.name, event.name, treat.name, wei
   if (!is.list(fit)) stop("fit must be a list (output from KM_diff).")
   if (is.null(fit[["dhat_star"]])) {
     stop("cumulative_rmst_bands() needs a KM_diff() fit made with draws.band > 0 (fit$dhat_star is missing).")
+  }
+  # the fit and this call must treat the weights the same way (a fit without the element counts as "known")
+  fit_wv <- if (is.null(fit[["weight_variance"]])) "known" else fit[["weight_variance"]]
+  if (!identical(fit_wv, weight_variance)) {
+    stop(sprintf("cumulative_rmst_bands(): weight_variance = \"%s\" but fit was made with weight_variance = \"%s\"; make the KM_diff() fit and this call with the same option.",
+                 weight_variance, fit_wv), call. = FALSE)
   }
 
 ans <- list()
@@ -113,7 +128,8 @@ fit_draws <- KM_diff(
   df = df, tte.name = tte.name, event.name = event.name , treat.name = treat.name, weight.name = weight.name,
   at_points = at_points, alpha = 0.05, risk.points = risk.points,
   modify_tau = FALSE,
-  draws.band = draws_sb, seedstart = 99999, show_resamples = FALSE
+  draws.band = draws_sb, seedstart = 99999, show_resamples = FALSE,
+  weight_variance = weight_variance, weight_model = weight_model
 )
 
 dhat_star_mat2 <- fit_draws$dhat_star
@@ -136,6 +152,7 @@ rmst_time_sb_upper <- rmst_time + c_alpha_band * sqrt(sig2_rmst_time)
 ans$rmst_time_sb_lower <- rmst_time_sb_lower
 ans$rmst_time_sb_upper <- rmst_time_sb_upper
 ans$mean_rule <- mean_rule
+ans$weight_variance <- weight_variance
 
 if(plot){
 x <- at_points

@@ -431,6 +431,13 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' @param show_resamples Logical; whether to plot the first 20 standardised resampled difference curves
 #'   (only when \code{draws.band > 0}). Default: FALSE.
 #' @param modify_tau Logical; whether to restrict time range for simultaneous bands. Default: FALSE.
+#' @param weight_variance How the weights are treated in standard errors, intervals, bands and tests.
+#'   \code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+#'   propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+#'   never change. See the section "Estimated weights".
+#' @param weight_model With \code{weight_variance = "estimated"}, the object returned by
+#'   \code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+#'   \code{weight.name}. Ignored with \code{"known"}.
 #'
 #' @return A list containing:
 #' \describe{
@@ -536,11 +543,15 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' @export
 
 KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "treat", weight.name=NULL, at_points = sort(df[[tte.name]]), alpha = 0.05, seedstart = 8316951, draws = 0,
-                    risk.points = NULL, draws.band = 0, tau.seq = 0.25, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE) {
+                    risk.points = NULL, draws.band = 0, tau.seq = 0.25, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE,
+                    weight_variance = c("known", "estimated"), weight_model = NULL) {
 
+  weight_variance <- match.arg(weight_variance)
   # Columns present; no NA; times finite and >= 0; event 0/1, logical or 1/2; weights >= 0;
   # both arms non-empty (errors name the column and the problem)
   vin <- ws_validate_survdata(df, tte.name, event.name, treat.name, weight.name)
+  # "estimated": the pieces of the propensity model (NULL for "known"), rows in the order of df
+  ew <- ws_ew_setup(weight_variance, weight_model, df, treat.name, weight.name, draws, "KM_diff")
 
   tfixed <- aeqSurv(Surv(vin$time, vin$event))
   time<- tfixed[,"time"]
@@ -556,6 +567,7 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
     delta <- delta[ord]
     z <- z[ord]
     wgt <- wgt[ord]
+    ew <- ws_ew_reorder(ew, ord)
   }
 
   # For simultaneous bands restrict time range if modify_tau (otherwise align with RMST 'max(tau)')
@@ -591,6 +603,25 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
   dhat <- surv1 - surv0
   sig2_dhat <- sig2_surv0 + sig2_surv1
 
+  # Estimated weights: the influence of every subject on each arm's curve includes the term through
+  # the propensity model, Phi_i = 1(i in arm) w_i psi_i + IF_i' Dg (see ws_km_ew_group()). The two arms
+  # share the model's coefficients, so the variance of the difference is not the sum of the arm variances.
+  if (!is.null(ew)) {
+    i1 <- which(z == 1); i0 <- which(z == 0)
+    arm_ew <- function(gd, rows, km) {
+      re <- calculate_risk_event_counts(gd$U, gd$D, gd$W, at_points = km$grid)
+      ws_km_ew_group(gd$U, gd$D, gd$W, rows, km$grid, re$ybar, re$nbar, ew)
+    }
+    e1 <- arm_ew(group_data1, i1, km1)
+    e0 <- arm_ew(group_data0, i0, km0)
+    sig2_surv1 <- surv1^2 * e1$sumsq[km1$idx]; sig2_surv1[surv1 == 0] <- 0
+    sig2_surv0 <- surv0^2 * e0$sumsq[km0$idx]; sig2_surv0[surv0 == 0] <- 0
+    Dg1 <- e1$Dg[km1$idx, , drop = FALSE]; Dg0 <- e0$Dg[km0$idx, , drop = FALSE]
+    cross <- rowSums(e1$A[km1$idx, , drop = FALSE] * Dg0) + rowSums(e0$A[km0$idx, , drop = FALSE] * Dg1) +
+      rowSums((Dg1 %*% ew$CIF) * Dg0)
+    sig2_dhat <- pmax(sig2_surv1 + sig2_surv0 - 2 * surv1 * surv0 * cross, 0)
+  }
+
   surv0_star <- surv1_star <- dhat_star <- NULL
   c_alpha_band <- sb_lower <- sb_upper <- NULL
   Zdhat_star <- NULL
@@ -605,10 +636,23 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
     G0.draws <- G_draws$G0
     G1.draws <- G_draws$G1
 
+    if (is.null(ew)) {
     # Control group (resampled on the arm's grid, read off at at_points)
     surv0_star <- resampling_survival(group_data0$U, group_data0$W, group_data0$D, km0$grid, draws.band, km0$S_grid, G0.draws)[km0$idx, , drop = FALSE]
     # Treatment group
     surv1_star <- resampling_survival(group_data1$U, group_data1$W, group_data1$D, km1$grid, draws.band, km1$S_grid, G1.draws)[km1$idx, , drop = FALSE]
+    } else {
+      # Estimated weights: -S_a(t) sum_i G_i Phi^a_i(t), with G the multipliers of all subjects (row i is
+      # that subject's row of G0.draws or G1.draws): the influence-based deviation of the arm minus
+      # (S_a Dg_a) (IF' G).
+      IFG <- crossprod(ew$IF[i0, , drop = FALSE], G0.draws) + crossprod(ew$IF[i1, , drop = FALSE], G1.draws)
+      arm_star <- function(gd, km, e, Ga) {
+        M <- ws_km_ij_draws(e$parts, gd$W, Ga)
+        ((-1) * km$S_grid * M - (km$S_grid * e$Dg) %*% IFG)[km$idx, , drop = FALSE]
+      }
+      surv0_star <- arm_star(group_data0, km0, e0, G0.draws)
+      surv1_star <- arm_star(group_data1, km1, e1, G1.draws)
+    }
 
     dhat_star <- (surv1_star - surv0_star)
 
@@ -639,7 +683,8 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
     dhat_star = dhat_star,
     Zdhat_star = Zdhat_star,
     surv0_star = surv0_star, surv1_star = surv1_star,
-    c_alpha_band = c_alpha_band, sb_lower = sb_lower, sb_upper = sb_upper
+    c_alpha_band = c_alpha_band, sb_lower = sb_lower, sb_upper = sb_upper,
+    weight_variance = weight_variance
   )
 }
 

@@ -32,7 +32,9 @@ df_counting(
   draws = 0,
   seedstart = 8316951,
   stop.onerror = FALSE,
-  censoring_allmarks = TRUE
+  censoring_allmarks = TRUE,
+  weight_variance = c("known", "estimated"),
+  weight_model = NULL
 )
 }
 \arguments{
@@ -100,6 +102,15 @@ Options: "fh", "schemper", "XO", "MB", "custom_time", "fh_exp1", "fh_exp2". Defa
 \item{stop.onerror}{Logical; whether to stop execution on errors (TRUE) or issue warnings (FALSE). Default: FALSE.}
 
 \item{censoring_allmarks}{Logical; if FALSE, removes events from censored time points. Default: TRUE.}
+
+\item{weight_variance}{How the weights are treated in standard errors, intervals, bands and tests.
+\code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+never change. See the section "Estimated weights".}
+
+\item{weight_model}{With \code{weight_variance = "estimated"}, the object returned by
+\code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+\code{weight.name}. Ignored with \code{"known"}.}
 }
 \value{
 A list with the following components:

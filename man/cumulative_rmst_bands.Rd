@@ -17,7 +17,9 @@ cumulative_rmst_bands(
   rmst_max_legend = "left",
   rmst_max_cex = 0.7,
   plot = TRUE,
-  mean_rule = c("trapezoid", "rectangle")
+  mean_rule = c("trapezoid", "rectangle"),
+  weight_variance = c("known", "estimated"),
+  weight_model = NULL
 )
 }
 \arguments{
@@ -55,6 +57,15 @@ difference of \code{survfit()}'s restricted means (\code{summary(fit, rmean = ta
 time grid holds every event time, which it does for the default \code{KM_diff()} grid; it does
 not when the fit was made with \code{modify_tau = TRUE}. The rule applies to the estimate and
 to both sets of resampled curves; nothing else changes.}
+
+\item{weight_variance}{How the weights are treated in standard errors, intervals, bands and tests.
+\code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+never change. See the section "Estimated weights".}
+
+\item{weight_model}{With \code{weight_variance = "estimated"}, the object returned by
+\code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+\code{weight.name}. Ignored with \code{"known"}.}
 }
 \value{
 A list with elements:

@@ -24,7 +24,8 @@ check_rect_vs_survfit <- function(d, fit, label) {
 
 test_that("mean_rule is the last argument, defaults to the trapezoid, and is returned", {
   f <- formals(cumulative_rmst_bands)
-  expect_identical(tail(names(f), 1), "mean_rule")
+  # Stage 2e, W2: weight_variance and weight_model are appended after mean_rule (it was the last argument)
+  expect_identical(tail(names(f), 3), c("mean_rule", "weight_variance", "weight_model"))
   expect_identical(eval(f$mean_rule), c("trapezoid", "rectangle"))
   d <- ws_sim(120, 82)
   k <- KM_diff(d, "time", "status", "treat", draws.band = 30)

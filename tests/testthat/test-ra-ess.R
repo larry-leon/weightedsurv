@@ -29,5 +29,5 @@ test_that("Ra: nothing else in the result changes and no warning depends on ess"
   d <- ws_sim_ipw(200, 9); d$wx <- ifelse(seq_len(nrow(d)) == 1, 1e4, 1)     # one subject carries most of the weight
   expect_no_warning(r <- ws_capture(df_counting(d, "time", "status", "treat", weight.name = "wx")))
   expect_lt(min(r$ess$ratio), 0.05)
-  expect_identical(utils::tail(names(r), 1), "ess")
+  expect_true("ess" %in% names(r))
 })

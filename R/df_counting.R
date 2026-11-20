@@ -41,6 +41,13 @@
 #' @param seedstart Integer; random seed for reproducible resampling. Default: 8316951.
 #' @param stop.onerror Logical; whether to stop execution on errors (TRUE) or issue warnings (FALSE). Default: FALSE.
 #' @param censoring_allmarks Logical; if FALSE, removes events from censored time points. Default: TRUE.
+#' @param weight_variance How the weights are treated in standard errors, intervals, bands and tests.
+#'   \code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+#'   propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+#'   never change. See the section "Estimated weights".
+#' @param weight_model With \code{weight_variance = "estimated"}, the object returned by
+#'   \code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+#'   \code{weight.name}. Ignored with \code{"known"}.
 #'
 #' @return A list with the following components:
 #' \describe{
@@ -199,13 +206,19 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
                         qprob=0.5,
                         scheme = "fh", scheme_params = list(rho = 0, gamma = 0),
                         conf_level = 0.95, check.KM = TRUE, check.seKM = FALSE, draws = 0, seedstart = 8316951,
-                        stop.onerror=FALSE,censoring_allmarks=TRUE) {
+                        stop.onerror=FALSE,censoring_allmarks=TRUE,
+                        weight_variance = c("known", "estimated"), weight_model = NULL) {
+
+  weight_variance <- match.arg(weight_variance)
 
   # Columns present (strata too); no NA; times finite and >= 0; event 0/1, logical or 1/2;
   # weights >= 0; both arms non-empty. Errors name the column and the problem.
   vin <- ws_validate_survdata(df, tte.name, event.name, treat.name, weight.name, strata.name)
   # 1/2 event coding: use the 0/1 recoding everywhere, so that subsets cannot be misread
   if (any(vin$event != df[[event.name]])) df[[event.name]] <- vin$event
+  # "estimated": the pieces of the propensity model (NULL for "known"), rows in the order of df
+  ew <- ws_ew_setup(weight_variance, weight_model, df, treat.name, weight.name, draws, "df_counting")
+  ew_on <- !is.null(ew)
   # Zero weights are accepted: those rows contribute nothing. Cox and log-rank are fitted on the
   # positive-weight rows; per-observation output keeps every row.
   pos_w <- if (is.null(weight.name)) rep(TRUE, nrow(df)) else vin$weight > 0
@@ -338,6 +351,11 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     z <- z[ord]
     strata <- strata[ord]
     wgt <- wgt[ord]
+    ew <- ws_ew_reorder(ew, ord)
+  }
+  # Estimated weights: variance of the Kaplan-Meier curve of a group (rows `rows` of the sorted data)
+  ew_sig2 <- function(rows, risk_event, S) {
+    ws_km_ew_sig2(time[rows], delta[rows], wgt[rows], rows, at_points, risk_event$ybar, risk_event$nbar, S, ew)
   }
 
   ans$time <- time
@@ -377,7 +395,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   riskpoints1 <- get_riskpoints(risk_event$ybar, risk.points, at_points)
   temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
   surv1 <- temp$S_KM
-  sig2_surv1 <- temp$sig2_KM
+  sig2_surv1 <- if (ew_on) ew_sig2(which(z == 1), risk_event, temp$S_KM) else temp$sig2_KM
 
   nbar1 <- risk_event$nbar
   ybar1 <- risk_event$ybar
@@ -398,7 +416,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   riskpoints0 <- get_riskpoints(risk_event$ybar, risk.points, at_points)
   temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
   surv0 <- temp$S_KM
-  sig2_surv0 <- temp$sig2_KM
+  sig2_surv0 <- if (ew_on) ew_sig2(which(z == 0), risk_event, temp$S_KM) else temp$sig2_KM
 
   nbar0 <- risk_event$nbar
   ybar0 <- risk_event$ybar
@@ -431,7 +449,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   risk_event <- calculate_risk_event_counts(time, delta, wgt, at_points)
   temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
   survP <- temp$S_KM
-  sig2_survP <- temp$sig2_KM
+  sig2_survP <- if (ew_on) ew_sig2(seq_along(time), risk_event, temp$S_KM) else temp$sig2_KM
 
   # Pooled Censoring estimates
   risk_event <- calculate_risk_event_counts(time, 1- delta, wgt, at_points)
@@ -557,8 +575,9 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
     # the package curve is read at survfit's event times
     idc0 <- match(df0_check$time, at_points)
     idc1 <- match(df1_check$time, at_points)
-    check_km_fit(df0_check$time, surv0[idc0], sqrt(sig2_surv0[idc0]), df0_check, "control", check.seKM = check.seKM)
-    check_km_fit(df1_check$time, surv1[idc1], sqrt(sig2_surv1[idc1]), df1_check, "treat", check.seKM = check.seKM)
+    # with estimated weights the standard error differs from survfit's by design: no discrepancy warning for it
+    check_km_fit(df0_check$time, surv0[idc0], sqrt(sig2_surv0[idc0]), df0_check, "control", check.seKM = check.seKM && !ew_on)
+    check_km_fit(df1_check$time, surv1[idc1], sqrt(sig2_surv1[idc1]), df1_check, "treat", check.seKM = check.seKM && !ew_on)
      }
 
   plot_km_comparison <- function(time,surv,se,dfcheck,group_name = "control"){
@@ -620,7 +639,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       risk_event <- calculate_risk_event_counts(U1_s, D1_s, W1_s, at_points, draws, seedstart)
       temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
       surv1_mat[, ss] <- temp$S_KM
-      sig2_surv1_mat[, ss] <- temp$sig2_KM
+      sig2_surv1_mat[, ss] <- if (ew_on) ew_sig2(which(z == 1 & strata == this_stratum), risk_event, temp$S_KM) else temp$sig2_KM
 
       nbar1_s <- risk_event$nbar
       ybar1_s <- risk_event$ybar
@@ -628,7 +647,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       risk_event <- calculate_risk_event_counts(U0_s, D0_s, W0_s, at_points, draws, seedstart)
       temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
       surv0_mat[, ss] <- temp$S_KM
-      sig2_surv0_mat[, ss] <- temp$sig2_KM
+      sig2_surv0_mat[, ss] <- if (ew_on) ew_sig2(which(z == 0 & strata == this_stratum), risk_event, temp$S_KM) else temp$sig2_KM
 
       nbar0_s <- risk_event$nbar
       ybar0_s <- risk_event$ybar
@@ -651,7 +670,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       risk_event <- calculate_risk_event_counts(U_s, D_s, W_s, at_points, draws, seedstart)
       temp <- KM_estimates(ybar = risk_event$ybar, nbar = risk_event$nbar, sig2w_multiplier = risk_event$sig2w_multiplier)
       survP_mat[, ss] <- temp$S_KM
-      sig2_survP_mat[, ss] <- temp$sig2_KM
+      sig2_survP_mat[, ss] <- if (ew_on) ew_sig2(which(strata == this_stratum), risk_event, temp$S_KM) else temp$sig2_KM
       S_pool <- temp$S_KM
       # Censoring distribution
       risk_event <- calculate_risk_event_counts(U_s, 1 - D_s, W_s, at_points, draws, seedstart)
@@ -739,6 +758,9 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   ans$ess <- data.frame(group = arms[1:2], n = unname(c(e1["n"], e0["n"])), ess = unname(c(e1["ess"], e0["ess"])),
                         stringsAsFactors = FALSE)
   ans$ess$ratio <- ans$ess$ess / ans$ess$n
+  # How the weights were treated; with "estimated", the pieces of the propensity model in the order of `time`
+  ans$weight_variance <- weight_variance
+  if (ew_on) ans$ew_parts <- list(IF = ew$IF, dw = ew$dw)
 
   if (length(na_reasons)) {
     warning("df_counting(): some quantities could not be computed and are NA: ",

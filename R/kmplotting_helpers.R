@@ -423,6 +423,13 @@ KM_plot_2sample_weighted_counting <- function(
 #' @param qtau Quantile for time range in simultaneous bands (default: 0.025).
 #' @param show_resamples Logical; whether to plot resampled curves (default: FALSE).
 #' @param modify_tau Logical; restrict time range for bands.
+#' @param weight_variance How the weights are treated in standard errors, intervals, bands and tests.
+#'   \code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+#'   propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+#'   never change. See the section "Estimated weights".
+#' @param weight_model With \code{weight_variance = "estimated"}, the object returned by
+#'   \code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+#'   \code{weight.name}. Ignored with \code{"known"}.
 #' @details The pointwise standard error of the difference, the pointwise limits and the
 #'   standardisation of the simultaneous band come from \code{\link{KM_diff}} with the \code{draws} and
 #'   \code{draws.band} given here. Since version 0.2.0 the default is \code{draws = 0}: the pointwise
@@ -445,8 +452,10 @@ plotKM.band_subgroups <- function(
     y.risk1 = NULL, y.risk2 = NULL, ymin2 = NULL, risk_offset = NULL, risk.pad = 0.01,
     risk_delta = 0.0275, tau_add = NULL, time.zero.pad = 0, time.zero.label = 0.0,
     xlabel = NULL, ylabel = NULL, Maxtau = NULL, seedstart = 8316951,
-    ylim = NULL, draws.band = 1000, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE
+    ylim = NULL, draws.band = 1000, qtau = 0.025, show_resamples = FALSE, modify_tau = FALSE,
+    weight_variance = c("known", "estimated"), weight_model = NULL
 ) {
+  weight_variance <- match.arg(weight_variance)
   # Input checks
 
   # Columns present; no NA; times finite and >= 0; event 0/1, logical or 1/2; weights >= 0;
@@ -497,7 +506,8 @@ plotKM.band_subgroups <- function(
     df = df, tte.name = tte.name, event.name = event.name, weight.name = weight.name,
     treat.name = treat.name, at_points = at_points, alpha = 0.05, risk.points = riskpoints,
     modify_tau = modify_tau,
-    draws = draws, seedstart = seedstart, draws.band = draws.band, qtau = qtau, show_resamples = show_resamples
+    draws = draws, seedstart = seedstart, draws.band = draws.band, qtau = qtau, show_resamples = show_resamples,
+    weight_variance = weight_variance, weight_model = weight_model
   )
 
   # Add max_tau to fit

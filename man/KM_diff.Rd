@@ -19,7 +19,9 @@ KM_diff(
   tau.seq = 0.25,
   qtau = 0.025,
   show_resamples = FALSE,
-  modify_tau = FALSE
+  modify_tau = FALSE,
+  weight_variance = c("known", "estimated"),
+  weight_model = NULL
 )
 }
 \arguments{
@@ -58,6 +60,15 @@ Default: the sorted observed times.}
 (only when \code{draws.band > 0}). Default: FALSE.}
 
 \item{modify_tau}{Logical; whether to restrict time range for simultaneous bands. Default: FALSE.}
+
+\item{weight_variance}{How the weights are treated in standard errors, intervals, bands and tests.
+\code{"known"} (default): as fixed, known numbers. \code{"estimated"}: as estimated by the logistic
+propensity model given in \code{weight_model}, whose estimation is carried into the inference. Estimates
+never change. See the section "Estimated weights".}
+
+\item{weight_model}{With \code{weight_variance = "estimated"}, the object returned by
+\code{\link{ps_weights}} for the rows of \code{df}, in the same order; its weights must be the column
+\code{weight.name}. Ignored with \code{"known"}.}
 }
 \value{
 A list containing:
