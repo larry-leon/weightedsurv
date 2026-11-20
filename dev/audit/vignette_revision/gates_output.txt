@@ -1,0 +1,52 @@
+# Gate output, TASK_vignette_revision.md. Vignettes and README at a15ff33 (last commit touching them: a15ff33).
+## G1: git diff --name-only ac76f82..HEAD, files outside vignettes/, README.md, dev/
+(none)
+## G2: rmarkdown::render with options(warn = 2)
+OK vignettes/weightedsurv_examples.Rmd (17 s)
+OK vignettes/articles/martingale_resampling_applications.Rmd (3 s)
+OK vignettes/articles/weightedcox_methodology.Rmd (3 s)
+OK vignettes/articles/weightedkm_methodology.Rmd (1 s)
+OK vignettes/articles/weightedrmst_methodology.Rmd (1 s)
+## G3: R CMD check --as-cran, tarball from a clean clone
+a15ff33: Status: 3 NOTEs; ac76f82, same session: Status: 3 NOTEs
+* checking for future file timestamps ... NOTE
+* checking top-level files ... NOTE
+* checking HTML version of manual ... NOTE
+Status: 3 NOTEs
+## G4
+(nothing)
+## G5
+(nothing)
+## G6
+vignettes/weightedsurv_examples.Rmd: 'ps_weights(' in 5 lines; 'weight_variance = "estimated"' in 10 lines
+vignettes/articles/martingale_resampling_applications.Rmd: 'ps_weights(' in 5 lines; 'weight_variance = "estimated"' in 9 lines
+vignettes/articles/weightedcox_methodology.Rmd: 'ps_weights(' in 3 lines; 'weight_variance = "estimated"' in 3 lines
+## G7, G8, G9a
+PASS G7 [examples]: n = 829; 538 / 291; treated ESS ratio 0.9301; largest weight 2.7090; weighted HR 0.6648; z known 4.4491, estimated 4.8686; weight_variance of the vignette object "estimated"
+PASS G7 [martingale]: n = 829; 538 / 291; treated ESS ratio 0.9301; largest weight 2.7090; weighted HR 0.6648; z known 4.4491, estimated 4.8686; weight_variance of the vignette object "estimated"
+PASS G7 [coxmeth]: n = 829; 538 / 291; treated ESS ratio 0.9301; largest weight 2.7090; weighted HR 0.6648; z known 4.4491, estimated 4.8686; weight_variance of the vignette object "estimated"
+   vignette table (examples):
+   weights    z                HR             RMST
+     known 4.45 0.66 (0.56, 0.80) 15.6 (9.2, 22.0)
+ estimated 4.87 0.66 (0.56, 0.78) 15.6 (9.7, 21.4)
+   z of the vignette's known object: 4.4491
+PASS G8: 1207 / 246; treated ESS ratio 0.2967; HR known 0.6601 (0.4445, 0.9803); weight_variance: df_counting "known", cox_rhogamma "known", band "known", RMST "known", cut at 60 "known"
+   cross-trial: ESS treated 73.0 (0.297), control 1098.8 (0.910); largest weight 12.98; z 2.110; cut at 60: HR 0.62 (0.41, 0.95), z 2.30; 10th treated event 9.40 months
+   all node-positive: ESS treated 339 -> 105.2 (0.310), control 1207 -> 1162.9 (0.964); largest weight 12.88
+   restricted: HR known 0.66 (0.56, 0.80); estimated (0.56, 0.78); unweighted 0.72 (0.60, 0.86); control ESS ratio 0.98; worst imbalance 0.26 -> 0.05
+PASS G9a: node-positive data identical() before/after (1546 rows, 29 columns compared); unweighted df_counting() result identical() in all 47 elements (cox_fit compared by coefficients and variance, tolerance 0); z = 2.184188
+PASS G9a (GBSG object of the vignette): dfcount_gbsg identical() before/after
+## G9b
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 1691 ]
+## G10
+(nothing)
+## G11
+UNCLASSIFIED numerals in plain text: 0
+## G12
+vignettes/weightedsurv_examples.Rmd                                    18 figure pair(s)                             identical 8 of 18
+vignettes/articles/martingale_resampling_applications.Rmd              6 figure pair(s)                              identical 1 of 6
+vignettes/articles/weightedcox_methodology.Rmd                         1 figure pair(s)                              identical 1 of 1
+vignettes/articles/weightedkm_methodology.Rmd                          no figures (no evaluated chunk draws one)     identical 0 of 0
+vignettes/articles/weightedrmst_methodology.Rmd                        no figures (no evaluated chunk draws one)     identical 0 of 0
+vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd         not knitted                                   identical 0 of 0
+wrote dev/audit/vignette_revision/figures_before_after.html 6.0 MB
