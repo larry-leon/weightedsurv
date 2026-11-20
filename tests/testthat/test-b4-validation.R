@@ -60,7 +60,11 @@ test_that("zero weights: KM as survfit on positive rows; df_counting self-checks
   expect_length(r$w_hat, nrow(d))
   cx <- survival::coxph(survival::Surv(time, status) ~ treat, data = dp, weights = w, robust = TRUE)
   expect_equal(unname(r$cox_results$hr), unname(exp(stats::coef(cx))), tolerance = 1e-10)
-  expect_equal(r$logrank_results$chisq, survival::survdiff(survival::Surv(time, status) ~ treat, data = dp)$chisq, tolerance = 1e-10)
+  # Stage 2e, Rb: the positive weights are not all equal, so logrank_results is the robust score test at 0
+  # of the weighted Cox model on the positive-weight rows (it was the unweighted survdiff test)
+  cx0 <- survival::coxph(survival::Surv(time, status) ~ treat, data = dp, weights = w, robust = TRUE, ties = "breslow")
+  expect_equal(r$logrank_results$chisq, as.numeric(cx0$rscore), tolerance = 1e-8)
+  expect_identical(r$logrank_results$method, "coxph_robust_score")
 })
 
 test_that("event coded 0/1, logical and 1/2 give the same KM in all three functions; other codes are errors", {

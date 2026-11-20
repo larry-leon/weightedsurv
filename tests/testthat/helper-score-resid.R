@@ -29,3 +29,5 @@ ws_quiet <- function(expr) { r <- NULL; invisible(utils::capture.output(r <- sup
 ws_schemes <- function(d) list(
   fh00 = list("fh", list(rho = 0, gamma = 0)), fh01 = list("fh", list(rho = 0, gamma = 1)),
   MB = list("MB", list(mb_tstar = unname(stats::quantile(d$time, 0.5)))), schemper = list("schemper", list()))
+# Evaluate expr, discarding printed output but letting warnings through (for expect_no_warning()).
+ws_capture <- function(expr) { r <- NULL; invisible(utils::capture.output(r <- expr)); r }

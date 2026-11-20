@@ -225,17 +225,20 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
 
   cox_results <- NULL
   cox_na <- list(cox_fit = NA, hr = NA_real_, hr_ci = c(NA_real_, NA_real_), pval = NA_real_, score = NA_real_,
-                 cox_text = "HR = NA")
+                 cox_text = "HR = NA", se = NA_real_)
+  # Subject weights whose positive values are not all equal (Rb): the survival-based outputs are the
+  # robust ones of the weighted Cox model (score test of cox_fit; robust score test at 0 as log-rank).
+  rb_unequal <- !is.null(weight.name) && ws_weights_unequal(vin$weight)
+  treat.name.strata <- treat.name
+  if (!is.null(strata.name)) {
+    treat.name.strata <- paste(treat.name,"+",paste("strata(",eval(strata.name),")"))
+  }
+  cox_formula <- as.formula(paste0("survival::Surv(", tte.name, ",", event.name, ") ~ ", treat.name.strata))
   if (get.cox && any(events_by_arm == 0)) {
     na_reasons <- c(na_reasons, sprintf("Cox model: no events in the %s; the hazard ratio is not identified",
                                         paste(c("control arm", "treatment arm")[events_by_arm == 0], collapse = " and ")))
     cox_results <- cox_na
   } else if (get.cox) {
-    treat.name.strata <- treat.name
-    if (!is.null(strata.name)) {
-      treat.name.strata <- paste(treat.name,"+",paste("strata(",eval(strata.name),")"))
-    }
-    cox_formula <- as.formula(paste0("survival::Surv(", tte.name, ",", event.name, ") ~ ", treat.name.strata))
     cox_fit <- tryCatch({
       if (!is.null(weight.name)) {
         survival::coxph(cox_formula, data = df_fit, weights = df_fit[[weight.name]], robust = TRUE)
@@ -250,7 +253,7 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   if (get.cox && is.null(cox_results) && is.null(cox_fit)) cox_results <- cox_na
   if (get.cox && is.null(cox_results)) {
     cox_summary <- summary(cox_fit)
-    cox_score <- cox_summary$sctest[1]
+    cox_score <- if (rb_unequal) cox_summary$robscore[1] else cox_summary$sctest[1]
     hr <- exp(cox_fit$coef)
     hr_ci <- exp(confint(cox_fit))
     pval <- cox_summary$coefficients[1, "Pr(>|z|)"]
@@ -263,7 +266,8 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
       hr_ci = hr_ci,
       pval = pval,
       score = cox_score,
-      cox_text = cox_text
+      cox_text = cox_text,
+      se = sqrt(cox_fit$var[1, 1])
     )
   }
   ans$cox_results <- cox_results
@@ -275,9 +279,21 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   lr_rho <- 0
   if(scheme == "fh") lr_rho <- scheme_params$rho
 
+  logrank_method <- if (rb_unequal) "coxph_robust_score" else "survdiff"
   if (sum(events_by_arm) == 0) {
     na_reasons <- c(na_reasons, "log-rank test (survdiff): no events")
     logrank_fit <- list(chisq = NA_real_)
+  } else if (rb_unequal) {
+    # survdiff() takes no case weights: the robust score test at 0 of the weighted Cox model
+    # (positive-weight rows, the formula of cox_fit, Breslow ties) -- the rho = 0 test whatever the scheme
+    logrank_fit <- tryCatch({
+      lr_fit <- survival::coxph(cox_formula, data = df_fit, weights = df_fit[[weight.name]], init = 0,
+                                control = survival::coxph.control(iter.max = 0), robust = TRUE, ties = "breslow")
+      list(chisq = as.numeric(lr_fit$rscore))
+    }, error = function(e) {
+      na_reasons <<- c(na_reasons, paste("log-rank test (robust score test of coxph) failed:", conditionMessage(e)))
+      list(chisq = NA_real_)
+    })
   } else {
     logrank_fit <- tryCatch({
       if (!is.null(strata.name)) {
@@ -298,7 +314,8 @@ df_counting <- function(df, tte.name = "tte", event.name = "event", treat.name =
   logrank_results <- list(
     chisq = chisq,
     pval = pval,
-    logrank_text = logrank_text
+    logrank_text = logrank_text,
+    method = logrank_method
   )
 
   ans$logrank_results <- logrank_results
