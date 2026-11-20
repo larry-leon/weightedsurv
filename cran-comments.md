@@ -2,16 +2,17 @@
 
 This is an update of weightedsurv 0.1.0 (on CRAN).
 
-## Test environment
+## Test environments
 
 * macOS 27.2.1 (aarch64-apple-darwin20), R 4.5.2: `R CMD check --as-cran` on the tarball built by
-  `R CMD build` from a clean `git clone`.
-
-No other environment was used (no win-builder, no R-hub).
+  `R CMD build` from a clean `git clone`; also run with the suggested packages not installed
+  (`_R_CHECK_FORCE_SUGGESTS_=false`): 0 errors, 0 warnings, 1 note (HTML Tidy, below).
+* GitHub Actions (r-lib/actions): windows-latest, macos-latest, ubuntu-latest, R release:
+  0 errors, 0 warnings.
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
+0 errors | 0 warnings | 2 notes (local macOS check)
 
 Tests: `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 1691 ]`.
 
@@ -23,9 +24,8 @@ Tests: `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 1691 ]`.
     Status: 404
   ```
 
-  This is a new article of the package website, added in 0.2.0. The page is in the site built from
-  this version and the URL resolves once that site is deployed; the deployed site is still the one
-  built for 0.1.0.
+  This is a new article of the package website, added in 0.2.0. The local check ran before the
+  website for 0.2.0 was deployed; the site has since been deployed and the URL now resolves.
 
 * NOTE, "checking HTML version of manual": "Skipping checking HTML validation: 'tidy' doesn't look
   like recent enough HTML Tidy." This comes from the HTML Tidy installed on the test machine, not
