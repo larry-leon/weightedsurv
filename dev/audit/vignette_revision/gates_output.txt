@@ -50,3 +50,6 @@ vignettes/articles/weightedkm_methodology.Rmd                          no figure
 vignettes/articles/weightedrmst_methodology.Rmd                        no figures (no evaluated chunk draws one)     identical 0 of 0
 vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd         not knitted                                   identical 0 of 0
 wrote dev/audit/vignette_revision/figures_before_after.html 6.0 MB
+## G2 / G12, sixth article (file as written, knitr::knit)
+OK sims: 3 figure file(s), 0 warning(s) escaping the chunks, 4314 s
+Completed: 30000 | Failed: 0; Elapsed: 71.8 minutes
