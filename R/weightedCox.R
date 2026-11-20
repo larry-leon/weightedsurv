@@ -324,9 +324,15 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   # Find root of score function
   get_Cox <- find_cox_root(time, delta, z, w_hat, wt_rg)
 
+  # A df_counting() result made with weight_variance = "estimated": the pieces of the propensity model,
+  # rows in the order of dfcount$time. The score contributions then carry the term through the model,
+  # psi_i(b) + IF_i' B(b) (see ws_score_ew()), whatever the weights.
+  ew <- if (identical(dfcount$weight_variance, "estimated") && is.list(dfcount$ew_parts)) dfcount$ew_parts else NULL
+  weight_variance <- if (is.null(ew)) "known" else "estimated"
+
   if (!is.list(get_Cox) || is.na(get_Cox$root)) {
     warning("Root finding failed.")
-    return(list(bhat = NA, u.beta = NA, u.zero = NA, status = "fail"))
+    return(list(bhat = NA, u.beta = NA, u.zero = NA, status = "fail", weight_variance = weight_variance))
   }
 
   bhat_rhogamma <- get_Cox$root
@@ -338,6 +344,11 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   i_zero <- temp$i_bhat
   K_zero <- temp$K_wt_rg
   sig2_score <- temp$sig2_score
+  if (!is.null(ew)) {
+    psi_zero <- ws_score_ew(ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = 0)$psi, w_hat, ew$IF, ew$dw)
+    sig2_score <- sum(psi_zero^2)
+    z.score <- u.zero / sqrt(sig2_score)
+  }
 
   ans$z.score <- z.score
 
@@ -346,6 +357,10 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
   sig_bhat_asy <- sqrt(temp$sig2_beta_asy)
   i_bhat <- temp$i_bhat
   K_wt_rg <- temp$K_wt_rg
+  if (!is.null(ew)) {
+    psi_bhat <- ws_score_ew(ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = bhat_rhogamma)$psi, w_hat, ew$IF, ew$dw)
+    sig_bhat_asy <- sqrt(sum(psi_bhat^2) / i_bhat^2)
+  }
 
   pval <- 1 - pnorm(z.score)
   ans$zlogrank_text <- paste0("logrank (1-sided) p = ", format_pval(pval, eps = 0.001, digits = lr.digits))
@@ -369,6 +384,8 @@ cox_rhogamma <- function(dfcount, scheme = "fh", scheme_params = list(rho = 0, g
     z = z,
     w_hat = w_hat
   )
+  # estimated weights: the pieces of the propensity model go along with the fit (for the resampling)
+  if (!is.null(ew)) fit_rhogamma$ew_parts <- ew
 
   ans$fit <- fit_rhogamma
 
@@ -407,7 +424,7 @@ cox_text_asy <- paste0("HR = ", round(hr_ci_asy$hr, lr.digits),
                      " (", round(hr_ci_asy$lower, lr.digits), ", ", round(hr_ci_asy$upper, lr.digits), ")")
 
 ans$cox_text_asy <- cox_text_asy
-
+ans$weight_variance <- weight_variance
 
 ans
 }
@@ -477,7 +494,8 @@ cox_rhogamma_resample <- function(fit_rhogamma, i_bhat, K_wt_rg, i_zero, K_zero,
   y1 <- time[idx1]; d1 <- delta[idx1]
   w0_hat <- w_hat[idx0]; w1_hat <- w_hat[idx1]
 
-  if (ws_weights_unequal(w_hat)) {
+  ew <- fit_rhogamma$ew_parts
+  if (ws_weights_unequal(w_hat) || !is.null(ew)) {
     # Subject weights not all equal: each resampled score is -sum_i G_ib psi_i(b), with psi_i the
     # per-subject score contributions (see ws_score_psi()) at bhat and at 0. Row i of G is that
     # subject's row in the multiplier matrices (G0.draws for controls, G1.draws for treated).
@@ -486,6 +504,12 @@ cox_rhogamma_resample <- function(fit_rhogamma, i_bhat, K_wt_rg, i_zero, K_zero,
     G[idx1, ] <- G1.draws
     psi_bhat <- ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = bhat)$psi
     psi_zero <- ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = 0)$psi
+    # Estimated weights (a fit from a df_counting() result made with weight_variance = "estimated"):
+    # the contributions carry the term through the propensity model, psi_i + IF_i' B
+    if (!is.null(ew)) {
+      psi_bhat <- ws_score_ew(psi_bhat, w_hat, ew$IF, ew$dw)
+      psi_zero <- ws_score_ew(psi_zero, w_hat, ew$IF, ew$dw)
+    }
     score_star <- -colSums(G * psi_bhat)
     score_star_null <- -colSums(G * psi_zero)
     bhat_center_star <- score_star / i_bhat
