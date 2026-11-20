@@ -1,10 +1,11 @@
-tarball: weightedsurv_0.2.0.tar.gz built by R CMD build from a clean git clone of d39b8c4
-size (bytes): 4329233
-sha256: 1c6b678812ca1919de6573670ad4f6598f3aa01213a48ca15d351bf2439ba390
+tarball: weightedsurv_0.2.0.tar.gz built by R CMD build from a clean git clone of b8a14ab
+size (bytes): 4329234
+sha256: 4835afcb6e9a0bc68186263cb26f4a2f3895d08fa4e79eae8263679e8c30d13b
 files: 112
 
-$ tar -tzf | grep -E "^weightedsurv/(dev/|docs/|vignettes/articles/|_pkgdown.yml|cran-comments.md)|Rhistory|DS_Store|RData"
-(exit 1)
+$ tar -tzf | grep -E "^weightedsurv/(dev/|docs/|vignettes/articles/|_pkgdown.yml|cran-comments.md)|sim_results|\.rds$|Rhistory|DS_Store|RData"
+weightedsurv/build/vignette.rds
+(exit 0)
 
 top-level entries:
    3 build
@@ -19,12 +20,9 @@ top-level entries:
   34 tests
    3 vignettes
 
-largest files:
-7797527 weightedsurv/inst/doc/weightedsurv_examples.html
-99968 weightedsurv/vignettes/weightedsurv_references.bib
-53012 weightedsurv/R/df_counting.R
-49228 weightedsurv/vignettes/weightedsurv_examples.Rmd
-49228 weightedsurv/inst/doc/weightedsurv_examples.Rmd
-40846 weightedsurv/R/km_wlr_calculations_helpers.R
-31877 weightedsurv/R/kmplotting_helpers.R
-31175 weightedsurv/inst/doc/weightedsurv_examples.R
+comparison with the tarball built from d39b8c4 (first G3 run): file lists
+identical file lists
+files whose content differs:
+Files <tmp>/x1/weightedsurv/DESCRIPTION and <tmp>/x2/weightedsurv/DESCRIPTION differ
+Files <tmp>/x1/weightedsurv/inst/doc/weightedsurv_examples.html and <tmp>/x2/weightedsurv/inst/doc/weightedsurv_examples.html differ
+(diff exit 0)

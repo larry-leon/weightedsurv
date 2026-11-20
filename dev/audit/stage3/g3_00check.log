@@ -1,4 +1,4 @@
-* using log directory ‘<tmp>/g3/weightedsurv.Rcheck’
+* using log directory ‘<tmp>/g3b/weightedsurv.Rcheck’
 * using R version 4.5.2 (2025-10-31)
 * using platform: aarch64-apple-darwin20
 * R was compiled by
@@ -67,8 +67,8 @@ Found the following (possibly) invalid URLs:
 * checking examples ... OK
 * checking examples with --run-donttest ... OK
 * checking for unstated dependencies in ‘tests’ ... OK
-* checking tests ... [10s/10s] OK
-  Running ‘testthat.R’ [10s/10s]
+* checking tests ... OK
+  Running ‘testthat.R’
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes ... OK
 * checking re-building of vignette outputs ... OK

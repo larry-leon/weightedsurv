@@ -1,0 +1,6 @@
+$ grep -rn --include="*.Rmd" "supporting the validity\|bootstrap or similar\|messages = FALSE" vignettes/
+(exit 1)
+$ git ls-files vignettes/ | grep -i "rhistory\|rdata\|ds_store"
+(exit 1)
+$ git ls-files | grep -i "rhistory\|\.rdata$\|ds_store"
+(exit 1)

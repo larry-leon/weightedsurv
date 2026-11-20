@@ -1,0 +1,28 @@
+$ git diff --name-only e95728a..HEAD | grep -v "^dev/"
+.Rbuildignore
+NEWS.md
+README.md
+cran-comments.md
+vignettes/.Rhistory
+vignettes/articles/martingale_resampling_applications.Rmd
+vignettes/articles/sim_results/wald_vs_logrank_full.rds
+vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd
+vignettes/weightedsurv_examples.Rmd
+
+$ git diff --name-only e95728a..HEAD | grep -c "^dev/"
+49
+
+$ git diff e95728a..HEAD -- R/ man/ tests/ NAMESPACE DESCRIPTION | wc -l
+       0
+
+$ git ls-files docs | wc -l
+       0
+
+$ git diff e95728a..HEAD -- .gitignore | wc -l
+       0
+
+$ git diff e95728a..HEAD -- .Rbuildignore
+ ^docs$
+ ^pkgdown$
+ ^vignettes/articles$
++^cran-comments\.md$

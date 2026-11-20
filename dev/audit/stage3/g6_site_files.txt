@@ -1,0 +1,49 @@
+start markers: stopped run 10:00:55, completed run 10:06:47 (2026-11-20)
+--- docs/articles/*.html and docs/articles/articles/*.html (mtime, bytes)
+2026-11-20 10:07:02 231671 docs/articles/estimated_weights_methodology.html
+2026-11-20 10:07:00 5217 docs/articles/index.html
+2026-11-20 10:07:06 90633 docs/articles/martingale_resampling_applications.html
+2026-11-20 10:07:11 151950 docs/articles/weightedcox_methodology.html
+2026-11-20 10:07:48 326002 docs/articles/weightedcox_wald-vs-logrank_simulations.html
+2026-11-20 10:07:49 113739 docs/articles/weightedkm_methodology.html
+2026-11-20 10:07:50 105348 docs/articles/weightedrmst_methodology.html
+2026-11-20 10:08:02 226264 docs/articles/weightedsurv_examples.html
+2026-11-20 10:08:05 334 docs/articles/articles/estimated_weights_methodology.html
+2026-11-20 10:08:05 344 docs/articles/articles/martingale_resampling_applications.html
+2026-11-20 10:08:05 322 docs/articles/articles/weightedcox_methodology.html
+2026-11-20 10:08:05 354 docs/articles/articles/weightedcox_wald-vs-logrank_simulations.html
+2026-11-20 10:08:05 320 docs/articles/articles/weightedkm_methodology.html
+2026-11-20 10:08:05 324 docs/articles/articles/weightedrmst_methodology.html
+--- index entries in _pkgdown.yml against built files
+articles/estimated_weights_methodology -> docs/articles/articles/estimated_weights_methodology.html exists, newer than first start: yes
+articles/estimated_weights_methodology -> docs/articles/estimated_weights_methodology.html exists, newer than first start: yes
+articles/martingale_resampling_applications -> docs/articles/articles/martingale_resampling_applications.html exists, newer than first start: yes
+articles/martingale_resampling_applications -> docs/articles/martingale_resampling_applications.html exists, newer than first start: yes
+articles/weightedcox_methodology -> docs/articles/articles/weightedcox_methodology.html exists, newer than first start: yes
+articles/weightedcox_methodology -> docs/articles/weightedcox_methodology.html exists, newer than first start: yes
+articles/weightedcox_wald-vs-logrank_simulations -> docs/articles/articles/weightedcox_wald-vs-logrank_simulations.html exists, newer than first start: yes
+articles/weightedcox_wald-vs-logrank_simulations -> docs/articles/weightedcox_wald-vs-logrank_simulations.html exists, newer than first start: yes
+articles/weightedkm_methodology -> docs/articles/articles/weightedkm_methodology.html exists, newer than first start: yes
+articles/weightedkm_methodology -> docs/articles/weightedkm_methodology.html exists, newer than first start: yes
+articles/weightedrmst_methodology -> docs/articles/articles/weightedrmst_methodology.html exists, newer than first start: yes
+articles/weightedrmst_methodology -> docs/articles/weightedrmst_methodology.html exists, newer than first start: yes
+weightedsurv_examples -> docs/articles/weightedsurv_examples.html exists, newer than first start: yes
+--- README link path: docs/articles/articles/estimated_weights_methodology.html
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0;URL=https://larry-leon.github.io/weightedsurv/articles/estimated_weights_methodology.html" />
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="https://larry-leon.github.io/weightedsurv/articles/estimated_weights_methodology.html">
+  </head>
+</html>
+
+--- simulations page
+Completed: 60 | Failed: 0
+completed: 30,000; failed: 0
+trials per scenario: 5,000
+src="weightedcox_wald-vs-logrank_simulations_files/figure-html/main-3tests-plot-1.png"
+src="weightedcox_wald-vs-logrank_simulations_files/figure-html/all-fh-plot-1.png"
+src="weightedcox_wald-vs-logrank_simulations_files/figure-html/simtrial-comparison-plot-1.png"
+--- git status (docs)
+?? dev/audit/stage3/g6_site_files.txt
+       0
