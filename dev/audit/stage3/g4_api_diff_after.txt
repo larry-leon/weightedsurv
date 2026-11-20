@@ -44,4 +44,4 @@ Added exports, S3 methods or arguments not named in NEWS.md:
 
 DESCRIPTION Version: 0.2.0 
 First heading of NEWS.md: # weightedsurv 0.2.0 
-cran-comments.md exists: FALSE  names 0.2.0: FALSE 
+cran-comments.md exists: TRUE  names 0.2.0: TRUE 

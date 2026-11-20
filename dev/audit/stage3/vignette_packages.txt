@@ -1,0 +1,21 @@
+vignettes/weightedsurv_examples.Rmd
+   used: adjustedCurves, data.table, devtools, DiagrammeR, dplyr, gt, knitr, pammtools, survival, weightedsurv
+   not in Imports/Suggests: devtools
+vignettes/articles/estimated_weights_methodology.Rmd
+   used: knitr, stats, survival, weightedsurv
+   not in Imports/Suggests: 
+vignettes/articles/martingale_resampling_applications.Rmd
+   used: ggplot2, knitr, survival, weightedsurv
+   not in Imports/Suggests: 
+vignettes/articles/weightedcox_methodology.Rmd
+   used: data.table, gt, knitr, survival, weightedsurv
+   not in Imports/Suggests: 
+vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd
+   used: data.table, doFuture, dplyr, foreach, future, future.callr, ggplot2, gsDesign2, gt, htmltools, knitr, parallelly, simtrial, stats, survival, tibble, tictoc, tidyr, weightedsurv
+   not in Imports/Suggests: doFuture, foreach, future, future.callr, gsDesign2, htmltools, parallelly, simtrial, tibble, tictoc, tidyr
+vignettes/articles/weightedkm_methodology.Rmd
+   used: knitr, survival
+   not in Imports/Suggests: 
+vignettes/articles/weightedrmst_methodology.Rmd
+   used: knitr, survival
+   not in Imports/Suggests: 

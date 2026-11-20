@@ -1,0 +1,30 @@
+tarball: weightedsurv_0.2.0.tar.gz built by R CMD build from a clean git clone of d39b8c4
+size (bytes): 4329233
+sha256: 1c6b678812ca1919de6573670ad4f6598f3aa01213a48ca15d351bf2439ba390
+files: 112
+
+$ tar -tzf | grep -E "^weightedsurv/(dev/|docs/|vignettes/articles/|_pkgdown.yml|cran-comments.md)|Rhistory|DS_Store|RData"
+(exit 1)
+
+top-level entries:
+   3 build
+   1 DESCRIPTION
+   5 inst
+   1 LICENSE
+  49 man
+   1 NAMESPACE
+   1 NEWS.md
+  13 R
+   1 README.md
+  34 tests
+   3 vignettes
+
+largest files:
+7797527 weightedsurv/inst/doc/weightedsurv_examples.html
+99968 weightedsurv/vignettes/weightedsurv_references.bib
+53012 weightedsurv/R/df_counting.R
+49228 weightedsurv/vignettes/weightedsurv_examples.Rmd
+49228 weightedsurv/inst/doc/weightedsurv_examples.Rmd
+40846 weightedsurv/R/km_wlr_calculations_helpers.R
+31877 weightedsurv/R/kmplotting_helpers.R
+31175 weightedsurv/inst/doc/weightedsurv_examples.R

@@ -1,0 +1,138 @@
+
+R version 4.5.2 (2025-10-31) -- "[Not] Part in a Rumble"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # This file is part of the standard setup for testthat.
+> # It is recommended that you do not modify it.
+> #
+> # Where should you do additional test configuration?
+> # Learn more about the roles of various files in:
+> # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
+> # * https://testthat.r-lib.org/articles/special-files.html
+> 
+> library(testthat)
+> library(forestsearch)
+> 
+> test_check("forestsearch")
+[ FAIL 0 | WARN 0 | SKIP 163 | PASS 42 ]
+
+══ Skipped tests (163) ═════════════════════════════════════════════════════════
+• On CRAN (158): 'test-ahr-analytic.R:6:1', 'test-ahr-tables.R:8:1',
+  'test-betaHhat-contract.R:13:1', 'test-betaHhat-exact.R:7:1',
+  'test-bias-coverage-scale.R:10:1',
+  'test-binary-default-or-entry-points.R:15:1',
+  'test-binary-default-or.R:15:1', 'test-bootstrap-glm-parent-scale.R:46:3',
+  'test-bootstrap-glm-parent-scale.R:82:3',
+  'test-bootstrap-glm-parent-scale.R:103:3',
+  'test-bootstrap-rowwise-flags.R:30:3', 'test-bootstrap-rowwise-flags.R:46:3',
+  'test-bootstrap-summary-bins.R:16:1',
+  'test-build_classification_table.R:8:1', 'test-check-thread-cap.R:5:1',
+  'test-consistency-highlight-labels.R:44:1',
+  'test-cross-outcome-parity.R:22:1', 'test-cv-exact-match.R:19:1',
+  'test-cv-fold-na-assignments.R:26:1', 'test-cv-mixed-and-fatal.R:28:1',
+  'test-cv-no-subgroup-dina-grf.R:58:7', 'test-cv-no-subgroup-dina-grf.R:58:7',
+  'test-cv-no-subgroup-dina-grf.R:58:7', 'test-cv-no-subgroup-dina-grf.R:58:7',
+  'test-cv-no-subgroup-edges.R:63:3', 'test-cv-no-subgroup-edges.R:98:3',
+  'test-cv-no-subgroup-edges.R:115:3', 'test-cv-no-subgroup-edges.R:156:3',
+  'test-cv-no-subgroup-edges.R:181:3', 'test-cv-no-subgroup-edges.R:215:3',
+  'test-cv-tables-orientation.R:163:3', 'test-cv-tables-orientation.R:181:3',
+  'test-cv-tables-orientation.R:190:3', 'test-cv-tables-orientation.R:210:3',
+  'test-cv-tables-orientation.R:223:3', 'test-declaration-c0.R:9:1',
+  'test-declaration-calibration.R:10:1',
+  'test-declcal-rounding-alignment.R:8:1',
+  'test-dfbeta-lm-influence-path.R:34:1',
+  'test-dina-bootstrap-sg-focus-whitelist.R:8:1',
+  'test-dina-gaussian-floor.R:19:1', 'test-dina-proposal-orientation.R:5:1',
+  'test-dina-screening-tau-sign.R:19:1', 'test-directive-c.R:15:1',
+  'test-display-orientation.R:173:3', 'test-display-orientation.R:189:3',
+  'test-display-orientation.R:196:3', 'test-display-orientation.R:203:3',
+  'test-display-orientation.R:212:3', 'test-display-orientation.R:226:3',
+  'test-downstream-consumers.R:21:1', 'test-duplicate-cut-names.R:32:1',
+  'test-estimability-boundary.R:7:1', 'test-forestplot-xlog.R:54:3',
+  'test-forestplot-xlog.R:73:3', 'test-forestplot-xlog.R:86:3',
+  'test-fpr-calibration-fallback.R:18:1',
+  'test-frontier-cis-orientation.R:45:1', 'test-fs-declaration-table.R:7:1',
+  'test-fs-dgm-feasibility.R:4:1', 'test-fs-family-report.R:6:1',
+  'test-fs-focus-tag.R:9:1', 'test-fs-oc-grid.R:4:1', 'test-fs-oc-null.R:4:1',
+  'test-fs-oc-predict.R:12:1', 'test-fs-oc-signed.R:7:1',
+  'test-fs_dgm_scale.R:11:1', 'test-fs_mr_oc_summary.R:9:1',
+  'test-fs_sym_root.R:14:1', 'test-gbsg-bootstrap-general.R:10:1',
+  'test-get-fsdata-diagnostics.R:19:1', 'test-glm-pipeline-integration.R:10:1',
+  'test-grf-count-orientation.R:58:1', 'test-grf-footnote-scale.R:54:1',
+  'test-grf-inclusion-band.R:16:1', 'test-grf-membership-coding.R:5:1',
+  'test-grf-survival-matrix.R:15:1', 'test-hte-crump-confounders.R:11:1',
+  'test-inject-observed-region.R:4:1', 'test-input-validation.R:13:1',
+  'test-iptw-continuous.R:7:1', 'test-knoise-population.R:6:1',
+  'test-lasso-intercept.R:21:1', 'test-lean-fits.R:9:1',
+  'test-max-minutes-deprecation.R:10:1',
+  'test-missing-membership-messages.R:23:1',
+  'test-mr-admission-rounded.R:11:1', 'test-mr-admission-set.R:17:1',
+  'test-mr-closedform-fixture.R:15:1',
+  'test-mr-estimates-table-nullboot.R:14:1', 'test-mr-field-complement.R:14:1',
+  'test-mr-ij-residual-joint.R:15:1', 'test-mr-inclusion-band.R:24:1',
+  'test-mr-inference.R:20:1', 'test-mr-method-tables.R:7:1',
+  'test-mr-residual-centering.R:34:1', 'test-mr_values.R:13:1',
+  'test-mrct-case-study.R:11:1', 'test-mrct-core-summary.R:7:1',
+  'test-mrct-default-confounders.R:30:3', 'test-mrct-dgm-args.R:6:1',
+  'test-mrct-handlers-restored.R:7:3', 'test-mrct-handlers-restored.R:19:3',
+  'test-mrct-minor-helpers.R:6:1', 'test-mrct-region-interaction.R:9:1',
+  'test-mrct-region-sims-mr.R:9:1', 'test-mrct-region-sims-record.R:8:1',
+  'test-mrct-trial-analysis.R:7:1', 'test-mrct_inject_dgm.R:5:1',
+  'test-no-subgroup-bootstrap.R:51:5', 'test-no-subgroup-bootstrap.R:51:5',
+  'test-no-subgroup-bootstrap.R:77:3', 'test-no-subgroup-cv.R:23:1',
+  'test-no-subgroup-dina-grf-plot.R:60:5',
+  'test-no-subgroup-dina-grf-plot.R:60:5',
+  'test-no-subgroup-dina-grf-plot.R:85:5',
+  'test-no-subgroup-dina-grf-plot.R:85:5',
+  'test-no-subgroup-dina-grf-summary.R:59:7',
+  'test-no-subgroup-dina-grf-summary.R:59:7',
+  'test-no-subgroup-dina-grf-summary.R:59:7',
+  'test-no-subgroup-dina-grf-summary.R:59:7',
+  'test-no-subgroup-dina-grf-summary.R:76:3',
+  'test-no-subgroup-unified-contract.R:41:5',
+  'test-no-subgroup-unified-contract.R:41:5',
+  'test-no-subgroup-unified-contract.R:41:5',
+  'test-no-subgroup-unified-contract.R:57:3',
+  'test-nofind-classification.R:9:1', 'test-npv-empty-complement.R:9:1',
+  'test-plan-restored.R:80:3', 'test-plan-restored.R:87:3',
+  'test-plan-restored.R:98:3', 'test-plan-restored.R:111:3',
+  'test-plan-restored.R:125:3', 'test-plan-restored.R:154:3',
+  'test-plan-restored.R:165:3', 'test-plan-restored.R:176:3',
+  'test-rd-adjusted-se.R:36:1', 'test-rd-standard-error.R:21:1',
+  'test-return-shape-contract.R:22:1', 'test-rng-state-restored.R:12:1',
+  'test-save-leff-calibration.R:4:1', 'test-search-reproducibility.R:66:3',
+  'test-sg-focus-dispatch.R:17:1', 'test-sg-focus-selection.R:11:1',
+  'test-sg-focus-transparency.R:8:1', 'test-sg-tables-orientation.R:155:3',
+  'test-sg-tables-orientation.R:195:3', 'test-sg-tables-orientation.R:207:3',
+  'test-sg-tables-orientation.R:221:3', 'test-sg-tables-orientation.R:237:3',
+  'test-sg-tables-orientation.R:253:3', 'test-sim-effect-scales.R:20:1',
+  'test-sim-grf-count-row.R:10:1', 'test-subgroup-sims.R:10:1',
+  'test-synthetic-data-documented-behaviour.R:13:1',
+  'test-threshold-pair-directive-a.R:26:1',
+  'test-threshold-remap-messages.R:20:1', 'test-vi-deprecation.R:8:1'
+• threshold probe unavailable on this surface -- it lifts statements out of
+  body(forestsearch) by deparsed text and cannot match them against the
+  installed, byte-compiled package.  These tests are gated on
+  devtools::load_all() per CLAUDE.md.  Cause: resolver evaluated to an error:
+  could not find function ".probe_record" (5): 'test-threshold-sync.R:106:3',
+  'test-threshold-sync.R:123:3', 'test-threshold-sync.R:141:3',
+  'test-threshold-sync.R:152:3', 'test-threshold-sync.R:165:3'
+
+[ FAIL 0 | WARN 0 | SKIP 163 | PASS 42 ]
+> 
+> proc.time()
+   user  system elapsed 
+  1.933   0.159   2.091 

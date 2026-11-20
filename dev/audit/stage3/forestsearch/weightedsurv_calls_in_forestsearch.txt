@@ -1,0 +1,64 @@
+===== forestsearch CRAN 0.5.0
+-- DESCRIPTION
+35:        weightedsurv (>= 0.1.0)
+-- NAMESPACE
+573:importFrom(weightedsurv,
+574-  df_counting,
+575-  plot_weighted_km
+576-)
+-- calls of weightedsurv exports in R/ (code lines, comments excluded)
+R/plot_km_band_forestsearch.R:349:  result <- weightedsurv::plotKM.band_subgroups(
+R/plot_sg_weighted_km.R:345:  dfcount <- weightedsurv::df_counting(
+R/plot_sg_weighted_km.R:354:  dfcountC <- weightedsurv::df_counting(
+R/plot_sg_weighted_km.R:369:  weightedsurv::plot_weighted_km(
+R/plot_sg_weighted_km.R:386:  weightedsurv::plot_weighted_km(
+R/mrct_trial_helpers.R:263:      dfc <- suppressWarnings(weightedsurv::df_counting(
+R/mrct_trial_helpers.R:266:      weightedsurv::plot_weighted_km(
+R/subgroup_consistency_helpers.R:978:    dfcount <- weightedsurv::df_counting(df.sub, tte.name = tte.name, event.name = event.name, treat.name = treat
+R/subgroup_consistency_helpers.R:979:    dfcountC <- weightedsurv::df_counting(df.subC, tte.name = tte.name, event.name = event.name, treat.name = tre
+R/subgroup_consistency_helpers.R:981:    weightedsurv::plot_weighted_km(dfcount, conf.int = TRUE, show.logrank = TRUE, put.legend.lr = "topleft", ymax
+R/subgroup_consistency_helpers.R:982:    weightedsurv::plot_weighted_km(dfcountC, conf.int = TRUE, show.logrank = TRUE, put.legend.lr = "topleft", yma
+R/summary_utility_functions.R:430:  dfcount <- weightedsurv::df_counting(df, tte.name = tte.name, event.name = event.name, treat.name = treat.name, ar
+-- counts by function, R/
+   7 weightedsurv::df_counting
+   5 weightedsurv::plot_weighted_km
+   1 weightedsurv::plotKM.band_subgroups
+-- tests/
+-- vignettes/ and inst/ (files in the source that name weightedsurv)
+inst/doc/forestsearch.html
+-- weighted calls: lines in R/ passing weight.name to a weightedsurv function
+
+===== forestsearch local clone 0.4.1.9003 at 02f88da
+-- DESCRIPTION
+55:    weightedsurv (>= 0.1.0)
+-- NAMESPACE
+575:importFrom(weightedsurv,
+576-  df_counting,
+577-  plot_weighted_km
+578-)
+-- calls of weightedsurv exports in R/ (code lines, comments excluded)
+R/plot_km_band_forestsearch.R:349:  result <- weightedsurv::plotKM.band_subgroups(
+R/plot_sg_weighted_km.R:345:  dfcount <- weightedsurv::df_counting(
+R/plot_sg_weighted_km.R:354:  dfcountC <- weightedsurv::df_counting(
+R/plot_sg_weighted_km.R:369:  weightedsurv::plot_weighted_km(
+R/plot_sg_weighted_km.R:386:  weightedsurv::plot_weighted_km(
+R/subgroup_consistency_helpers.R:974:    dfcount <- weightedsurv::df_counting(df.sub, tte.name = tte.name, event.name = event.name, treat.name = treat
+R/subgroup_consistency_helpers.R:975:    dfcountC <- weightedsurv::df_counting(df.subC, tte.name = tte.name, event.name = event.name, treat.name = tre
+R/subgroup_consistency_helpers.R:977:    weightedsurv::plot_weighted_km(dfcount, conf.int = TRUE, show.logrank = TRUE, put.legend.lr = "topleft", ymax
+R/subgroup_consistency_helpers.R:978:    weightedsurv::plot_weighted_km(dfcountC, conf.int = TRUE, show.logrank = TRUE, put.legend.lr = "topleft", yma
+R/mrct_trial_helpers.R:263:      dfc <- suppressWarnings(weightedsurv::df_counting(
+R/mrct_trial_helpers.R:266:      weightedsurv::plot_weighted_km(
+R/summary_utility_functions.R:430:  dfcount <- weightedsurv::df_counting(df, tte.name = tte.name, event.name = event.name, treat.name = treat.name, ar
+-- counts by function, R/
+   7 weightedsurv::df_counting
+   5 weightedsurv::plot_weighted_km
+   1 weightedsurv::plotKM.band_subgroups
+-- tests/
+-- vignettes/ and inst/ (files in the source that name weightedsurv)
+vignettes/articles/paper_simulations.qmd
+vignettes/articles/survival-post-selection.html
+vignettes/articles/extreme_subgroups.qmd
+vignettes/articles/forestsearch-2024.Rmd
+vignettes/articles/actg175-glm-outcomes.html
+-- weighted calls: lines in R/ passing weight.name to a weightedsurv function
+

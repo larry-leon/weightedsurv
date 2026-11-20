@@ -1,0 +1,3 @@
+404 https://larry-leon.github.io/weightedsurv/articles/articles/estimated_weights_methodology.html
+200 https://larry-leon.github.io/weightedsurv/articles/articles/weightedkm_methodology.html
+200 https://larry-leon.github.io/weightedsurv/

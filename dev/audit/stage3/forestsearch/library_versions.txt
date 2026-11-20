@@ -1,0 +1,2 @@
+libA 0.1.0 <tmp>/fs/libA 
+libB 0.2.0 <tmp>/fs/libB 
