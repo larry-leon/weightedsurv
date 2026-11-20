@@ -163,19 +163,21 @@ whose conditional distribution (given the data) approximates that of $G(\cdot)$ 
 
 ## Pointwise Confidence Intervals
 
-Let $\hat{\sigma}_R(\tau)$ denote the standard deviation estimate for the distribution of $G(\tau)$, obtained as the empirical standard deviation across $M$ independent realizations of $\{Z_i\}$.  For any $\alpha \in (0,1)$, a two-sided $(1-\alpha)$ pointwise confidence interval for $\mu(\tau)$ is:
+`cumulative_rmst_bands()` computes the intervals and bands of this section and the next for the difference of the two arms only, $D(\tau) = \mu_1(\tau) - \mu_0(\tau)$ (section "Two-Sample Simultaneous Bands"); the one-sample formulas show the construction.  It uses 95% intervals and bands (1.96 and the 0.95 quantile) and has no `alpha` argument.
 
-$$\hat{\mu}(\tau) \pm z_{1-\alpha/2}\, n^{-1/2}\, \hat{\sigma}_R(\tau).$$
+Let $\hat{\sigma}_R(\tau)$ denote the standard deviation estimate for the distribution of $G(\tau)$, obtained as the empirical standard deviation across $M$ independent realizations of $\{Z_i\}$.  A two-sided 95% pointwise confidence interval for $\mu(\tau)$ is:
+
+$$\hat{\mu}(\tau) \pm 1.96\, n^{-1/2}\, \hat{\sigma}_R(\tau).$$
 
 ## Simultaneous Confidence Bands
 
-The simultaneous, equal-precision confidence band for $\mu(\tau)$ over $[\eta, \tau_{\max}]$ is:
+The simultaneous, equal-precision 95% confidence band for $\mu(\tau)$ over $[\eta, \tau_{\max}]$ is:
 
-$$\hat{\mu}(\tau) \pm c_{\alpha}\, n^{-1/2}\, \hat{\sigma}_R(\tau), \qquad \tau \in [\eta, \tau_{\max}],$$
+$$\hat{\mu}(\tau) \pm c_{0.95}\, n^{-1/2}\, \hat{\sigma}_R(\tau), \qquad \tau \in [\eta, \tau_{\max}],$$
 
-where the critical value $c_{\alpha}$ is chosen such that:
+where the critical value $c_{0.95}$ is chosen such that:
 
-$$P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} L^*(s)\, ds}{\hat{\sigma}_R(\tau)} \right| \leq c_{\alpha}\right) \geq 1 - \alpha.$$
+$$P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} L^*(s)\, ds}{\hat{\sigma}_R(\tau)} \right| \leq c_{0.95}\right) \geq 0.95.$$
 
 This is estimated empirically from $M$ independent realizations of the perturbation weights.  The time interval $[\eta, \tau_{\max}]$ is chosen such that $P(T < \eta) > 0$ and $P(X > \tau_{\max}) > 0$, ensuring statistical validity.  In `cumulative_rmst_bands` the supremum is taken over the whole time grid of the `KM_diff` fit it is given; with the fit returned by `plotKM.band_subgroups` that is every time point up to the smaller of the two arms' last event times, as called.  No quantile range is trimmed (`qtau` has an effect only when the fit was made with `modify_tau = TRUE`).  The critical value is the 0.95 quantile of the suprema over a second set of `draws_sb` resampled curves.
 
@@ -183,13 +185,13 @@ This is estimated empirically from $M$ independent realizations of the perturbat
 
 For the RMST difference curve $D(\tau) = \mu_1(\tau) - \mu_0(\tau)$, the procedure is analogous.  Let $\hat{\sigma}_D(\tau)$ denote the standard deviation estimate for $G_1(\tau) - G_0(\tau)$, obtained from $M$ independent realizations of the perturbation weights $\{Z_{1i},\, i = 1, \ldots, n_1;\; Z_{2j},\, j = 1, \ldots, n_2\}$.  The simultaneous confidence band is:
 
-$$\hat{D}(\tau) \pm \tilde{c}_{\alpha}\, n^{-1/2}\, \hat{\sigma}_D(\tau), \qquad \tau \in [\eta, \tau_{\max}],$$
+$$\hat{D}(\tau) \pm \tilde{c}_{0.95}\, n^{-1/2}\, \hat{\sigma}_D(\tau), \qquad \tau \in [\eta, \tau_{\max}],$$
 
-where $\tilde{c}_{\alpha}$ satisfies:
+where $\tilde{c}_{0.95}$ satisfies:
 
-$$P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} [L_1^*(s) - L_0^*(s)]\, ds}{\hat{\sigma}_D(\tau)} \right| \leq \tilde{c}_{\alpha}\right) \geq 1 - \alpha.$$
+$$P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} [L_1^*(s) - L_0^*(s)]\, ds}{\hat{\sigma}_D(\tau)} \right| \leq \tilde{c}_{0.95}\right) \geq 0.95.$$
 
-This band provides uniform coverage: if the band excludes zero for an interval $[\tau_a, \tau_b]$, one can conclude that the treatment difference is significant over that entire range, simultaneously, at the $(1-\alpha)$ level.  This is particularly useful for equivalence/noninferiority assessment, as demonstrated by @ZhaoEtAl2016 using the VALIANT cardiovascular trial.
+This band provides uniform coverage: if the band excludes zero for an interval $[\tau_a, \tau_b]$, one can conclude that the treatment difference is significant over that entire range, simultaneously, at the 95% level.  This is particularly useful for equivalence/noninferiority assessment, as demonstrated by @ZhaoEtAl2016 using the VALIANT cardiovascular trial.
 
 
 # Extension to Weighted RMST Estimation
@@ -281,7 +283,7 @@ The cumulative RMST methodology is implemented through the `cumulative_rmst_band
 
 The standard analysis pipeline, as demonstrated in the `weightedsurv_examples` vignette, follows this pattern:
 
-1. **Prepare data** via `df_counting` or `get_dfcounting`, optionally with a `weight.name` for propensity-score-weighted analyses.
+1. **Prepare the data frame** with the time, event and treatment columns, and optionally a weight column (for example stabilized propensity-score weights from `ps_weights()`).  `plotKM.band_subgroups` and `cumulative_rmst_bands` take this data frame (`df`, with `tte.name`, `event.name`, `treat.name` and `weight.name`), not a `df_counting()` result; `cumulative_rmst_bands` also takes the `KM_diff()` fit made with `draws.band > 0` (`fit`).
 2. **Compute survival difference bands** via `plotKM.band_subgroups`, which returns a `fit` object alongside the KM difference plot.
 3. **Compute cumulative RMST bands** via `cumulative_rmst_bands`, passing the `fit` object from step 2.
 

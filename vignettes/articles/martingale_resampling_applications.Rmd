@@ -68,7 +68,7 @@ The weighted log-rank (WLR) statistic of class $K^{+}$ is
 $$W_K = \int_0^{\infty} \left\{ \frac{K(t)}{\bar{Y}_0(t)} d\bar{N}_0(t) - \frac{K(t)}{\bar{Y}_1(t)} d\bar{N}_1(t) \right\}
 = \int_0^{\infty} K(t)\, d\left\{\hat\Lambda_0(t) - \hat\Lambda_1(t)\right\},$$
 
-where $K(t) = \sqrt{\frac{n_0 + n_1}{n_0 n_1}}\, w(t)\, \frac{\bar{Y}_0(t)\, \bar{Y}_1(t)}{\bar{Y}_0(t) + \bar{Y}_1(t)}$ with Fleming--Harrington weights $w(t) = [\hat{\bar{F}}(t^{-})]^{\rho}[1 - \hat{\bar{F}}(t^{-})]^{\gamma}$, $\rho \geq 0$, $\gamma \geq 0$.
+where $K(t) = w(t)\, \frac{\bar{Y}_0(t)\, \bar{Y}_1(t)}{\bar{Y}_0(t) + \bar{Y}_1(t)}$, as `score_calculation()` computes it (without a factor $\sqrt{(n_0 + n_1)/(n_0 n_1)}$; such a constant factor would multiply the statistic and its standard error alike, so the z-statistic is unchanged by it), with Fleming--Harrington weights $w(t) = [\hat{\bar{F}}(t^{-})]^{\rho}[1 - \hat{\bar{F}}(t^{-})]^{\gamma}$, $\rho \geq 0$, $\gamma \geq 0$.
 
 
 ## Martingale Representation

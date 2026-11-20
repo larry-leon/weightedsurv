@@ -40,14 +40,14 @@ devtools::install_github("larry-leon/weightedsurv")
 
 ## Weighting Schemes
 
-The package supports multiple weighting schemes for weighted log-rank tests:
+The package supports multiple weighting schemes for weighted log-rank tests (S is the pooled Kaplan-Meier curve, S(t-) its left-continuous version; see `wt.rg.S()`):
  
 | Scheme | Description | Use Case |
 |--------|-------------|----------|
-| Fleming-Harrington (fh) | w(t) = S(t)^ρ × (1-S(t))^γ | Emphasize early (ρ>0) or late (γ>0) differences |
-| Magirr-Burman (MB) | w(t) = 1/max(S(t), S(t*)) | Modest downweighting after cutoff time |
-| Schemper | w(t) = S(t)/G(t) | Adjust for informative censoring |
-| Xu-O'Quigley (XO) | w(t) = S(t)/Y(t) | Adjust for risk set size |
+| Fleming-Harrington (fh) | w(t) = S(t-)^ρ × (1-S(t-))^γ | Emphasize early (ρ>0) or late (γ>0) differences |
+| Magirr-Burman (MB) | w(t) = 1/max(S(t-), S(t*)) | Weight rises until the cutoff time t* and is constant after it |
+| Schemper | w(t) = S(t-)/G(t-), G the censoring K-M curve | Average hazard ratio approximately free of the censoring distribution |
+| Xu-O'Quigley (XO) | w(t) = S(t-)/Y(t), Y the number at risk | Adjust for risk set size |
 | Custom time-based | Step function weights | Pre-specified time-based weighting |
 
 ## Usage
@@ -270,6 +270,8 @@ You can also browse vignettes online at the [CRAN package page](https://CRAN.R-p
 - pammtools
 - rmarkdown
 - testthat (>= 3.1.7)
+
+The website articles need further packages, listed in the `Config/Needs/website` field of `DESCRIPTION`.
 
 ## References
 
