@@ -201,6 +201,12 @@
   carry most of the weight; standard errors, intervals and tests can then be too optimistic. No
   existing element changes and no warning depends on it. (Ra)
 
+* `ps_weights()` has the arguments `formula` and `data` (the logistic propensity model is fitted
+  by `glm()`), `model` (a fitted logistic `glm`, in place of `formula` and `data`) and
+  `type = c("ipw", "stabilized")`. The result has class `"ps_weights"` with a `print()` method
+  (`print.ps_weights()`) that shows, by arm, the number of subjects, the smallest and largest
+  weight, the effective sample size and its ratio to the number of subjects.
+
 ## Bug fixes
 
 * Stratified `df_counting()` no longer depends on `survival` being attached or recent enough to
@@ -218,3 +224,9 @@
 
 * Internal tidying with no change in results: a local function inside `df_counting()` no longer
   shadows the exported `check_km_curve()`, and unused code was removed. (V)
+
+## Documentation
+
+* The vignettes and articles were revised for 0.2.0: the Rotterdam example now uses postmenopausal
+  women without chemotherapy and `ps_weights()` with `weight_variance = "estimated"`; effective
+  sample size tables were added; a new article gives the statistical details of estimated weights.

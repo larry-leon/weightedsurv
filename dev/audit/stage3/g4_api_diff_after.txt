@@ -1,0 +1,47 @@
+Exports at v0.1.0: 46  at HEAD: 47 
+Exports removed:  
+Exports added:
+   ps_weights   in NEWS.md: TRUE 
+S3 methods added:
+   print.ps_weights   in NEWS.md: TRUE 
+
+Arguments of exported functions (present at both):
+ fun                   change          arg            
+ cumulative_rmst_bands argument added  mean_rule      
+ cumulative_rmst_bands argument added  weight_variance
+ cumulative_rmst_bands argument added  weight_model   
+ df_counting           argument added  weight_variance
+ df_counting           argument added  weight_model   
+ KM_diff               argument added  weight_variance
+ KM_diff               argument added  weight_model   
+ KM_diff               default changed show_resamples 
+ plotKM.band_subgroups argument added  weight_variance
+ plotKM.band_subgroups argument added  weight_model   
+ plotKM.band_subgroups default changed draws          
+ plotKM.band_subgroups default changed draws.band     
+ detail                      arg_in_NEWS
+ c("trapezoid", "rectangle") TRUE       
+ c("known", "estimated")     TRUE       
+ NULL                        TRUE       
+ c("known", "estimated")     TRUE       
+ NULL                        TRUE       
+ c("known", "estimated")     TRUE       
+ NULL                        TRUE       
+ TRUE -> FALSE               TRUE       
+ c("known", "estimated")     TRUE       
+ NULL                        TRUE       
+ 20 -> 0                     TRUE       
+ 20 -> 1000                  TRUE       
+
+Arguments of the added exports (named inside a code span of NEWS.md):
+   ps_weights ( formula )  in NEWS.md: TRUE 
+   ps_weights ( data )  in NEWS.md: TRUE 
+   ps_weights ( type )  in NEWS.md: TRUE 
+   ps_weights ( model )  in NEWS.md: TRUE 
+
+Added exports, S3 methods or arguments not named in NEWS.md:
+  none
+
+DESCRIPTION Version: 0.2.0 
+First heading of NEWS.md: # weightedsurv 0.2.0 
+cran-comments.md exists: FALSE  names 0.2.0: FALSE 
