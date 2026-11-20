@@ -11,8 +11,9 @@ FILES <- c(examples = "vignettes/weightedsurv_examples.Rmd",
            coxmeth = "vignettes/articles/weightedcox_methodology.Rmd",
            kmmeth = "vignettes/articles/weightedkm_methodology.Rmd",
            rmstmeth = "vignettes/articles/weightedrmst_methodology.Rmd",
-           sims = "vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd")
-which_files <- if (length(args) > 2) args[-(1:2)] else setdiff(names(FILES), "sims")
+           sims = "vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd",
+           ewmeth = "vignettes/articles/estimated_weights_methodology.Rmd")
+which_files <- if (length(args) > 2) args[-(1:2)] else setdiff(names(FILES), c("sims", "ewmeth"))
 .libPaths(c(lib, .libPaths()))
 dir.create(outdir, recursive = TRUE, showWarnings = FALSE); outdir <- normalizePath(outdir)
 status <- 0
