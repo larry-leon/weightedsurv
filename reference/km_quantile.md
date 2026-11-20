@@ -1,7 +1,12 @@
 # Kaplan-Meier quantile and confidence interval
 
 Calculates the quantile and confidence interval for a Kaplan-Meier
-curve.
+curve. The quantile is the time at which survival drops to `qprob` (see
+[`kmq_calculations`](https://larry-leon.github.io/weightedsurv/reference/kmq_calculations.md));
+the limits are the same quantity read from the log-transform pointwise
+limits of the curve (upper limit capped at 1, NA where S = 0), as
+[`survival::quantile.survfit`](https://rdrr.io/pkg/survival/man/quantile.survfit.html)
+does with `conf.type = "log"`.
 
 ## Usage
 
@@ -32,7 +37,8 @@ km_quantile(
 
 - qprob:
 
-  Quantile probability (default 0.5).
+  Survival level (default 0.5): the quantile is the time at which S
+  drops to `qprob`.
 
 - type:
 

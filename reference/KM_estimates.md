@@ -1,7 +1,9 @@
 # Kaplan-Meier Survival Estimates and Variance
 
 Computes Kaplan-Meier survival estimates and their variances given risk
-and event counts.
+and event counts. Survival is returned in \[0, 1\]; when everything
+still at risk fails at a time point, survival is exactly 0 from there on
+and so is its variance.
 
 ## Usage
 
@@ -17,7 +19,7 @@ KM_estimates(ybar, nbar, sig2w_multiplier = NULL)
 
 - nbar:
 
-  Vector of event counts at each time point.
+  Vector of cumulative event counts at each time point.
 
 - sig2w_multiplier:
 
@@ -27,3 +29,10 @@ KM_estimates(ybar, nbar, sig2w_multiplier = NULL)
 ## Value
 
 List with survival estimates and variances.
+
+## Details
+
+The result is the Kaplan-Meier estimate only when the time points behind
+`ybar` and `nbar` include every event time of the group (see
+[`KM_diff`](https://larry-leon.github.io/weightedsurv/reference/KM_diff.md),
+which arranges this for any `at_points`).

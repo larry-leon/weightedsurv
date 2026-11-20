@@ -122,7 +122,9 @@ weighting schemes for weighted log-rank tests:
 
 - Magirr-Burman (MB):
 
-  w(t) = 1/max(S(t-), S(t\*)).
+  w(t) = 1/max(S(t-), S(t\*)), with S(t\*) the survival at the last time
+  point \<= t\* (carried forward when t\* is at or beyond the last
+  point); 0 where both are 0.
 
 - Custom time:
 
@@ -150,7 +152,8 @@ Medicine, 28(19), 2473-2489.
 Other survival_analysis:
 [`KM_diff()`](https://larry-leon.github.io/weightedsurv/reference/KM_diff.md),
 [`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md),
-[`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md)
+[`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md),
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
 
 Other weighted_tests:
 [`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md),

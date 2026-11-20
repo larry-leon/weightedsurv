@@ -2,6 +2,7 @@
 <url><loc>https://larry-leon.github.io/weightedsurv/404.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/LICENSE-text.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/LICENSE.html</loc></url>
+<url><loc>https://larry-leon.github.io/weightedsurv/articles/estimated_weights_methodology.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/articles/index.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/articles/martingale_resampling_applications.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/articles/weightedcox_methodology.html</loc></url>
@@ -11,6 +12,7 @@
 <url><loc>https://larry-leon.github.io/weightedsurv/articles/weightedsurv_examples.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/authors.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/index.html</loc></url>
+<url><loc>https://larry-leon.github.io/weightedsurv/news/index.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/KM_diff.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/KM_estimates.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/KM_plot_2sample_weighted_counting.html</loc></url>
@@ -49,6 +51,7 @@
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/plot_km_curves_counting.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/plot_weight_schemes.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/plot_weighted_km.html</loc></url>
+<url><loc>https://larry-leon.github.io/weightedsurv/reference/ps_weights.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/resampling_survival.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/risk_weighted.html</loc></url>
 <url><loc>https://larry-leon.github.io/weightedsurv/reference/safe_run.html</loc></url>

@@ -107,7 +107,7 @@ check_results(result)
 #>       zlr_sq logrank_chisq     zCox_sq
 #>  0.008227343   0.008227343 0.008227343
 #> 
-#> Relative difference: 1.423e-11%
+#> Relative difference: 8.518e-12%
 
 # Store results without printing
 stats_comparison <- check_results(result, verbose = FALSE)

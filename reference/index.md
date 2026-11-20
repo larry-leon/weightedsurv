@@ -8,6 +8,10 @@ Create counting-process datasets for survival analysis
   : Weighted and Stratified Survival Analysis
 - [`get_dfcounting()`](https://larry-leon.github.io/weightedsurv/reference/get_dfcounting.md)
   : Get df_counting results
+- [`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+  [`print(`*`<ps_weights>`*`)`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+  : Propensity-score weights with the pieces needed to carry their
+  estimation into the inference
 - [`extract_group_data()`](https://larry-leon.github.io/weightedsurv/reference/extract_group_data.md)
   : Extract time, event, and weight data for a group
 - [`get_event_risk_matrices()`](https://larry-leon.github.io/weightedsurv/reference/get_event_risk_matrices.md)

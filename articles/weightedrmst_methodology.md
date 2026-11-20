@@ -130,6 +130,27 @@ a sum of rectangular areas:
 where $`t_1 < t_2 < \cdots < t_K`$ are the distinct event times up to
 $`\tau`$, with the convention $`t_0 = 0`$ and $`\hat{S}(t_0) = 1`$.
 
+In `cumulative_rmst_bands`, the cumulative RMST difference
+$`\hat{\Delta}(s_j)`$ is computed on the time grid
+$`s_1 \le s_2 \le \cdots`$ of the `KM_diff` fit, from the difference
+$`\hat{\delta}(t) = \hat{S}_1(t) - \hat{S}_0(t)`$, with
+$`\hat{\Delta}(s_1) = 0`$. By default (`mean_rule = "trapezoid"`) each
+step is integrated with the trapezoid rule,
+``` math
+\hat{\Delta}(s_j) = \sum_{k=2}^{j} \tfrac{1}{2}\{\hat{\delta}(s_{k-1}) + \hat{\delta}(s_k)\}(s_k - s_{k-1}),
+```
+which differs slightly from the exact area under the step functions
+above. With `mean_rule = "rectangle"` the left-rectangle sum
+``` math
+\hat{\Delta}(s_j) = \sum_{k=2}^{j} \hat{\delta}(s_{k-1})(s_k - s_{k-1})
+```
+is used. It is the exact area, and equals the difference of the
+restricted means from
+[`survival::survfit`](https://rdrr.io/pkg/survival/man/survfit.html),
+when the grid holds every event time, as the default `KM_diff` grid does
+(not when the fit was made with `modify_tau = TRUE`). The same rule is
+applied to every resampled curve.
+
 By the uniform consistency of the KM estimator (Gill 1983),
 $`\hat{\mu}(\tau)`$ is uniformly consistent for $`\mu(\tau)`$ over the
 interval $`[0, \tau]`$ where $`P(X > \tau) > 0`$.
@@ -162,8 +183,16 @@ number at risk just prior to $`t_k`$.
 
 This formula follows from the same martingale central limit theorem that
 underpins Greenwood’s formula for $`\hat{S}(t)`$, and is the standard
-variance estimator for RMST implemented in the `survRM2` package and in
-`weightedsurv`.
+analytic variance estimator for RMST at a single $`\tau`$ (as
+implemented in the `survRM2` package).
+
+`weightedsurv` does not use this formula. In `cumulative_rmst_bands` the
+variance of the cumulative RMST difference at each time point is a
+resampling variance: the resampled survival-difference curves of the
+`KM_diff` fit (`draws.band` curves) are integrated with the same rule as
+the estimate, and the variance at $`\tau`$ is the empirical variance of
+the integrated curves at $`\tau`$ (see “Simultaneous Confidence Bands
+via Martingale Resampling” below).
 
 ## The Cumulative RMST Curve
 
@@ -218,9 +247,8 @@ the perturbation-resampling (martingale resampling) method.
 
 The key to constructing simultaneous confidence bands for the RMST curve
 is to approximate the distribution of the limiting Gaussian process.
-Following Lin, Wei, and Ying (1993), Parzen, Wei, and Ying (1994), and
-Zhao et al. (2016), the perturbation-resampling method proceeds as
-follows.
+Following Lin et al. (1993), Parzen et al. (1994), and Zhao et al.
+(2016), the perturbation-resampling method proceeds as follows.
 
 The distribution of $`\sqrt{n}[\hat{S}(t) - S(t)]`$ is approximated,
 conditional on the data, by:
@@ -233,11 +261,11 @@ where $`\{Z_i,\, i = 1, \ldots, n\}`$ are i.i.d. $`N(0,1)`$ random
 variables independent of the data, and $`\hat{S}(\cdot)`$, $`Y(\cdot)`$,
 $`N_i(\cdot)`$ denote the observed quantities.
 
-The critical insight formalized by Dobler, Beyersmann, and Pauly (2017),
-is that the martingale increments $`dM_{i,j}`$ are represented by
-independent $`N(0,1)`$ random variables multiplied by the observable
-counting process increments, with unknown parameters replaced by
-consistent estimators.
+The critical insight formalized by Dobler et al. (2017), is that the
+martingale increments $`dM_{i,j}`$ are represented by independent
+$`N(0,1)`$ random variables multiplied by the observable counting
+process increments, with unknown parameters replaced by consistent
+estimators.
 
 For the RMST curve, one then considers the random process over
 $`\tau \in [0, \tau_{\max}]`$:
@@ -251,37 +279,47 @@ $`G(\cdot)`$(Zhao et al. 2016, equation (1)).
 
 ### Pointwise Confidence Intervals
 
+[`cumulative_rmst_bands()`](https://larry-leon.github.io/weightedsurv/reference/cumulative_rmst_bands.md)
+computes the intervals and bands of this section and the next for the
+difference of the two arms only, $`D(\tau) = \mu_1(\tau) - \mu_0(\tau)`$
+(section “Two-Sample Simultaneous Bands”); the one-sample formulas show
+the construction. It uses 95% intervals and bands (1.96 and the 0.95
+quantile) and has no `alpha` argument.
+
 Let $`\hat{\sigma}_R(\tau)`$ denote the standard deviation estimate for
 the distribution of $`G(\tau)`$, obtained as the empirical standard
-deviation across $`M`$ independent realizations of $`\{Z_i\}`$. For any
-$`\alpha \in (0,1)`$, a two-sided $`(1-\alpha)`$ pointwise confidence
-interval for $`\mu(\tau)`$ is:
+deviation across $`M`$ independent realizations of $`\{Z_i\}`$. A
+two-sided 95% pointwise confidence interval for $`\mu(\tau)`$ is:
 
 ``` math
-\hat{\mu}(\tau) \pm z_{1-\alpha/2}\, n^{-1/2}\, \hat{\sigma}_R(\tau).
+\hat{\mu}(\tau) \pm 1.96\, n^{-1/2}\, \hat{\sigma}_R(\tau).
 ```
 
 ### Simultaneous Confidence Bands
 
-The simultaneous, equal-precision confidence band for $`\mu(\tau)`$ over
-$`[\eta, \tau_{\max}]`$ is:
+The simultaneous, equal-precision 95% confidence band for $`\mu(\tau)`$
+over $`[\eta, \tau_{\max}]`$ is:
 
 ``` math
-\hat{\mu}(\tau) \pm c_{\alpha}\, n^{-1/2}\, \hat{\sigma}_R(\tau), \qquad \tau \in [\eta, \tau_{\max}],
+\hat{\mu}(\tau) \pm c_{0.95}\, n^{-1/2}\, \hat{\sigma}_R(\tau), \qquad \tau \in [\eta, \tau_{\max}],
 ```
 
-where the critical value $`c_{\alpha}`$ is chosen such that:
+where the critical value $`c_{0.95}`$ is chosen such that:
 
 ``` math
-P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} L^*(s)\, ds}{\hat{\sigma}_R(\tau)} \right| \leq c_{\alpha}\right) \geq 1 - \alpha.
+P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} L^*(s)\, ds}{\hat{\sigma}_R(\tau)} \right| \leq c_{0.95}\right) \geq 0.95.
 ```
 
 This is estimated empirically from $`M`$ independent realizations of the
 perturbation weights. The time interval $`[\eta, \tau_{\max}]`$ is
 chosen such that $`P(T < \eta) > 0`$ and $`P(X > \tau_{\max}) > 0`$,
-ensuring statistical validity. In practice, the `weightedsurv` package
-determines this interval from the observed quantiles of the event times
-(via the `qtau` parameter).
+ensuring statistical validity. In `cumulative_rmst_bands` the supremum
+is taken over the whole time grid of the `KM_diff` fit it is given; with
+the fit returned by `plotKM.band_subgroups` that is every time point up
+to the smaller of the two arms’ last event times, as called. No quantile
+range is trimmed (`qtau` has an effect only when the fit was made with
+`modify_tau = TRUE`). The critical value is the 0.95 quantile of the
+suprema over a second set of `draws_sb` resampled curves.
 
 ### Two-Sample Simultaneous Bands
 
@@ -293,21 +331,21 @@ $`\{Z_{1i},\, i = 1, \ldots, n_1;\; Z_{2j},\, j = 1, \ldots, n_2\}`$.
 The simultaneous confidence band is:
 
 ``` math
-\hat{D}(\tau) \pm \tilde{c}_{\alpha}\, n^{-1/2}\, \hat{\sigma}_D(\tau), \qquad \tau \in [\eta, \tau_{\max}],
+\hat{D}(\tau) \pm \tilde{c}_{0.95}\, n^{-1/2}\, \hat{\sigma}_D(\tau), \qquad \tau \in [\eta, \tau_{\max}],
 ```
 
-where $`\tilde{c}_{\alpha}`$ satisfies:
+where $`\tilde{c}_{0.95}`$ satisfies:
 
 ``` math
-P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} [L_1^*(s) - L_0^*(s)]\, ds}{\hat{\sigma}_D(\tau)} \right| \leq \tilde{c}_{\alpha}\right) \geq 1 - \alpha.
+P\left(\sup_{\tau \in [\eta, \tau_{\max}]} \left| \frac{\int_0^{\tau} [L_1^*(s) - L_0^*(s)]\, ds}{\hat{\sigma}_D(\tau)} \right| \leq \tilde{c}_{0.95}\right) \geq 0.95.
 ```
 
 This band provides uniform coverage: if the band excludes zero for an
 interval $`[\tau_a, \tau_b]`$, one can conclude that the treatment
 difference is significant over that entire range, simultaneously, at the
-$`(1-\alpha)`$ level. This is particularly useful for
-equivalence/noninferiority assessment, as demonstrated by Zhao et al.
-(2016) using the VALIANT cardiovascular trial.
+95% level. This is particularly useful for equivalence/noninferiority
+assessment, as demonstrated by Zhao et al. (2016) using the VALIANT
+cardiovascular trial.
 
 ## Extension to Weighted RMST Estimation
 
@@ -353,23 +391,46 @@ contrast $`\mu^1(\tau) - \mu^0(\tau)`$.
 
 ### Weighted Resampling for Simultaneous Bands
 
-The martingale resampling procedure extends naturally to the weighted
-setting. The weighted version of the resampled statistic for group $`j`$
-replaces unweighted counting processes with their weighted counterparts:
+The resampling procedure extends to the weighted setting through the
+resampled Kaplan–Meier curves. For each set of standard normal
+multipliers $`G_i`$, `KM_diff` produces a resampled centered survival
+difference $`\hat{\Delta}^{*}(t)`$ (see the `weightedkm_methodology`
+vignette), and the resampled cumulative RMST difference is its integral,
+computed with the same rule as the estimate:
 
 ``` math
-W^{\dagger} = \sum_{i=1}^{n_0} \int_0^{\infty} \left\{\frac{K(t)}{\bar{Y}_0^w(t)} dN_{i,0}(t)\right\} G_{i,0} - \sum_{i=1}^{n_1} \int_0^{\infty} \left\{\frac{K(t)}{\bar{Y}_1^w(t)} dN_{i,1}(t)\right\} G_{i,1},
+\hat{D}^{*}(\tau) = \int_0^{\tau} \hat{\Delta}^{*}(t)\, dt .
 ```
 
-where $`G_{i,j}`$ are i.i.d. $`N(0,1)`$ random variables,
-$`\bar{Y}_j^w(t) = \sum_{i: A_i = j} w_i Y_i(t)`$ is the weighted risk
-set, and $`K(t)`$ is the kernel function appropriate for the integrated
-RMST functional.
+Without weights, or with all weights equal, the multipliers perturb the
+event increments of each arm. With weights that are not all equal, the
+resampled curve of arm $`j`$ is built from the per-subject influence
+contributions $`\psi_i(t)`$ of the robust variance of the weighted
+Kaplan–Meier curve,
 
-The `weightedsurv` package implements this weighted resampling directly
-in the `cumulative_rmst_bands` function when a `weight.name` argument is
+``` math
+\hat{S}_j^{*}(t) - \hat{S}_j(t) = -\hat{S}_j(t) \sum_{i: A_i = j} G_i\, w_i\, \psi_i(t),
+```
+
+computed from the weighted risk set
+$`\bar{Y}_j^w(t) = \sum_{i: A_i = j} w_i Y_i(t)`$ and the weighted event
+counts, so that the RMST variance and bands are the robust ones.
+
+The `weightedsurv` package implements this in the
+`cumulative_rmst_bands` function when a `weight.name` argument is
 supplied, enabling propensity-score-adjusted RMST curves with
-simultaneous confidence bands.
+simultaneous confidence bands. By default the weights are treated as
+fixed, known numbers. For weights from a logistic propensity model,
+`weight_variance = "estimated"` with `weight_model` (the object returned
+by
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)),
+given both to the `KM_diff` or `plotKM.band_subgroups` call that makes
+the fit and to `cumulative_rmst_bands`, carries the estimation of the
+weights into the resampled curves, and so into the RMST variance, the
+pointwise limits and the band. The RMST estimate is the same under both
+options. The derivation and the statistical properties of this option
+are in the article `estimated_weights_methodology` (“Estimated
+propensity-score weights: statistical details and properties”).
 
 ## Connection to Weighted KM Survival Differences
 
@@ -442,6 +503,10 @@ incorporating subject-specific weights.
   time-to-event, event indicator, and treatment indicator.
 - `weight.name`: (Optional) Column name for subject-specific weights
   (e.g., stabilized propensity-score weights).
+- `weight_variance`, `weight_model`: (Optional) `"known"` (default) or
+  `"estimated"`, and with `"estimated"` the object returned by
+  [`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md);
+  the same option must have been used for `fit`.
 - `draws_sb`: Number of perturbation-resampling draws for simultaneous
   confidence bands (e.g., 1000).
 - `xlab`: Label for the x-axis (typically `"months"`).
@@ -459,19 +524,34 @@ lines, and the simultaneous confidence band as a shaded region.
 The standard analysis pipeline, as demonstrated in the
 `weightedsurv_examples` vignette, follows this pattern:
 
-1.  **Prepare data** via `df_counting` or `get_dfcounting`, optionally
-    with a `weight.name` for propensity-score-weighted analyses.
+1.  **Prepare the data frame** with the time, event and treatment
+    columns, and optionally a weight column (for example stabilized
+    propensity-score weights from
+    [`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)).
+    `plotKM.band_subgroups` and `cumulative_rmst_bands` take this data
+    frame (`df`, with `tte.name`, `event.name`, `treat.name` and
+    `weight.name`), not a
+    [`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md)
+    result; `cumulative_rmst_bands` also takes the
+    [`KM_diff()`](https://larry-leon.github.io/weightedsurv/reference/KM_diff.md)
+    fit made with `draws.band > 0` (`fit`).
 2.  **Compute survival difference bands** via `plotKM.band_subgroups`,
     which returns a `fit` object alongside the KM difference plot.
 3.  **Compute cumulative RMST bands** via `cumulative_rmst_bands`,
     passing the `fit` object from step 2.
 
 ``` r
+
+# Optional, for a propensity-score weighted analysis: weights from a logistic model
+pw <- ps_weights(treat ~ x1 + x2, data = df, type = "stabilized")
+df$sw.weights <- pw$weights
+
 # Step 1: Compute survival difference bands
 temp <- plotKM.band_subgroups(
   df = df, tte.name = "tte", treat.name = "treat",
   event.name = "event", weight.name = "sw.weights",
-  draws.band = 1000, qtau = 0.025
+  weight_variance = "estimated", weight_model = pw,
+  draws.band = 1000
 )
 
 # Step 2: Compute cumulative RMST bands
@@ -479,6 +559,7 @@ get_bands <- cumulative_rmst_bands(
   df = df, fit = temp$fit_itt,
   tte.name = "tte", event.name = "event",
   treat.name = "treat", weight.name = "sw.weights",
+  weight_variance = "estimated", weight_model = pw,
   draws_sb = 1000, xlab = "months"
 )
 ```
@@ -577,15 +658,15 @@ Clinical Trials When the Proportional Hazards Assumption Is in Doubt.”
 *Statistics in Medicine* 30: 2409–21.
 <https://doi.org/10.1002/sim.4274>.
 
-———. 2013. “Restricted Mean Survival Time: An Alternative to the Hazard
-Ratio for the Design and Analysis of Randomized Trials with a
-Time-to-Event Outcome.” *BMC Medical Research Methodology* 13: 152.
+Royston, Patrick, and Mahesh K. B. Parmar. 2013. “Restricted Mean
+Survival Time: An Alternative to the Hazard Ratio for the Design and
+Analysis of Randomized Trials with a Time-to-Event Outcome.” *BMC
+Medical Research Methodology* 13: 152.
 <https://doi.org/10.1186/1471-2288-13-152>.
 
-Uno, Hajime, Brian Claggett, Lu Tian, Eisuke Inoue, Paul Gallo, Tomohiro
-Miyata, Deborah Schrag, et al. 2014. “Moving Beyond the Hazard Ratio in
-Quantifying the Between-Group Difference in Survival Analysis.” *Journal
-of Clinical Oncology* 32 (22): 2380–85.
+Uno, Hajime, Brian Claggett, Lu Tian, et al. 2014. “Moving Beyond the
+Hazard Ratio in Quantifying the Between-Group Difference in Survival
+Analysis.” *Journal of Clinical Oncology* 32 (22): 2380–85.
 <https://doi.org/10.1200/JCO.2014.55.2208>.
 
 Uno, Hajime, Lu Tian, Brian Claggett, and L. J. Wei. 2015. “A Versatile
@@ -593,7 +674,6 @@ Test for Equality of Two Survival Functions Based on Weighted
 Differences of Kaplan–Meier Curves.” *Statistics in Medicine* 34 (28):
 3680–95. <https://doi.org/10.1002/sim.6591>.
 
-Zhao, Lihui, Brian Claggett, Lu Tian, Hajime Uno, Marc A. Pfeffer, Scott
-D. Solomon, Lorenzo Trippa, and L. J. Wei. 2016. “On the Restricted Mean
-Survival Time Curve in Survival Analysis.” *Biometrics* 72 (1): 215–21.
-<https://doi.org/10.1111/biom.12384>.
+Zhao, Lihui, Brian Claggett, Lu Tian, et al. 2016. “On the Restricted
+Mean Survival Time Curve in Survival Analysis.” *Biometrics* 72 (1):
+215–21. <https://doi.org/10.1111/biom.12384>.

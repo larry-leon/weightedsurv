@@ -293,7 +293,7 @@ KM_plot_2sample_weighted_counting(
 
 - time.zero:
 
-  Numeric; time zero value for risk table alignment (default: 0).
+  Numeric; time at which the curves start at S = 1 (default: 0).
 
 - prob.points:
 

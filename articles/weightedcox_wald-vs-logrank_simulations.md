@@ -26,6 +26,7 @@ null.
 ## Simulation Helper Functions
 
 ``` r
+
 library(weightedsurv)
 library(survival)
 library(dplyr)
@@ -601,9 +602,12 @@ sim_fn_analysis <- function(scen, enroll_rate, dropout_rate, fr,
 
 The `sim_fn_analysis()` function produces a single-row data frame per
 simulated trial containing z-statistics from both `simtrial` (weighted
-log-rank) and `weightedsurv` (weighted Cox / Wald), enabling
-cross-validation of implementations. The following tables document the
-full set of output variables.
+log-rank) and `weightedsurv` (the standardized score of the weighted Cox
+model at $`\beta = 0`$, that is the weighted log-rank z, from
+[`cox_rhogamma()`](https://larry-leon.github.io/weightedsurv/reference/cox_rhogamma.md)),
+together with the weighted Cox estimates, enabling cross-validation of
+implementations. The following tables document the full set of output
+variables.
 
 #### Z-Statistic Definitions
 
@@ -613,39 +617,39 @@ full set of output variables.
 | Variable | Weighting Scheme | Package | Function Call | Notes |
 | Log-rank |  |  |  |  |
 | logrankz | FH(0, 0) | simtrial | maxcombo(rho=0, gamma=0) | Sign reversed (−z) |
-| fh00z_mine | FH(0, 0) | weightedsurv | cox_rhogamma(scheme='fh', rho=0, gamma=0) | Wald z from weighted Cox |
+| fh00z_mine | FH(0, 0) | weightedsurv | cox_rhogamma(scheme='fh', rho=0, gamma=0) | Score z (weighted log-rank) from weighted Cox |
 | fh00z_debiased | FH(0, 0) | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | FH(0, 0.5) |  |  |  |  |
 | fh05z | FH(0, 0.5) | simtrial | maxcombo(rho=0, gamma=0.5) | Sign reversed (−z) |
-| fh05z_mine | FH(0, 0.5) | weightedsurv | cox_rhogamma(scheme='fh', rho=0, gamma=0.5) | Wald z from weighted Cox |
+| fh05z_mine | FH(0, 0.5) | weightedsurv | cox_rhogamma(scheme='fh', rho=0, gamma=0.5) | Score z (weighted log-rank) from weighted Cox |
 | fh05z_debiased | FH(0, 0.5) | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | FH(0, 1) |  |  |  |  |
 | fh01z | FH(0, 1) | simtrial | wlr(weight=fh(rho=0, gamma=1)) |  |
-| fh01z_mine | FH(0, 1) | weightedsurv | cox_rhogamma(scheme='fh', rho=0, gamma=1) | Wald z from weighted Cox |
+| fh01z_mine | FH(0, 1) | weightedsurv | cox_rhogamma(scheme='fh', rho=0, gamma=1) | Score z (weighted log-rank) from weighted Cox |
 | fh01z_debiased | FH(0, 1) | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | MB(6) |  |  |  |  |
 | mb6z | Magirr–Burman (τ=6) | simtrial | wlr(weight=mb(delay=6)) | t\* = 6 months |
 | mb6z_mine | Magirr–Burman (τ=6) | weightedsurv | cox_rhogamma(scheme='MB', mb_tstar=6) | z only (no draws) |
 | MB(12) |  |  |  |  |
 | mb12z | Magirr–Burman (τ=12) | simtrial | wlr(weight=mb(delay=12)) | t\* = 12 months |
-| mb12z_mine | Magirr–Burman (τ=12) | weightedsurv | cox_rhogamma(scheme='MB', mb_tstar=12) | Wald z from weighted Cox |
+| mb12z_mine | Magirr–Burman (τ=12) | weightedsurv | cox_rhogamma(scheme='MB', mb_tstar=12) | Score z (weighted log-rank) from weighted Cox |
 | mb12z_debiased | Magirr–Burman (τ=12) | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | MB(16) |  |  |  |  |
 | mb16z | Magirr–Burman (τ=16) | simtrial | wlr(weight=mb(delay=16)) | t\* = 16 months |
 | mb16z_mine | Magirr–Burman (τ=16) | weightedsurv | cox_rhogamma(scheme='MB', mb_tstar=16) | z only (no draws) |
 | FH-exp₁ |  |  |  |  |
-| fhe1z | FH exponential variant 1 | weightedsurv | cox_rhogamma(scheme='fh_exp1') | Wald z from weighted Cox |
+| fhe1z | FH exponential variant 1 | weightedsurv | cox_rhogamma(scheme='fh_exp1') | Score z (weighted log-rank) from weighted Cox |
 | fhe1z_debiased | FH exponential variant 1 | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | FH-exp₂ |  |  |  |  |
-| fhe2z | FH exponential variant 2 | weightedsurv | cox_rhogamma(scheme='fh_exp2') | Wald z from weighted Cox |
+| fhe2z | FH exponential variant 2 | weightedsurv | cox_rhogamma(scheme='fh_exp2') | Score z (weighted log-rank) from weighted Cox |
 | fhe2z_debiased | FH exponential variant 2 | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | Zero-one(6) |  |  |  |  |
-| t601z | Zero–one step (τ=6) | weightedsurv | cox_rhogamma(scheme='custom_time', t.tau=6, w0=0, w1=1) | Wald z from weighted Cox |
+| t601z | Zero–one step (τ=6) | weightedsurv | cox_rhogamma(scheme='custom_time', t.tau=6, w0=0, w1=1) | Score z (weighted log-rank) from weighted Cox |
 | t601z_debiased | Zero–one step (τ=6) | weightedsurv | cox_rhogamma(..., draws=M) | Martingale de-biased |
 | MaxCombo |  |  |  |  |
 | maxcombop | MaxCombo | simtrial | maxcombo(rho=c(0,0), gamma=c(0,0.5)) | p-value (not a z-statistic) |
-| *M* = `mart_draws` (default 300). De-biased variants use the martingale-residual bootstrap of Xu & O’Quigley. |  |  |  |  |
-| Sign convention: [`maxcombo()`](https://merck.github.io/simtrial/reference/maxcombo.html) returns z \< 0 for treatment benefit; reversed here (−z) so large positive z = superiority. [`wlr()`](https://merck.github.io/simtrial/reference/wlr.html) already follows this convention. |  |  |  |  |
+| *M* = `mart_draws` (200 in the stored run below; the default of `sim_fn_analysis()` is 300). De-biased variants subtract the mean of the *M* martingale-resampled values from the estimate (or score). |  |  |  |  |
+| Sign convention: `maxcombo()` returns z \< 0 for treatment benefit; reversed here (−z) so large positive z = superiority. `wlr()` already follows this convention. |  |  |  |  |
 
 [ Code](#collapse-zstatdefinitions)
 
@@ -655,26 +659,26 @@ library(gt)
 z_defs <- tibble::tribble(
   ~group,          ~variable,          ~scheme,                            ~source,        ~fn_call,                                                        ~notes,
   "Log-rank",      "logrankz",         "FH(0, 0)",                         "simtrial",     "maxcombo(rho=0, gamma=0)",                                      "Sign reversed (\u2212z)",
-  "Log-rank",      "fh00z_mine",       "FH(0, 0)",                         "weightedsurv", "cox_rhogamma(scheme='fh', rho=0, gamma=0)",                     "Wald z from weighted Cox",
+  "Log-rank",      "fh00z_mine",       "FH(0, 0)",                         "weightedsurv", "cox_rhogamma(scheme='fh', rho=0, gamma=0)",                     "Score z (weighted log-rank) from weighted Cox",
   "Log-rank",      "fh00z_debiased",   "FH(0, 0)",                         "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
   "FH(0, 0.5)",    "fh05z",            "FH(0, 0.5)",                       "simtrial",     "maxcombo(rho=0, gamma=0.5)",                                    "Sign reversed (\u2212z)",
-  "FH(0, 0.5)",    "fh05z_mine",       "FH(0, 0.5)",                       "weightedsurv", "cox_rhogamma(scheme='fh', rho=0, gamma=0.5)",                   "Wald z from weighted Cox",
+  "FH(0, 0.5)",    "fh05z_mine",       "FH(0, 0.5)",                       "weightedsurv", "cox_rhogamma(scheme='fh', rho=0, gamma=0.5)",                   "Score z (weighted log-rank) from weighted Cox",
   "FH(0, 0.5)",    "fh05z_debiased",   "FH(0, 0.5)",                       "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
   "FH(0, 1)",      "fh01z",            "FH(0, 1)",                         "simtrial",     "wlr(weight=fh(rho=0, gamma=1))",                                "",
-  "FH(0, 1)",      "fh01z_mine",       "FH(0, 1)",                         "weightedsurv", "cox_rhogamma(scheme='fh', rho=0, gamma=1)",                     "Wald z from weighted Cox",
+  "FH(0, 1)",      "fh01z_mine",       "FH(0, 1)",                         "weightedsurv", "cox_rhogamma(scheme='fh', rho=0, gamma=1)",                     "Score z (weighted log-rank) from weighted Cox",
   "FH(0, 1)",      "fh01z_debiased",   "FH(0, 1)",                         "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
   "MB(6)",         "mb6z",             "Magirr\u2013Burman (\u03C4=6)",     "simtrial",     "wlr(weight=mb(delay=6))",                                       "t* = 6 months",
   "MB(6)",         "mb6z_mine",        "Magirr\u2013Burman (\u03C4=6)",     "weightedsurv", "cox_rhogamma(scheme='MB', mb_tstar=6)",                          "z only (no draws)",
   "MB(12)",        "mb12z",            "Magirr\u2013Burman (\u03C4=12)",    "simtrial",     "wlr(weight=mb(delay=12))",                                      "t* = 12 months",
-  "MB(12)",        "mb12z_mine",       "Magirr\u2013Burman (\u03C4=12)",    "weightedsurv", "cox_rhogamma(scheme='MB', mb_tstar=12)",                         "Wald z from weighted Cox",
+  "MB(12)",        "mb12z_mine",       "Magirr\u2013Burman (\u03C4=12)",    "weightedsurv", "cox_rhogamma(scheme='MB', mb_tstar=12)",                         "Score z (weighted log-rank) from weighted Cox",
   "MB(12)",        "mb12z_debiased",   "Magirr\u2013Burman (\u03C4=12)",    "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
   "MB(16)",        "mb16z",            "Magirr\u2013Burman (\u03C4=16)",    "simtrial",     "wlr(weight=mb(delay=16))",                                      "t* = 16 months",
   "MB(16)",        "mb16z_mine",       "Magirr\u2013Burman (\u03C4=16)",    "weightedsurv", "cox_rhogamma(scheme='MB', mb_tstar=16)",                         "z only (no draws)",
-  "FH-exp\u2081",  "fhe1z",            "FH exponential variant 1",          "weightedsurv", "cox_rhogamma(scheme='fh_exp1')",                                 "Wald z from weighted Cox",
+  "FH-exp\u2081",  "fhe1z",            "FH exponential variant 1",          "weightedsurv", "cox_rhogamma(scheme='fh_exp1')",                                 "Score z (weighted log-rank) from weighted Cox",
   "FH-exp\u2081",  "fhe1z_debiased",   "FH exponential variant 1",          "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
-  "FH-exp\u2082",  "fhe2z",            "FH exponential variant 2",          "weightedsurv", "cox_rhogamma(scheme='fh_exp2')",                                 "Wald z from weighted Cox",
+  "FH-exp\u2082",  "fhe2z",            "FH exponential variant 2",          "weightedsurv", "cox_rhogamma(scheme='fh_exp2')",                                 "Score z (weighted log-rank) from weighted Cox",
   "FH-exp\u2082",  "fhe2z_debiased",   "FH exponential variant 2",          "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
-  "Zero-one(6)",   "t601z",            "Zero\u2013one step (\u03C4=6)",     "weightedsurv", "cox_rhogamma(scheme='custom_time', t.tau=6, w0=0, w1=1)",       "Wald z from weighted Cox",
+  "Zero-one(6)",   "t601z",            "Zero\u2013one step (\u03C4=6)",     "weightedsurv", "cox_rhogamma(scheme='custom_time', t.tau=6, w0=0, w1=1)",       "Score z (weighted log-rank) from weighted Cox",
   "Zero-one(6)",   "t601z_debiased",   "Zero\u2013one step (\u03C4=6)",     "weightedsurv", "cox_rhogamma(..., draws=M)",                                    "Martingale de-biased",
   "MaxCombo",      "maxcombop",        "MaxCombo",                          "simtrial",     "maxcombo(rho=c(0,0), gamma=c(0,0.5))",                          "p-value (not a z-statistic)"
 )
@@ -714,7 +718,7 @@ z_defs |>
     locations = cells_body(columns = source, rows = source == "weightedsurv")
   ) |>
   tab_source_note(
-    source_note = md("*M* = `mart_draws` (default 300). De-biased variants use the martingale-residual bootstrap of Xu & O'Quigley.")
+    source_note = md("*M* = `mart_draws` (200 in the stored run below; the default of `sim_fn_analysis()` is 300). De-biased variants subtract the mean of the *M* martingale-resampled values from the estimate (or score).")
   ) |>
   tab_source_note(
     source_note = md("Sign convention: `maxcombo()` returns z < 0 for treatment benefit; reversed here (\u2212z) so large positive z = superiority. `wlr()` already follows this convention.")
@@ -747,7 +751,7 @@ appended using the convention `{prefix}{suffix}`.
 | \_wald |  $`\exp(\hat{\beta} + z_{0.975} \hat{\sigma})`$ | Upper 95% CI bound (asymptotic) |
 | \_waldstar |  $`\exp(\hat{\beta}^* + z_{0.975} \hat{\sigma}^*)`$ | Upper 95% CI bound (de-biased) |
 | \_sigbhat |  $`\hat{\sigma}_{\text{asy}}`$ | Asymptotic SE of $`\hat{\beta}`$ |
-| \_sigbhatstar |  $`\hat{\sigma}^*`$ | De-biased SE via martingale resampling |
+| \_sigbhatstar |  $`\hat{\sigma}^*`$ | SE via martingale resampling (SD of the resampled estimates) |
 | \_cover |  $`I(\theta_0 \in \text{CI}_{\text{asy}})`$ | Coverage indicator (asymptotic CI) |
 | \_coverstar |  $`I(\theta_0 \in \text{CI}^*)`$ | Coverage indicator (de-biased CI) |
 | **Prefixes with companion estimates:** `fh00` (log-rank), `fh05` (FH(0,0.5)), `fh01` (FH(0,1)), `mb12` (MB(12)), `fhe1` (FH-exp₁), `fhe2` (FH-exp₂), `t601` (zero–one(6)). MB(6) and MB(16) produce z-statistics only. |  |  |
@@ -762,7 +766,7 @@ est_defs <- tibble::tribble(
   "_wald",          "$\\exp(\\hat{\\beta} + z_{0.975} \\hat{\\sigma})$",                   "Upper 95% CI bound (asymptotic)",
   "_waldstar",      "$\\exp(\\hat{\\beta}^* + z_{0.975} \\hat{\\sigma}^*)$",               "Upper 95% CI bound (de-biased)",
   "_sigbhat",       "$\\hat{\\sigma}_{\\text{asy}}$",                                      "Asymptotic SE of $\\hat{\\beta}$",
-  "_sigbhatstar",   "$\\hat{\\sigma}^*$",                                                  "De-biased SE via martingale resampling",
+  "_sigbhatstar",   "$\\hat{\\sigma}^*$",                                                  "SE via martingale resampling (SD of the resampled estimates)",
   "_cover",         "$I(\\theta_0 \\in \\text{CI}_{\\text{asy}})$",                        "Coverage indicator (asymptotic CI)",
   "_coverstar",     "$I(\\theta_0 \\in \\text{CI}^*)$",                                    "Coverage indicator (de-biased CI)"
 )
@@ -804,8 +808,74 @@ The `run_weighted_cox_sims()` driver accepts the scenario setup and
 analysis function, handles chunked parallel execution, and returns
 consolidated results.
 
+The full simulation takes more than an hour on 12 workers, so it is not
+run when this article is built. The article does three things instead:
+
+1.  it runs a **minimal illustration** (10 trials per scenario, 2
+    workers) at build time, only to show that the code above runs, when
+    the packages it needs (gsDesign2, simtrial, dplyr, tibble,
+    data.table, foreach, future, doFuture, parallelly and tictoc) are
+    installed and the environment variable `WS_SKIP_LIVE_SIM` is not
+    set; the fail-rate table of the section “Scenario Setup” also needs
+    these packages;
+2.  it shows the **full-run code**, which is not evaluated here;
+3.  it reads the **stored results of one full run** and draws every
+    table and figure of the Results section from that file.
+
+### Minimal run (illustration only)
+
+The chunk below is evaluated when the article is built, if those
+packages are installed and `WS_SKIP_LIVE_SIM` is not set. Its output,
+`res_demo`, shows the form of the results and is **not used** for any
+table or figure of the Results section.
+
 ``` r
-# --- This chunk is NOT evaluated during vignette build ---
+
+# --- Illustration only: evaluated at build time, 10 trials per scenario, 2 workers ---
+res_demo <- run_weighted_cox_sims(
+  sim_setup    = sim_setup,
+  analysis_fn  = sim_fn_analysis,
+  n_sim        = 10,
+  dof_approach = "multisession",
+  num_workers  = 2,
+  seedstart    = 8316951,
+  mart_draws   = 200,
+  save_results = FALSE,
+  file_togo    = NULL
+)
+```
+
+    ## 82.054 sec elapsed
+    ## Scenarios: 6 | Sims per scenario: 10 | Total tasks: 60 
+    ## Completed: 60 | Failed: 0 
+    ## Elapsed: 1.37 minutes
+
+``` r
+
+# One row per simulated trial; first columns of the first rows
+dim(res_demo$results_sims)
+```
+
+    ## [1] 60 80
+
+``` r
+
+head(res_demo$results_sims[, c("Scenario", "logrankz", "fh00z_mine", "fh01z_mine", "t601z")])
+```
+
+    ##   Scenario   logrankz fh00z_mine fh01z_mine      t601z
+    ## 1        1  1.7914435  1.7914435  1.6387124  2.0955103
+    ## 2        3  2.3371640  2.3371640  2.9453192  2.7341822
+    ## 3        5 -1.8647921 -1.8647921 -2.6905866 -2.7504960
+    ## 4        1  2.2261517  2.2261517  2.2836756  1.8450195
+    ## 5        3  1.5645888  1.5645888  2.3640539  2.4321851
+    ## 6        5  0.4869445  0.4869445  0.6039612  0.5916183
+
+### Full run (code shown, not evaluated)
+
+``` r
+
+# --- This chunk is NOT evaluated when the article is built ---
 # Run in batch mode (e.g., via Rscript or an HPC scheduler)
 
 res_out <- run_weighted_cox_sims(
@@ -819,25 +889,71 @@ res_out <- run_weighted_cox_sims(
   save_results = FALSE,
   file_togo    = NULL
 )
+
+# Keep the per-trial columns that the tables and figures below use
+# (all z-statistics that are not de-biased, and the estimates of the two tables)
+z_keep   <- grep("z", colnames(res_out$results_sims), value = TRUE)
+z_keep   <- z_keep[!grepl("debiased", z_keep)]
+est_keep <- c("fh00_wald", "fh01_wald", "t601_wald",
+              "fh00_bhat", "fh00_bhatdebiased", "fh00_sigbhat", "fh00_sigbhatstar",
+              "t601_bhat", "t601_bhatdebiased", "t601_sigbhat", "t601_sigbhatstar")
+n_total  <- length(unique(sim_setup$fr$Scenario)) * res_out$number_sims
+
+stored <- list(
+  res_out = within(res_out, results_sims <- results_sims[, c("Scenario", z_keep, est_keep)]),
+  meta = list(
+    scenario_names        = unique(sim_setup$fr$Name),
+    trials_per_scenario   = res_out$number_sims,
+    seedstart             = res_out$seedstart,
+    mart_draws            = 200,
+    num_workers           = 12,
+    n_completed           = nrow(res_out$results_sims),
+    n_failed              = n_total - nrow(res_out$results_sims),
+    elapsed_minutes       = res_out$tminutes,
+    package_version       = as.character(packageVersion("weightedsurv")),
+    package_commit        = "<git commit of the weightedsurv source used>",
+    run_date              = format(Sys.Date()),
+    columns_per_trial_run = ncol(res_out$results_sims)
+  )
+)
+saveRDS(stored, "sim_results/wald_vs_logrank_full.rds", compress = "xz")
 ```
 
-    ## 5008.624 sec elapsed
-    ## Scenarios: 6 | Sims per scenario: 5000 | Total tasks: 30000 
-    ## Completed: 30000 | Failed: 0 
-    ## Elapsed: 83.48 minutes
+### Stored full run
 
 ``` r
-# Load pre-computed simulation results (if conducted)
-# Note: adjust path to match your save_results directory 
+
+# Read the stored results of the full run; res_out is used by every chunk below
+stored  <- readRDS("sim_results/wald_vs_logrank_full.rds")
+res_out <- stored$res_out
+meta    <- stored$meta
 n_sim <- res_out$number_sims
 time_inhours <- res_out$thours
 ```
 
+Settings of the stored run (`sim_results/wald_vs_logrank_full.rds`):
+
+- scenarios: 6 (PH, 3-month delay, 6-month delay, Crossing, Weak null,
+  Strong null);
+- trials per scenario: 5,000;
+- seed (`seedstart`): 8316951; martingale draws per fit: 200; workers:
+  12;
+- package: weightedsurv 0.2.0, source commit ac76f82;
+- date of the run: 2026-11-20;
+- completed: 30,000; failed: 0.
+
+The file holds one row per simulated trial (30,000 rows) with the 27
+columns that the tables and figures below use, out of the 80 columns
+that `sim_fn_analysis()` returns.
+
 ## Results
+
+All tables and figures in this section are computed from the stored full
+run, not from the minimal run above.
 
 Simulations are based on 5,000 trials simulated for each scenario.
 Type-1 error upper bounds are 0.0293 and 0.056 for $`2.5\%`$ (1-sided)
-and $`5\%`$ (2-sided) alpha-levels. The computational time was 1.39
+and $`5\%`$ (2-sided) alpha-levels. The computational time was 1.2
 hours.
 
 ### Main 3-Test Comparison Under NPH Scenarios

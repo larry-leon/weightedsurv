@@ -1,7 +1,13 @@
 # Plot KM curves for two groups with optional confidence intervals and censoring marks
 
 Plots Kaplan-Meier survival curves for two groups, with options for
-confidence intervals and censoring marks.
+confidence intervals and censoring marks. Each curve is drawn as the
+right-continuous step function from `time.zero` (where S = 1) to the
+group's last observed time; the confidence band (log transform, upper
+limit capped at 1, closing onto the curve where S = 0) is a step band
+over the same range. The two bands are filled with semi-transparent grey
+(control) and light blue (treated), so each stays visible where they
+overlap.
 
 ## Usage
 
@@ -142,7 +148,7 @@ plot_km_curves_counting(
 
 - time.zero:
 
-  Numeric; time zero value for risk table alignment (default 0).
+  Numeric; time at which the curves start at S = 1 (default 0).
 
 - tpoints.add:
 

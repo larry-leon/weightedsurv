@@ -16,12 +16,14 @@ delayed treatment effects or crossing hazards.
 Install the released version from CRAN:
 
 ``` r
+
 install.packages("weightedsurv")
 ```
 
 Or install the development version from GitHub:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("larry-leon/weightedsurv")
 ```
@@ -31,6 +33,11 @@ devtools::install_github("larry-leon/weightedsurv")
 - **Flexible weighting schemes** for log-rank tests and Cox models
 - **Stratified analysis** support for adjusting confounders
 - **Subject-specific weights** for complex sampling designs
+- **Propensity-score weights** from
+  [`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md),
+  with standard errors, bands and tests that account for the estimation
+  of the weights (`weight_variance = "estimated"`), and the effective
+  sample size by arm (`df_counting()$ess`)
 - **Resampling-based inference** for improved small-sample properties
 - **Simultaneous confidence bands** for survival curves and differences
 - **RMST analysis** with confidence intervals
@@ -39,14 +46,16 @@ devtools::install_github("larry-leon/weightedsurv")
 ## Weighting Schemes
 
 The package supports multiple weighting schemes for weighted log-rank
-tests:
+tests (S is the pooled Kaplan-Meier curve, S(t-) its left-continuous
+version; see
+[`wt.rg.S()`](https://larry-leon.github.io/weightedsurv/reference/wt.rg.S.md)):
 
 | Scheme | Description | Use Case |
 |----|----|----|
-| Fleming-Harrington (fh) | w(t) = S(t)^ρ × (1-S(t))^γ | Emphasize early (ρ\>0) or late (γ\>0) differences |
-| Magirr-Burman (MB) | w(t) = 1/max(S(t), S(t\*)) | Modest downweighting after cutoff time |
-| Schemper | w(t) = S(t)/G(t) | Adjust for informative censoring |
-| Xu-O’Quigley (XO) | w(t) = S(t)/Y(t) | Adjust for risk set size |
+| Fleming-Harrington (fh) | w(t) = S(t-)^ρ × (1-S(t-))^γ | Emphasize early (ρ\>0) or late (γ\>0) differences |
+| Magirr-Burman (MB) | w(t) = 1/max(S(t-), S(t\*)) | Weight rises until the cutoff time t\* and is constant after it |
+| Schemper | w(t) = S(t-)/G(t-), G the censoring K-M curve | Average hazard ratio approximately free of the censoring distribution |
+| Xu-O’Quigley (XO) | w(t) = S(t-)/Y(t), Y the number at risk | Adjust for risk set size |
 | Custom time-based | Step function weights | Pre-specified time-based weighting |
 
 ## Usage
@@ -54,6 +63,7 @@ tests:
 ### Basic Survival Analysis
 
 ``` r
+
 library(weightedsurv)
 library(survival)
 
@@ -79,6 +89,7 @@ print(result$quantile_results)
 ### Weighted Log-Rank Tests
 
 ``` r
+
 # Fleming-Harrington (0,1) weights - emphasize late differences
 result_fh <- df_counting(
   df = veteran,
@@ -103,6 +114,7 @@ result_mb <- df_counting(
 ### Stratified Analysis
 
 ``` r
+
 # Stratified by cell type
 result_strat <- df_counting(
   df = veteran,
@@ -118,6 +130,7 @@ print(result_strat$z.score_stratified)
 ### Kaplan-Meier Curves
 
 ``` r
+
 # Plot KM curves with risk table
 plot_weighted_km(result, 
                  arms = c("Treatment", "Control"),
@@ -128,13 +141,15 @@ plot_weighted_km(result,
 ### Survival Difference with Confidence Bands
 
 ``` r
+
 # Calculate KM difference with simultaneous confidence bands
 km_diff <- KM_diff(
   df = veteran,
   tte.name = "time",
   event.name = "status",
   treat.name = "treat",
-  draws.band = 1000
+  draws.band = 1000,
+  show_resamples = TRUE
 )
 
 # Plot difference curve
@@ -148,6 +163,7 @@ abline(h = 0, col = "grey")
 ### Weighted Cox Model
 
 ``` r
+
 # Weighted Cox model with resampling-based inference
 cox_fit <- cox_rhogamma(
   dfcount = result,
@@ -165,6 +181,7 @@ print(cox_fit$hr_ci_star)
 ### RMST Analysis
 
 ``` r
+
 # Cumulative RMST with confidence bands
 rmst_result <- cumulative_rmst_bands(
 
@@ -179,9 +196,37 @@ rmst_result <- cumulative_rmst_bands(
 print(rmst_result$rmst_text)
 ```
 
+### Propensity-Score Weights
+
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+fits a logistic propensity model and returns the weights. Passed as
+`weight_model` with `weight_variance = "estimated"`, it carries the
+estimation of the weights into standard errors, intervals, bands and
+tests (the default, `"known"`, treats the weights as fixed numbers).
+`df_counting()$ess` gives the effective sample size by arm. The lines
+below are from the main vignette, where `df_rotterdam` (the restricted
+Rotterdam population) and the column names are defined; see the article
+[Estimated propensity-score
+weights](https://larry-leon.github.io/weightedsurv/articles/articles/estimated_weights_methodology.html)
+for the method.
+
+``` r
+
+pw <- ps_weights(treat ~ age + size + grade3 + nodes + pgr + er,
+                 data = df_rotterdam, type = "stabilized")
+pw
+df_rotterdam$sw.weights <- pw$weights
+
+dfcount_rotterdam_wtd <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, event.name=event.name, treat.name=treat.name, arms=arms, by.risk=24, 
+                                  weight.name="sw.weights", weight_variance = "estimated", weight_model = pw)
+
+knitr::kable(dfcount_rotterdam_wtd$ess, digits = c(0, 0, 1, 3))
+```
+
 ### Baseline Characteristics Table
 
 ``` r
+
 # Create publication-ready baseline table
 baseline_table <- create_baseline_table(
   data = veteran,
@@ -226,6 +271,7 @@ For detailed examples and methodological background, see the package
 vignette:
 
 ``` r
+
 # View the main vignette
 vignette("weightedsurv_examples", package = "weightedsurv")
 ```
@@ -239,17 +285,25 @@ The vignette demonstrates:
 - Subgroup analysis with overlaid ITT confidence bands
 - Weighted Cox models with multiple weighting schemes
 - Cross-trial comparisons with propensity score adjustment
-- Validation against the `survival` and `adjustedCurves` packages
+- Checks against the `survival` package (weighted Kaplan-Meier standard
+  errors agree with
+  [`survfit()`](https://rdrr.io/pkg/survival/man/survfit.html)) and a
+  comparison with the `adjustedCurves` package (the curves agree; its
+  `iptw_km` standard errors differ)
 
 You can also browse vignettes online at the [CRAN package
 page](https://CRAN.R-project.org/package=weightedsurv).
 
 ## Dependencies
 
-**Imports:** - survival - stats - graphics
+**Imports:** - ggplot2 - graphics - grDevices - rlang - stats -
+survival - utils
 
-**Suggests:** - gt (for formatted tables - ggplot2 (for weight scheme
-visualization)
+**Suggests:** - adjustedCurves - data.table - DiagrammeR - dplyr - gt -
+knitr - pammtools - rmarkdown - testthat (\>= 3.1.7)
+
+The website articles need further packages, listed in the
+`Config/Needs/website` field of `DESCRIPTION`.
 
 ## References
 

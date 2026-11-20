@@ -24,8 +24,8 @@ as implemented in the `weightedsurv` package, connecting the classical
 counting-process framework to the causal inference formulation. We draw
 extensively on the theoretical foundations established by Deng and Wang
 (2025) for the adjusted Nelson–Aalen estimator, as well as the
-martingale resampling approach of Dobler, Beyersmann, and Pauly (2017)
-used in `weightedsurv` for simultaneous confidence bands.
+martingale resampling approach of Dobler et al. (2017) used in
+`weightedsurv` for simultaneous confidence bands.
 
 ## Notation and Setup
 
@@ -222,9 +222,13 @@ asymptotically equivalent (Deng and Wang 2025).
 
 ### Practical Weight Computation
 
-In the `weightedsurv` package, propensity score weights are computed as
-stabilized IPTW weights. A practical recipe, following Cole and Hernán
-(2004) and as implemented in the `weightedsurv_examples` vignette, is:
+In the `weightedsurv` package,
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+computes propensity score weights from a logistic model for the
+treatment: inverse probability weights (`type = "ipw"`, the default) or
+stabilized weights (`type = "stabilized"`, used in the
+`weightedsurv_examples` vignette). The recipe for stabilized weights,
+following Cole and Hernán (2004), is:
 
 1.  Fit a propensity score model:
     $`\hat{e}(X_i) = \text{expit}(\hat{\beta}^T X_i)`$ via logistic
@@ -238,6 +242,13 @@ stabilized IPTW weights. A practical recipe, following Cole and Hernán
     ```
 4.  (Optional) Truncate extreme weights to reduce variance, for example
     at the 5th and 95th percentiles.
+
+Step 4 describes common practice, not the package: `weightedsurv` never
+truncates or rescales weights.
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+returns the weights of steps 1–3 as computed (it takes the marginal
+probability in step 2 as the proportion treated), and every analysis
+function uses the weight column it is given.
 
 ## Asymptotic Theory
 
@@ -280,23 +291,93 @@ where $`\psi_i^a(t)`$ is the influence function that incorporates both
 the martingale term (from the counting process) and the correction term
 (from estimating $`e(X)`$).
 
-Importantly, Deng and Wang (2025) find through simulation that the
-additional variance contribution from the estimated propensity score is
-typically small. This is because the correction term takes the form of a
-weighted martingale whose expectation is nearly zero.
+In `weightedsurv` the argument `weight_variance` says which of the two
+terms enter the standard errors, intervals, bands and tests. With
+`weight_variance = "known"` (the default) the weights are treated as
+fixed, known numbers and only the first term is used. With
+`weight_variance = "estimated"` the correction term for a logistic
+propensity model is added, from the object returned by
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+(formulas in the next section). No estimate differs between the two
+options. How the two behave (coverage, test size, interval length) was
+evaluated by simulation for this version of the package; the results are
+in the section “Simulation results by time” of the article
+`estimated_weights_methodology`.
 
 ### Variance Estimation in `weightedsurv`
 
-In the `weightedsurv` package, standard errors for the weighted KM
-estimator are computed via a robust variance formula analogous to
-Greenwood’s formula, applied to the weighted counting processes. These
-are validated against the `adjustedCurves` package and `survfit` with
-case-weights (see the `weightedsurv_examples` vignette for
-cross-checks).
+**No weights, or all weights equal.** The variance of $`\hat{S}^a(t)`$
+is Greenwood’s formula.
 
-For settings involving complex weighting and the simultaneous inference
-procedures described below, variance estimation via martingale
-resampling is preferred.
+**Weights that are not all equal: robust variance.** The variance is the
+robust (infinitesimal-jackknife) variance. With $`T_i`$, $`\Delta_i`$
+and $`w_i`$ the time, event indicator and weight of subject $`i`$ in
+group $`a`$, and the weighted risk set $`\bar{Y}_a^w(s)`$ and weighted
+event count $`d\bar{N}_a^w(s)`$ defined above,
+
+``` math
+\widehat{\text{Var}}\bigl[\hat{S}^a(t)\bigr] = \hat{S}^a(t)^2 \sum_{i: A_i = a} w_i^2\, \psi_i(t)^2, \qquad
+\psi_i(t) = \frac{\Delta_i\, I(T_i \leq t)}{\bar{Y}_a^w(T_i) - d\bar{N}_a^w(T_i)} - \sum_{s \leq \min(t,\, T_i)} \frac{d\bar{N}_a^w(s)}{\bar{Y}_a^w(s)\bigl\{\bar{Y}_a^w(s) - d\bar{N}_a^w(s)\bigr\}},
+```
+
+where the sum runs over the event times of the group and a term is 0
+when $`\bar{Y}_a^w(s) = 0`$ or
+$`\bar{Y}_a^w(s) - d\bar{N}_a^w(s) \leq 10^{-10}\, \bar{Y}_a^w(s)`$.
+$`\psi_i(t)`$ is subject $`i`$’s influence contribution to the curve.
+The resulting standard error equals that of
+`survival::survfit(weights = w, robust = TRUE)` and reduces to
+Greenwood’s formula when all weights are equal. It does not depend on
+the scale of the weights ($`w_i`$ and $`c\, w_i`$ give the same value),
+so the weights are not frequency weights: a weight of 2 is not two
+copies of the row. The weights are treated as fixed and known.
+
+**Estimated weights.**
+[`ps_weights()`](https://larry-leon.github.io/weightedsurv/reference/ps_weights.md)
+fits a logistic regression for the treatment (or takes a fitted one) and
+returns an object with the weights, the fitted probabilities
+$`\hat{e}_i`$, and two matrices with one row per subject: the influence
+$`IF_i`$ of subject $`i`$ on the fitted coefficients and the derivative
+$`dw_i`$ of the subject’s weight in the coefficients,
+
+``` math
+IF_i = \Bigl\{\sum_j x_j x_j^\top\, \hat{e}_j (1 - \hat{e}_j)\Bigr\}^{-1} x_i\, (A_i - \hat{e}_i), \qquad dw_i = -\frac{1 - \hat{e}_i}{\hat{e}_i}\, x_i \ \ (A_i = 1), \qquad dw_i = \frac{\hat{e}_i}{1 - \hat{e}_i}\, x_i \ \ (A_i = 0),
+```
+
+with $`x_i`$ the row of the model matrix (for stabilized weights $`w_i`$
+and $`dw_i`$ are multiplied by the arm proportion, which is treated as a
+fixed number). Passed as `weight_model` with
+`weight_variance = "estimated"` to
+[`df_counting()`](https://larry-leon.github.io/weightedsurv/reference/df_counting.md),
+[`KM_diff()`](https://larry-leon.github.io/weightedsurv/reference/KM_diff.md),
+[`plotKM.band_subgroups()`](https://larry-leon.github.io/weightedsurv/reference/plotKM.band_subgroups.md)
+or
+[`cumulative_rmst_bands()`](https://larry-leon.github.io/weightedsurv/reference/cumulative_rmst_bands.md),
+it adds to each subject’s contribution the term through the propensity
+model:
+
+``` math
+D_a(t) = \sum_{k: A_k = a} \psi_k(t)\, dw_k, \qquad \Phi_i^a(t) = I(A_i = a)\, w_i\, \psi_i(t) + IF_i^\top D_a(t) \quad (i = 1, \ldots, n), \qquad
+\widehat{\text{Var}}\bigl[\hat{S}^a(t)\bigr] = \hat{S}^a(t)^2 \sum_{i=1}^{n} \Phi_i^a(t)^2 .
+```
+
+Every subject contributes, also those in the other arm, through the
+model. `"estimated"` needs a logistic `glm` fitted on exactly the rows
+analysed, with the weight column equal to the weights of the object. The
+derivation and the statistical properties of this option are in the
+article `estimated_weights_methodology` (“Estimated propensity-score
+weights: statistical details and properties”).
+
+**Resampling variance.** With `draws > 0` and weights that are not all
+equal, the pointwise variance is instead the variance over `draws`
+resampling draws of $`\hat{S}^a(t) \sum_i G_i\, w_i\, \psi_i(t)`$, with
+standard normal multipliers $`G_i`$; it estimates the same quantity as
+the robust variance. This resampling-based pointwise variance is not
+available with `weight_variance = "estimated"` (`draws` must be 0); the
+simultaneous bands described below (`draws.band`) are.
+
+With concentrated weights (a low effective sample size,
+`df_counting()$ess`) the standard error can be too small under either
+option.
 
 ## Inference for Survival Differences
 
@@ -308,12 +389,18 @@ $`\hat{\Delta}(t) = \hat{S}^1(t) - \hat{S}^0(t)`$. Pointwise confidence
 intervals are constructed as:
 
 ``` math
-\hat{\Delta}(t) \pm z_{\alpha/2} \cdot \widehat{\text{se}}\bigl[\hat{\Delta}(t)\bigr],
+\hat{\Delta}(t) \pm z_{\alpha/2} \cdot \widehat{\text{se}}\bigl[\hat{\Delta}(t)\bigr].
 ```
 
-where $`\widehat{\text{se}}[\hat{\Delta}(t)]`$ is obtained from the
-(independent) variance estimates of $`\hat{S}^1(t)`$ and
-$`\hat{S}^0(t)`$.
+Without weights, and with weights treated as known, the variance of the
+difference is the sum of the variances of $`\hat{S}^1(t)`$ and
+$`\hat{S}^0(t)`$ given above. With `weight_variance = "estimated"` it is
+not the sum of the two arm variances, because the two arms share the
+coefficients of the propensity model:
+
+``` math
+\widehat{\text{Var}}\bigl[\hat{\Delta}(t)\bigr] = \sum_{i=1}^{n} \bigl\{\hat{S}^1(t)\, \Phi_i^1(t) - \hat{S}^0(t)\, \Phi_i^0(t)\bigr\}^2 .
+```
 
 ### Simultaneous Confidence Bands via Martingale Resampling
 
@@ -323,69 +410,92 @@ across a range of time points $`t`$. Simultaneous confidence bands
 guarantee coverage uniformly over an interval of time.
 
 The `weightedsurv` package implements simultaneous confidence bands
-using the martingale resampling approach of Dobler, Beyersmann, and
-Pauly (2017).
+using the martingale resampling approach of Dobler et al. (2017).
 
 #### Martingale Resampling Principle
 
-The key idea is to approximate the distribution of the centered process:
+The key idea is to approximate the distribution of the centered process
 
 ``` math
-\sqrt{n}\bigl(\hat{\Delta}(t) - \Delta(t)\bigr), \quad t \in [\tau_L, \tau_U],
+\hat{\Delta}(t) - \Delta(t)
 ```
 
-by generating resampled versions of the process. Under the null (or
-conditionally on the observed data), the martingale increments
-$`dM_{i,j}(t)`$ are replaced by their observable counterparts multiplied
-by independent standard normal variates.
+over the time range of the analysis by generating resampled versions of
+the process, conditionally on the observed data, with independent
+standard normal variates $`G_i`$ (one per subject, independent of the
+data) in the role of the unobservable martingale increments. Unknown
+quantities are replaced by their estimates (“plug-in”).
 
-The resampled process is:
+**No weights, or all weights equal.** The multipliers perturb the
+observable counting process increments. The resampled deviation of the
+curve of group $`j`$ is
 
 ``` math
-W^\dagger = \sum_{i=1}^{n_0} \int_0^\infty \frac{K(t)}{\bar{Y}_0(t)} \, dN_{i,0}(t) \cdot G_{i,0} - \sum_{i=1}^{n_1} \int_0^\infty \frac{K(t)}{\bar{Y}_1(t)} \, dN_{i,1}(t) \cdot G_{i,1},
+\hat{S}_j^{*}(t) - \hat{S}_j(t) = -\hat{S}_j(t) \sum_{i: A_i = j} G_i \int_0^t \frac{dN_i(s)}{\bar{Y}_j(s)},
 ```
 
-where $`G_{i,j}`$ are i.i.d. $`N(0,1)`$ random variables, independent of
-the data.
+so that the increments $`dN_i(s)`$ serve as proxies for the martingale
+increments.
 
-The observable counting process increments $`dN_{i,j}(t)`$ serve as
-proxies for the unobservable martingale increments, and the Gaussian
-multipliers capture the stochastic variability. Unknown nuisance
-parameters are replaced by consistent estimates (“plug-in”).
+**Weights that are not all equal.** The resampled deviation is built
+from the influence contributions $`\psi_i(t)`$ of the robust variance
+(section “Variance Estimation in `weightedsurv`”):
+
+``` math
+\hat{S}_j^{*}(t) - \hat{S}_j(t) = -\hat{S}_j(t) \sum_{i: A_i = j} G_i\, w_i\, \psi_i(t),
+```
+
+whose variance over draws is the robust variance. With
+`weight_variance = "estimated"` the sum runs over all $`n`$ subjects
+with $`\Phi_i^j(t)`$ in place of $`w_i\, \psi_i(t)`$, so that the
+resampled curves carry the estimation of the weights.
+
+In every case the resampled difference is
+$`\hat{\Delta}^{*}(t) = \{\hat{S}_1^{*}(t) - \hat{S}_1(t)\} - \{\hat{S}_0^{*}(t) - \hat{S}_0(t)\}`$,
+a draw of the centered process.
 
 #### Algorithm
 
 The procedure, as implemented in `plotKM.band_subgroups` and `KM_diff`,
 proceeds as follows:
 
-1.  Compute the observed survival difference $`\hat{\Delta}(t)`$ at each
-    event time within the quantile-trimmed range $`[t_{q_L}, t_{q_U}]`$
-    (controlled by the `qtau` parameter).
-2.  For $`b = 1, \ldots, B`$ resamples:
+1.  Compute the observed survival difference $`\hat{\Delta}(t)`$ and its
+    standard error $`\widehat{\text{se}}[\hat{\Delta}(t)]`$ at each time
+    point of the grid. In `plotKM.band_subgroups` the grid holds every
+    observed time up to the smaller of the two arms’ last event times
+    (`Maxtau` replaces that limit when supplied, and `tau_add` extends
+    it when later), so the band covers the whole range as called. No
+    quantile range is trimmed: `qtau` has an effect only with
+    `modify_tau = TRUE`, in which case the grid is a regular sequence
+    between the `qtau` and `1 - qtau` quantiles of the event times
+    (together with the risk-table time points up to the upper quantile).
+2.  For $`b = 1, \ldots, B`$ resamples (`draws.band`):
     1.  Generate $`n`$ independent $`N(0,1)`$ variates
         $`\{G_i^{(b)}\}`$.
-    2.  Compute the resampled survival difference process
-        $`\hat{\Delta}^{(b)}(t)`$ by perturbing the counting process
-        increments.
-3.  For each resample $`b`$, compute
-    $`\sup_t |\hat{\Delta}^{(b)}(t) - \hat{\Delta}(t)|`$.
+    2.  Compute the resampled centered difference
+        $`\hat{\Delta}^{*(b)}(t)`$ as described above.
+3.  For each resample $`b`$, compute the supremum of the standardized
+    process,
+    $`\sup_t |\hat{\Delta}^{*(b)}(t)| / \widehat{\text{se}}[\hat{\Delta}(t)]`$.
 4.  The $`(1-\alpha)`$ simultaneous band is:
     ``` math
-    \hat{\Delta}(t) \pm c_{1-\alpha},
+    \hat{\Delta}(t) \pm c_{1-\alpha} \cdot \widehat{\text{se}}\bigl[\hat{\Delta}(t)\bigr],
     ```
-    where $`c_{1-\alpha}`$ is the $`(1-\alpha)`$ quantile of
-    $`\sup_t |\hat{\Delta}^{(b)}(t) - \hat{\Delta}(t)|`$ over the $`B`$
-    resamples.
+    where $`c_{1-\alpha}`$ is the $`(1-\alpha)`$ quantile of the suprema
+    in step 3 over the $`B`$ resamples. The band is therefore wider
+    where the standard error is larger.
 
 #### Extension to Weighted Setting
 
-The resampling framework naturally accommodates IPTW weights. In the
-weighted case, the counting process increments are replaced by their
-weighted counterparts, and the variance proxy accounts for the
-propensity-score weights. This is operationally handled in
-`weightedsurv` by passing a `weight.name` argument to the relevant
-functions (e.g., `plotKM.band_subgroups`, `KM_diff`,
-`cumulative_rmst_bands`).
+The resampling framework accommodates IPTW weights. In the weighted case
+(weights not all equal) the resampled curves are built from the
+per-subject influence contributions, as described above, and the band is
+standardized by the robust standard error; with
+`weight_variance = "estimated"` both carry the estimation of the
+weights. This is operationally handled in `weightedsurv` by passing a
+`weight.name` argument (and, for estimated weights, `weight_variance`
+and `weight_model`) to the relevant functions (e.g.,
+`plotKM.band_subgroups`, `KM_diff`, `cumulative_rmst_bands`).
 
 ## Cumulative RMST Inference
 
@@ -443,7 +553,7 @@ probability of following the treatment regime of interest.
 
 ### Doubly-Robust Estimators
 
-Bai, Tsiatis, and O’Brien (2013) developed doubly-robust estimators for
+Bai et al. (2013) developed doubly-robust estimators for
 treatment-specific survival distributions that are consistent if
 *either* the propensity score model or a model for the survival
 distribution as a function of covariates is correctly specified. These
@@ -454,16 +564,16 @@ extensions.
 
 ### Covariate-Adjusted Log-Rank Tests
 
-In the randomized trial setting, Ye, Shao, and Yi (2024) developed
+In the randomized trial setting, Ye et al. (2024) developed
 covariate-adjusted log-rank tests with guaranteed efficiency gains over
 the unadjusted test. A key result is the universal applicability of
 their method to different randomization schemes (simple randomization,
 stratified permuted block, Pocock–Simon minimization). The weighted
 log-rank statistics in `weightedsurv` are complementary: while the
 package’s Fleming–Harrington class statistics target non-proportional
-hazards alternatives, the covariate-adjusted framework of Ye, Shao, and
-Yi (2024) targets efficiency gains through covariate adjustment under
-any hazard structure.
+hazards alternatives, the covariate-adjusted framework of Ye et al.
+(2024) targets efficiency gains through covariate adjustment under any
+hazard structure.
 
 ### Adjusted Nelson–Aalen with Retrospective Matching
 
@@ -498,6 +608,10 @@ The weighted KM methodology described above is implemented through
 several interconnected functions in the `weightedsurv` package. The key
 functions and their roles are:
 
+- **`ps_weights`**: Fits (or takes) a logistic propensity model and
+  returns inverse probability or stabilized weights, with what is needed
+  for `weight_variance = "estimated"`.
+
 - **`df_counting`** / **`get_dfcounting`**: Prepare the counting-process
   dataset from raw survival data. When a `weight.name` argument is
   supplied, these functions construct the weighted risk sets and event
@@ -520,9 +634,11 @@ functions and their roles are:
   resampling framework.
 
 For comprehensive examples demonstrating both the randomized trial
-(GBSG) and observational (Rotterdam) settings, including
-cross-validation of weighted SEs against the `adjustedCurves` and
-`survfit` packages, see the `weightedsurv_examples` vignette.
+(GBSG) and observational (Rotterdam) settings, see the
+`weightedsurv_examples` vignette. It also checks the weighted standard
+errors: those of the weighted Kaplan-Meier curves agree with
+`survival::survfit(weights = )`; the curves agree with the `iptw_km`
+method of the `adjustedCurves` package, whose standard errors differ.
 
 ## Summary
 
@@ -539,8 +655,13 @@ data via IPTW. The methodology rests on:
     curves.
 
 The `weightedsurv` package provides an integrated implementation of
-these methods, with careful attention to numerical validation against
-established packages.
+these methods. What is checked against other packages (in the
+`weightedsurv_examples` vignette): with weights that are not all equal,
+the weighted K-M standard errors equal those of
+[`survival::survfit()`](https://rdrr.io/pkg/survival/man/survfit.html)
+with the same weights; the weighted K-M curves equal those of
+`adjustedCurves` (`method = "iptw_km"`), whose standard errors differ
+from those of `weightedsurv`.
 
 ## References
 
@@ -593,10 +714,9 @@ Rosenbaum, Paul R., and Donald B. Rubin. 1983. “The Central Role of the
 Propensity Score in Observational Studies for Causal Effects.”
 *Biometrika* 70 (1): 41–55.
 
-Uno, Hajime, Brian Claggett, Lu Tian, Eiji Inoue, Peter Gallo, Toshio
-Miyata, Deborah Schrag, et al. 2014. “Moving Beyond the Hazard Ratio in
-Quantifying the Between-Group Difference in Survival Analysis.” *Journal
-of Clinical Oncology* 32 (22): 2380–85.
+Uno, Hajime, Brian Claggett, Lu Tian, et al. 2014. “Moving Beyond the
+Hazard Ratio in Quantifying the Between-Group Difference in Survival
+Analysis.” *Journal of Clinical Oncology* 32 (22): 2380–85.
 <https://doi.org/10.1200/JCO.2014.55.2208>.
 
 Winnett, Angela, and Peter Sasieni. 2002. “Adjusted Nelson–Aalen

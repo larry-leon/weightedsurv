@@ -94,6 +94,10 @@ Useful links:
 
 **Maintainer**: Larry Leon <larry.leon.05@post.harvard.edu>
 
+Authors:
+
+- Larry Leon <larry.leon.05@post.harvard.edu>
+
 ## Examples
 
 ``` r

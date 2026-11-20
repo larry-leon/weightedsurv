@@ -1,14 +1,15 @@
-pandoc: 3.6.3
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
+  articles/estimated_weights_methodology: estimated_weights_methodology.html
   articles/martingale_resampling_applications: martingale_resampling_applications.html
   articles/weightedcox_methodology: weightedcox_methodology.html
   articles/weightedcox_wald-vs-logrank_simulations: weightedcox_wald-vs-logrank_simulations.html
   articles/weightedkm_methodology: weightedkm_methodology.html
   articles/weightedrmst_methodology: weightedrmst_methodology.html
   weightedsurv_examples: weightedsurv_examples.html
-last_built: 2026-02-12T11:15Z
+last_built: 2026-11-20T21:22Z
 urls:
   reference: https://larry-leon.github.io/weightedsurv/reference
   article: https://larry-leon.github.io/weightedsurv/articles

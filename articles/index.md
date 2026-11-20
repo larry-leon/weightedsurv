@@ -19,6 +19,8 @@ weightedsurv.
   Methodology](https://larry-leon.github.io/weightedsurv/articles/weightedkm_methodology.md):
 - [Restricted Mean Survival Time Estimation
   Methodology](https://larry-leon.github.io/weightedsurv/articles/weightedrmst_methodology.md):
+- [Estimated propensity-score weights: statistical details and
+  properties](https://larry-leon.github.io/weightedsurv/articles/estimated_weights_methodology.md):
 
 ### Simulation Studies
 

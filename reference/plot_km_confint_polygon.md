@@ -1,7 +1,9 @@
 # Plot confidence interval polygon for KM curve
 
 Plots a shaded polygon representing the confidence interval for a
-Kaplan-Meier survival curve.
+Kaplan-Meier survival curve. Limits use the log transform; the upper
+limit is capped at 1 and, where survival is 0, the band closes onto the
+curve.
 
 ## Usage
 
