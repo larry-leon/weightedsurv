@@ -524,7 +524,7 @@ knitr::kable(known_vs_estimated, align = "lrrr",
 
 Reading: the hazard ratio and the RMST difference are the same in the two rows. With the weights treated as estimated the log-rank z is larger and both intervals are shorter than with the weights treated as known.
 
-Neither option is the better one in general. In the evaluation of this version of the package (`dev/audit/REPORT_km_fixes_stage2e.md` in the package repository), with evenly spread weights `"estimated"` was close to nominal and `"known"` was conservative; with concentrated weights both fell short of nominal, mostly late in follow-up, and the shortfall came from the weights. The effective sample size table shows how the weights are spread. `"known"` is kept below for the FH(0,1) and the other time-weighted Cox analyses and for the cross-trial example.
+Neither option is the better one in general. In the evaluation of this version of the package (`dev/audit/REPORT_km_fixes_stage2e.md` in the package repository), with evenly spread weights `"estimated"` was close to nominal and `"known"` was conservative; with concentrated weights both fell short of nominal, mostly late in follow-up, and the shortfall came from the weights. The effective sample size table shows how the weights are spread. `"known"` is kept below for the FH(0,1) and the other time-weighted Cox analyses and for the cross-trial example. The derivation and the statistical properties of this option are in the article `estimated_weights_methodology` ("Estimated propensity-score weights: statistical details and properties").
 
 
 # Compare GBSG experimental to Rotterdam control
