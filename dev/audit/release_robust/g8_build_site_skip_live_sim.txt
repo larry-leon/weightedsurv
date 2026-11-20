@@ -1,0 +1,400 @@
+── Installing package weightedsurv into temporary library ──────────────────────
+── Initialising site ───────────────────────────────────────────────────────────
+Copying <pkgdown>/BS5/assets/katex-auto.js to katex-auto.js
+Copying <pkgdown>/BS5/assets/lightswitch.js to lightswitch.js
+Copying <pkgdown>/BS5/assets/link.svg to link.svg
+Copying <pkgdown>/BS5/assets/pkgdown.js to pkgdown.js
+Updating deps/bootstrap-5.3.8/bootstrap.bundle.min.js
+Updating deps/bootstrap-5.3.8/bootstrap.bundle.min.js.map
+Updating deps/bootstrap-5.3.8/bootstrap.min.css
+Updating deps/bootstrap-5.3.8/font.css
+Updating deps/bootstrap-5.3.8/fonts/109cfdfecabbfbf5e2364aaceece5d12.woff2
+Updating deps/bootstrap-5.3.8/fonts/1Ptug8zYS_SKggPNyC0ITw.woff2
+Updating deps/bootstrap-5.3.8/fonts/1Ptug8zYS_SKggPNyCAIT5lu.woff2
+Updating deps/bootstrap-5.3.8/fonts/1Ptug8zYS_SKggPNyCIIT5lu.woff2
+Updating deps/bootstrap-5.3.8/fonts/1Ptug8zYS_SKggPNyCMIT5lu.woff2
+Updating deps/bootstrap-5.3.8/fonts/1Ptug8zYS_SKggPNyCkIT5lu.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCs6KVjbNBYlgoKcQ72j00.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCs6KVjbNBYlgoKcg72j00.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCs6KVjbNBYlgoKcw72j00.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCs6KVjbNBYlgoKew72j00.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCs6KVjbNBYlgoKfA72j00.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCs6KVjbNBYlgoKfw72.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCv6KVjbNBYlgoCxCvjs2yNL4U.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCv6KVjbNBYlgoCxCvjsGyN.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCv6KVjbNBYlgoCxCvjtGyNL4U.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCv6KVjbNBYlgoCxCvjvGyNL4U.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCv6KVjbNBYlgoCxCvjvWyNL4U.woff2
+Updating deps/bootstrap-5.3.8/fonts/4iCv6KVjbNBYlgoCxCvjvmyNL4U.woff2
+Updating deps/bootstrap-5.3.8/fonts/5cd426f27cf61d86c207d97f8db6cf8a.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7jsDJT9g.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7ksDJT9g.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7nsDI.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7osDJT9g.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7psDJT9g.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7qsDJT9g.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7rsDJT9g.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qN67lqDY.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qNK7lqDY.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qNa7lqDY.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qNq7lqDY.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qO67lqDY.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xK3dSBYKcSV-LCoeQqfX1RYOo3qPK7lqDY.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwkxduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwlBduz8A.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwlxdu.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmBduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmRduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmhduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmxduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwkxduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlBduz8A.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlxdu.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmBduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmRduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmhduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmxduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwkxduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlBduz8A.woff2
+Updating deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlxdu.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmBduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmRduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmhduz8A.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmxduz8A.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNBeudwk.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNReuQ.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNdeudwk.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNheudwk.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNleudwk.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNpeudwk.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR54z1Qlv-GDxkbKVQ_dFsvWNteudwk.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fO0KTet_.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fO4KTet_.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fO8KTet_.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fOAKTQ.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fOMKTet_.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fOQKTet_.woff2
+Updating deps/bootstrap-5.3.8/fonts/CSR64z1Qlv-GDxkbKVQ_fOwKTet_.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvQlMIXxw.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvUlMI.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvXlMIXxw.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvYlMIXxw.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvZlMIXxw.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvalMIXxw.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/HI_QiYsKILxRpg3hIP6sJ7fM7PqlONvblMIXxw.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlM-vWjMY.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlMOvWjMY.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlMevWjMY.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlMuvWjMY.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlOevWjMY.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevW.woff2
+Updating deps/bootstrap-5.3.8/fonts/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPuvWjMY.woff2
+Updating deps/bootstrap-5.3.8/fonts/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2
+Updating deps/bootstrap-5.3.8/fonts/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2
+Updating deps/bootstrap-5.3.8/fonts/JTUSjIg1_i6t8kCHKm459WZhyzbi.woff2
+Updating deps/bootstrap-5.3.8/fonts/JTUSjIg1_i6t8kCHKm459Wdhyzbi.woff2
+Updating deps/bootstrap-5.3.8/fonts/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBGEe.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBGEe.woff2
+Updating deps/bootstrap-5.3.8/fonts/QGYpz_kZZAGCONcK2A4bGOj8mNhN.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6u8w4BMUTPHjxsAUi-qJCY.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6u8w4BMUTPHjxsAXC-q.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6u9w4BMUTPHh6UVSwaPGR_p.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6u9w4BMUTPHh6UVSwiPGQ.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6u9w4BMUTPHh7USSwaPGR_p.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6u9w4BMUTPHh7USSwiPGQ.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6uyw4BMUTPHjx4wXg.woff2
+Updating deps/bootstrap-5.3.8/fonts/S6uyw4BMUTPHjxAwXjeu.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2
+Updating deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2
+Updating deps/bootstrap-5.3.8/fonts/XRXV3I6Li01BKofIMeaBXso.woff2
+Updating deps/bootstrap-5.3.8/fonts/XRXV3I6Li01BKofINeaB.woff2
+Updating deps/bootstrap-5.3.8/fonts/XRXV3I6Li01BKofIO-aBXso.woff2
+Updating deps/bootstrap-5.3.8/fonts/XRXV3I6Li01BKofIOOaBXso.woff2
+Updating deps/bootstrap-5.3.8/fonts/XRXV3I6Li01BKofIOuaBXso.woff2
+Updating deps/bootstrap-5.3.8/fonts/a8e2cb7ac3da2c4d38cd7c8c06ca5e46.woff2
+Updating deps/bootstrap-5.3.8/fonts/c0540813382b64c1dde636c1fa0b592a.woff2
+Updating deps/bootstrap-5.3.8/fonts/e0243c1a22ed284bb57c07b3ac886694.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqW106F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWt06F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtE6F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtU6F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtk6F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWu06F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuU6F.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuk6F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWvU6F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWxU6F15M.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS2mu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSCmu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSGmu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSKmu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSOmu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSumu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSymu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTUGmu1aB.woff2
+Updating
+deps/bootstrap-5.3.8/fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTVOmu1aB.woff2
+Updating deps/bootstrap-5.3.8/fonts/q5uGsou0JOdh94bfuQltOxU.woff2
+Updating deps/bootstrap-5.3.8/fonts/q5uGsou0JOdh94bfvQlt.woff2
+Updating deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js
+Updating deps/clipboard.js-2.0.11/clipboard.min.js
+Updating deps/font-awesome-6.5.2/css/all.css
+Updating deps/font-awesome-6.5.2/css/all.min.css
+Updating deps/font-awesome-6.5.2/css/v4-shims.css
+Updating deps/font-awesome-6.5.2/css/v4-shims.min.css
+Updating deps/font-awesome-6.5.2/webfonts/fa-brands-400.ttf
+Updating deps/font-awesome-6.5.2/webfonts/fa-brands-400.woff2
+Updating deps/font-awesome-6.5.2/webfonts/fa-regular-400.ttf
+Updating deps/font-awesome-6.5.2/webfonts/fa-regular-400.woff2
+Updating deps/font-awesome-6.5.2/webfonts/fa-solid-900.ttf
+Updating deps/font-awesome-6.5.2/webfonts/fa-solid-900.woff2
+Updating deps/font-awesome-6.5.2/webfonts/fa-v4compatibility.ttf
+Updating deps/font-awesome-6.5.2/webfonts/fa-v4compatibility.woff2
+Updating deps/headroom-0.11.0/headroom.min.js
+Updating deps/headroom-0.11.0/jQuery.headroom.min.js
+Updating deps/jquery-3.6.0/jquery-3.6.0.js
+Updating deps/jquery-3.6.0/jquery-3.6.0.min.js
+Updating deps/jquery-3.6.0/jquery-3.6.0.min.map
+Updating deps/search-1.0.0/autocomplete.jquery.min.js
+Updating deps/search-1.0.0/fuse.min.js
+Updating deps/search-1.0.0/mark.min.js
+── Building pkgdown site for package weightedsurv ──────────────────────────────
+Reading from:
+/private/tmp/claude-501/-Users-larryleon-Documents-GitHub-weightedsurv/842fadb3-cdbc-4544-b8c6-1a95681567eb/scratchpad/build/weightedsurv
+Writing to:
+/private/tmp/claude-501/-Users-larryleon-Documents-GitHub-weightedsurv/842fadb3-cdbc-4544-b8c6-1a95681567eb/scratchpad/site_skip
+── Sitrep ──────────────────────────────────────────────────────────────────────
+✔ URLs ok.
+✔ Favicons ok.
+✔ Open graph metadata ok.
+✔ Articles metadata ok.
+✔ Reference metadata ok.
+── Initialising site ───────────────────────────────────────────────────────────
+── Building home ───────────────────────────────────────────────────────────────
+Writing `authors.html`
+Reading LICENSE.md
+Writing `LICENSE.html`
+Writing `LICENSE-text.html`
+Reading README.md
+Writing `index.html`
+Writing `404.html`
+── Building function reference ─────────────────────────────────────────────────
+Writing `reference/index.html`
+Reading man/KM_diff.Rd
+Writing `reference/KM_diff.html`
+Reading man/KM_estimates.Rd
+Writing `reference/KM_estimates.html`
+Reading man/KM_plot_2sample_weighted_counting.Rd
+Writing `reference/KM_plot_2sample_weighted_counting.html`
+Reading man/N_rhogamma.Rd
+Writing `reference/N_rhogamma.html`
+Reading man/add_legends.Rd
+Writing `reference/add_legends.html`
+Reading man/add_median_annotation.Rd
+Writing `reference/add_median_annotation.html`
+Reading man/add_risk_table.Rd
+Writing `reference/add_risk_table.html`
+Reading man/calculate_risk_event_counts.Rd
+Writing `reference/calculate_risk_event_counts.html`
+Reading man/check_km_curve.Rd
+Writing `reference/check_km_curve.html`
+Reading man/check_results.Rd
+Writing `reference/check_results.html`
+Reading man/ci_cox.Rd
+Writing `reference/ci_cox.html`
+Reading man/count_weighted.Rd
+Writing `reference/count_weighted.html`
+Reading man/cox_rhogamma.Rd
+Writing `reference/cox_rhogamma.html`
+Reading man/cox_rhogamma_resample.Rd
+Writing `reference/cox_rhogamma_resample.html`
+Reading man/cox_score_rhogamma.Rd
+Writing `reference/cox_score_rhogamma.html`
+Reading man/create_baseline_table.Rd
+Writing `reference/create_baseline_table.html`
+Reading man/cumulative_rmst_bands.Rd
+Writing `reference/cumulative_rmst_bands.html`
+Reading man/df_counting.Rd
+Writing `reference/df_counting.html`
+Reading man/extract_and_calc_weights.Rd
+Writing `reference/extract_and_calc_weights.html`
+Reading man/extract_group_data.Rd
+Writing `reference/extract_group_data.html`
+Reading man/find_cox_root.Rd
+Writing `reference/find_cox_root.html`
+Reading man/format_pval.Rd
+Writing `reference/format_pval.html`
+Reading man/get_censoring_and_events.Rd
+Writing `reference/get_censoring_and_events.html`
+Reading man/get_dfcounting.Rd
+Writing `reference/get_dfcounting.html`
+Reading man/get_event_risk_matrices.Rd
+Writing `reference/get_event_risk_matrices.html`
+Reading man/get_riskpoints.Rd
+Writing `reference/get_riskpoints.html`
+Reading man/get_validated_weights.Rd
+Writing `reference/get_validated_weights.html`
+Reading man/get_weights.Rd
+Writing `reference/get_weights.html`
+Reading man/km_quantile.Rd
+Writing `reference/km_quantile.html`
+Reading man/km_quantile_table.Rd
+Writing `reference/km_quantile_table.html`
+Reading man/kmq_calculations.Rd
+Writing `reference/kmq_calculations.html`
+Reading man/plotKM.band_subgroups.Rd
+Writing `reference/plotKM.band_subgroups.html`
+Reading man/plot_km.Rd
+Writing `reference/plot_km.html`
+Reading man/plot_km_confint_polygon.Rd
+Writing `reference/plot_km_confint_polygon.html`
+Reading man/plot_km_curves_counting.Rd
+Writing `reference/plot_km_curves_counting.html`
+Reading man/plot_weight_schemes.Rd
+Writing `reference/plot_weight_schemes.html`
+Reading man/plot_weighted_km.Rd
+Writing `reference/plot_weighted_km.html`
+Reading man/ps_weights.Rd
+Writing `reference/ps_weights.html`
+Reading man/resampling_survival.Rd
+Writing `reference/resampling_survival.html`
+Reading man/risk_weighted.Rd
+Writing `reference/risk_weighted.html`
+Reading man/safe_run.Rd
+Writing `reference/safe_run.html`
+Reading man/score_calculation.Rd
+Writing `reference/score_calculation.html`
+Reading man/validate_input.Rd
+Writing `reference/validate_input.html`
+Reading man/validate_scheme_params.Rd
+Writing `reference/validate_scheme_params.html`
+Reading man/weightedsurv-package.Rd
+Writing `reference/weightedsurv-package.html`
+Reading man/wlr_cumulative.Rd
+Writing `reference/wlr_cumulative.html`
+Reading man/wlr_dhat_estimates.Rd
+Writing `reference/wlr_dhat_estimates.html`
+Reading man/wt.rg.S.Rd
+Writing `reference/wt.rg.S.html`
+── Building articles ───────────────────────────────────────────────────────────
+Writing `articles/index.html`
+Reading vignettes/articles/estimated_weights_methodology.Rmd
+Writing `articles/estimated_weights_methodology.html`
+Reading vignettes/articles/martingale_resampling_applications.Rmd
+Writing `articles/martingale_resampling_applications.html`
+Reading vignettes/articles/weightedcox_methodology.Rmd
+Writing `articles/weightedcox_methodology.html`
+Reading vignettes/articles/weightedcox_wald-vs-logrank_simulations.Rmd
+Writing `articles/weightedcox_wald-vs-logrank_simulations.html`
+Reading vignettes/articles/weightedkm_methodology.Rmd
+Writing `articles/weightedkm_methodology.html`
+Reading vignettes/articles/weightedrmst_methodology.Rmd
+Writing `articles/weightedrmst_methodology.html`
+Reading vignettes/weightedsurv_examples.Rmd
+Writing `articles/weightedsurv_examples.html`
+── Building news ───────────────────────────────────────────────────────────────
+Writing `news/index.html`
+── Building sitemap ────────────────────────────────────────────────────────────
+Writing `sitemap.xml`
+── Building docs for llms ──────────────────────────────────────────────────────
+── Building redirects ──────────────────────────────────────────────────────────
+Adding redirect from reference/print.ps_weights.html to
+reference/ps_weights.html.
+Adding redirect from reference/weightedsurv.html to
+reference/weightedsurv-package.html.
+Adding redirect from articles/articles/estimated_weights_methodology.html to
+articles/estimated_weights_methodology.html.
+Adding redirect from articles/articles/martingale_resampling_applications.html
+to articles/martingale_resampling_applications.html.
+Adding redirect from articles/articles/weightedcox_methodology.html to
+articles/weightedcox_methodology.html.
+Adding redirect from
+articles/articles/weightedcox_wald-vs-logrank_simulations.html to
+articles/weightedcox_wald-vs-logrank_simulations.html.
+Adding redirect from articles/articles/weightedkm_methodology.html to
+articles/weightedkm_methodology.html.
+Adding redirect from articles/articles/weightedrmst_methodology.html to
+articles/weightedrmst_methodology.html.
+── Building search index ───────────────────────────────────────────────────────
+── Checking for problems ───────────────────────────────────────────────────────
+── Finished building pkgdown site for package weightedsurv ─────────────────────
+── Finished building pkgdown site for package weightedsurv ─────────────────────
