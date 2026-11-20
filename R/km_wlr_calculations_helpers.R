@@ -196,7 +196,13 @@ km_quantile_table <- function(time_points, surv0, se0, surv1, se1, arms = c("tre
 #' \code{\link{KM_diff}}, section "Variance of the Kaplan-Meier estimate"). \code{sig2_dhat} then
 #' equals \code{KM_diff(draws = 0)$sig2_dhat} at that grid point. \code{score} and \code{dhat} are unchanged.
 #'
+#' With a \code{df_counting()} result made with \code{weight_variance = "estimated"}, \code{sig2.score},
+#' \code{z.score}, \code{sig2_dhat}, \code{cov_wlr_dhat} and \code{cor_wlr_dhat} carry the estimation of
+#' the weights (section "Estimated weights"); \code{sig2_dhat} then equals
+#' \code{KM_diff(weight_variance = "estimated")$sig2_dhat} at that grid point.
+#'
 #' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
+#' @inheritSection df_counting Estimated weights
 #' @export
 
 wlr_dhat_estimates <- function(dfcounting,
@@ -458,6 +464,7 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #'   \item{c_alpha_band}{Critical value for simultaneous band (if draws.band > 0)}
 #'   \item{dhat_star}{Matrix of resampled differences (if draws.band > 0)}
 #'   \item{Zdhat_star}{Standardized resampled differences (if draws.band > 0)}
+#'   \item{weight_variance}{\code{"known"} or \code{"estimated"}: how the weights were treated}
 #' }
 #'
 #' @details
@@ -495,9 +502,12 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #' draws of \eqn{\sum_i G_i w_i \psi_i(t)} (standard-normal multipliers \eqn{G_i}), which estimates
 #' the same quantity; resampled curves for weighted data are built from the same per-subject
 #' contributions (see \code{\link{resampling_survival}}).
-#' The weights are treated as fixed and known: with estimated propensity-score weights the standard
-#' error is conservative (it ignores the estimation of the weights), and when the weights are
-#' extreme (low effective sample size) it is too small.
+#' By default the weights are treated as fixed and known. For weights estimated by a logistic
+#' propensity model, \code{weight_variance = "estimated"} carries their estimation into the standard
+#' error (section "Estimated weights" of \code{\link{df_counting}}). When the weights are extreme
+#' (low effective sample size) the standard error can be too small under either option.
+#'
+#' @inheritSection df_counting Estimated weights
 #'
 #' @section Confidence Intervals vs Bands:
 #' \itemize{
@@ -507,7 +517,12 @@ resampling_survival <- function(U, W, D, at.points, draws.band, surv, G_draws) {
 #'
 #' @note Treatment must be coded as 0=control, 1=experimental, and both arms must have observations.
 #'   Missing values, non-finite or negative times and negative weights are errors (rows are never
-#'   dropped silently); zero weights are allowed and those rows contribute nothing.
+#'   dropped silently); zero weights are allowed and those rows contribute nothing: they do not
+#'   affect which variance formula runs either (whether the weights are all equal is decided on the
+#'   positive weights).
+#'
+#'   With \code{weight_variance = "estimated"} the variance of the difference is not the sum of the
+#'   two arm variances, and \code{draws} must be 0.
 #'
 #' @examples
 #' library(survival)
@@ -723,8 +738,12 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
 #'   \eqn{c_{Kz}(t) = \sum_{s \le t} K(s) \bar z(s) d\hat\Lambda(s)}{cKz(t) = sum_{s <= t} K(s) zbar(s) dL(s)};
 #'   its last value is the non-cumulative variance. A table of counts taken from a weighted analysis
 #'   does not carry the subject-level data, so it gets the earlier formula: pass the
-#'   \code{df_counting()} result itself to get the variance described below.
+#'   \code{df_counting()} result itself to get the variance described below. With a
+#'   \code{df_counting()} result made with \code{weight_variance = "estimated"}, \code{sig2.score} and
+#'   \code{z.score}, cumulative or not, carry the estimation of the weights (section "Estimated
+#'   weights"); on a bare table of counts nothing changes.
 #' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
+#' @inheritSection df_counting Estimated weights
 #' @export
 
 wlr_cumulative <- function(df_weights, scheme, scheme_params = list(rho = 0, gamma = 0), return_cumulative = FALSE) {

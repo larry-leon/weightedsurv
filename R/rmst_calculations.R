@@ -38,9 +38,15 @@
 #' second \code{\link{KM_diff}} call with \code{seedstart = 99999}. With weights that are not all
 #' equal, those resampled curves are built from the per-subject contributions of the robust
 #' variance (see \code{\link{resampling_survival}}), so the RMST variance and bands are the robust
-#' ones; with no weights or all weights equal they are unchanged. The weights are treated as fixed
-#' and known: with estimated propensity-score weights the intervals are conservative, and with
-#' extreme weights (low effective sample size) they are too narrow.
+#' ones; with no weights or all weights equal they are unchanged. By default the weights are treated
+#' as fixed and known. For weights estimated by a logistic propensity model,
+#' \code{weight_variance = "estimated"} (with the same option in the \code{KM_diff()} call that made
+#' \code{fit}; a \code{fit} made with the other option is an error) carries their estimation into both
+#' sets of resampled curves, and so into the variance, the intervals and the band (section "Estimated
+#' weights"). With extreme weights (low effective sample size) the intervals can be too narrow under
+#' either option.
+#'
+#' @inheritSection df_counting Estimated weights
 #'
 #' @return A list with elements:
 #'   \item{at_points}{Time points used for RMST calculation}
@@ -54,6 +60,7 @@
 #'   \item{rmst_time_sb_lower}{Simultaneous band lower bound}
 #'   \item{rmst_time_sb_upper}{Simultaneous band upper bound}
 #'   \item{mean_rule}{The integration rule used}
+#'   \item{weight_variance}{\code{"known"} or \code{"estimated"}: how the weights were treated}
 #'
 #' @importFrom stats quantile rnorm
 #' @importFrom utils head tail

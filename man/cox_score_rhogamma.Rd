@@ -71,8 +71,9 @@ strata. For Fleming-Harrington (0, 0) weights this is the robust variance of
 \code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
 and the same robust standard error. Results no longer depend on how the weights are scaled
 (weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
-The weights are treated as fixed and known: with estimated propensity-score weights the
-intervals are conservative (the estimation of the weights is ignored), and when the weights are
-extreme (low effective sample size) the intervals are too short.
+By default the weights are treated as fixed and known. For weights estimated by a logistic
+propensity model, \code{weight_variance = "estimated"} carries their estimation into the test and
+the intervals (section "Estimated weights"). When the weights are extreme (low effective sample
+size) the intervals can be too short under either option.
 }
 

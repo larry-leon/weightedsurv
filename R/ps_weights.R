@@ -59,7 +59,18 @@
 #'                  type = "stabilized")
 #' pw
 #' gbsg$sw <- pw$weights
-#' range(gbsg$sw)
+#'
+#' # weights treated as known (the default) and with their estimation carried through
+#' known <- KM_diff(gbsg, "tte", "status", "hormon", weight.name = "sw")
+#' est <- KM_diff(gbsg, "tte", "status", "hormon", weight.name = "sw",
+#'                weight_variance = "estimated", weight_model = pw)
+#' identical(known$dhat, est$dhat)                       # estimates do not change
+#' summary(sqrt(est$sig2_dhat / known$sig2_dhat))        # standard errors do
+#'
+#' dc <- df_counting(gbsg, "tte", "status", "hormon", weight.name = "sw",
+#'                   weight_variance = "estimated", weight_model = pw)
+#' dc$ess                                                # effective sample size by arm
+#' cox_rhogamma(dc, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))$hr_ci_asy
 #'
 #' @seealso [df_counting()] (section "Estimated weights"), [KM_diff()], [cox_rhogamma()]
 #' @family survival_analysis

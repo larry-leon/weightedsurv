@@ -50,6 +50,7 @@ reference:
     contents:
       - df_counting
       - get_dfcounting
+      - ps_weights
       - extract_group_data
       - get_event_risk_matrices
       - get_censoring_and_events

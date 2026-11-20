@@ -73,9 +73,9 @@
   not change (the log-rank test and Cox estimate with subject weights change separately, see L1-L4
   below). The standard error does not depend on the scale of the weights
   (weights `w` and `10 * w` give the same answer), so weights are not frequency weights: a weight
-  of 2 is not two copies of the row. Weights are treated as fixed and known: with estimated
-  propensity-score weights the standard error is conservative, and with extreme weights (low
-  effective sample size) it is too small. (M, R1)
+  of 2 is not two copies of the row. By default weights are treated as fixed and known; for
+  weights estimated by a logistic propensity model see `weight_variance = "estimated"` below. With
+  extreme weights (low effective sample size) the standard error can be too small. (M, R1)
 
 * Weighted resampling: when the weights are not all equal, resampled Kaplan-Meier curves are now
   built from the same per-subject influence contributions, `-S(t) * sum_i G_i w_i psi_i(t)` for
@@ -101,9 +101,10 @@
   depend on how the weights are scaled: `w`, `10 * w` and `w / sum(w)` give the same z-score
   (before, multiplying the weights by 10 multiplied z by about 3.2, and normalised weights gave
   `NaN`). **Unweighted results, and results with all weights equal, do not change.**
-  `wlr_cumulative()` on a bare table of counts (no subject-level data) is unchanged too. Weights
-  are treated as fixed and known: with estimated propensity-score weights the test is
-  conservative, and with extreme weights (low effective sample size) it rejects too often. (L1)
+  `wlr_cumulative()` on a bare table of counts (no subject-level data) is unchanged too. By default
+  weights are treated as fixed and known; for weights estimated by a logistic propensity model see
+  `weight_variance = "estimated"` below. With extreme weights (low effective sample size) the test
+  can reject too often. (L1)
 
 * `cox_rhogamma()` with subject weights: when the weights are not all equal, the standard error of
   the log hazard ratio is now `sqrt(sum_i psi_i(bhat)^2) / i_bhat`, from the same per-subject score
@@ -153,6 +154,52 @@
 * The two confidence bands of the Kaplan-Meier plots (`plot_weighted_km()`,
   `KM_plot_2sample_weighted_counting()`, `plot_km_curves_counting()`) are now semi-transparent, in
   the same colours, so each stays visible where they overlap. Nothing else on the plot changes. (B11)
+
+* New option for estimated weights. `ps_weights()` (new export) fits a logistic propensity model, or
+  takes a fitted one, and returns inverse-probability or stabilised weights together with the
+  influence of the model's coefficients and the derivative of each weight. Passed as `weight_model`
+  with `weight_variance = "estimated"` to `df_counting()`, `KM_diff()`, `cumulative_rmst_bands()` or
+  `plotKM.band_subgroups()` (two new last arguments), it carries the estimation of the weights into
+  the Kaplan-Meier standard errors, the variance of the survival difference (no longer the sum of
+  the arm variances), the simultaneous band, the RMST variance and band, the log-rank z-score
+  (stratified too), `logrank_results`, `cox_results$score`, `$se`, `$hr_ci` and `$pval`;
+  `cox_rhogamma()`, `wlr_cumulative()` and `wlr_dhat_estimates()` take the option from the
+  `df_counting()` result they are given. **The default is `weight_variance = "known"`: a call that
+  does not ask for `"estimated"` returns what it returned before.** No estimate changes under either
+  option. `"estimated"` needs a logistic `glm` fitted on exactly the rows analysed (subgroup analyses
+  that reuse full-sample weights must use `"known"`) and `draws = 0`; see the section "Estimated
+  weights" of `?df_counting`. Results gain an element `weight_variance`. (W1-W4)
+
+* Zero weights: whether the weights are "all equal" is now decided on the positive weights. **Calls
+  whose weight column contains a zero change**: a 0/1 weight column now gives the variances,
+  z-scores and intervals of the positive-weight rows analysed without weights (before, the zeros
+  made the weights count as unequal and the robust formulas ran; for example a log-rank z of
+  -0.7569 against -0.7554 for the same rows without weights). With zeros among unequal positive
+  weights the results are those of the positive-weight rows with the same weights, as before.
+  Resampled quantities keep a multiplier per row and are not equal to the subset's draw by draw.
+  Calls without a zero weight do not change. (Rd)
+
+* `df_counting()` with subject weights: `logrank_results` and `cox_results$score` are now robust
+  tests of the weighted analysis. **Calls whose positive weights are not all equal change in these
+  two outputs only**: `logrank_results` is the robust score test at 0 of the weighted Cox model
+  (before, an unweighted `survdiff()` test that ignored the weights), and `cox_results$score` is
+  `summary(cox_fit)$robscore` (before, the model-based score test, which reads the weights as
+  counts). With subject weights `logrank_results` is the `rho = 0` test whatever the scheme.
+  `check_results()` now agrees on weighted Fleming-Harrington (0, 0) results instead of warning.
+  New elements `logrank_results$method` (`"survdiff"` or `"coxph_robust_score"`) and
+  `cox_results$se` (the standard error of the log hazard ratio behind `hr_ci` and `pval`). Without
+  weights, and with all positive weights equal, both outputs are unchanged. (Rb)
+
+* `plotKM.band_subgroups()`: the default of `draws.band` is now 1000 (it was 20), so the critical
+  value of the simultaneous band no longer rests on 20 draws. **Calls that do not pass `draws.band`
+  change in the band (critical value, band limits, resampled curves)**; pointwise limits and
+  estimates do not. Calls that pass `draws.band` are unchanged; pass `draws.band = 20` for the
+  earlier behaviour. (Rc)
+
+* `df_counting()` returns a new element `ess`: by arm, the number of rows with positive weight, the
+  effective sample size `(sum w)^2 / sum(w^2)` and their ratio. A low ratio means a few subjects
+  carry most of the weight; standard errors, intervals and tests can then be too optimistic. No
+  existing element changes and no warning depends on it. (Ra)
 
 ## Bug fixes
 

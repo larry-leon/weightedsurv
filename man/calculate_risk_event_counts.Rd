@@ -55,8 +55,9 @@ With \code{draws > 0} and unequal weights the variance is instead the variance o
 draws of \eqn{\sum_i G_i w_i \psi_i(t)} (standard-normal multipliers \eqn{G_i}), which estimates
 the same quantity; resampled curves for weighted data are built from the same per-subject
 contributions (see \code{\link{resampling_survival}}).
-The weights are treated as fixed and known: with estimated propensity-score weights the standard
-error is conservative (it ignores the estimation of the weights), and when the weights are
-extreme (low effective sample size) it is too small.
+By default the weights are treated as fixed and known. For weights estimated by a logistic
+propensity model, \code{weight_variance = "estimated"} carries their estimation into the standard
+error (section "Estimated weights" of \code{\link{df_counting}}). When the weights are extreme
+(low effective sample size) the standard error can be too small under either option.
 }
 

@@ -436,7 +436,14 @@ KM_plot_2sample_weighted_counting <- function(
 #'   variance is the analytic one (Greenwood's formula, or the robust variance when the weights are
 #'   not all equal). Before, the default \code{draws = 20} made the pointwise standard error of a
 #'   weighted plot, and with it the band, a 20-draw resampling variance. Plots without weights, or
-#'   with all weights equal, are numerically unaffected by \code{draws}.
+#'   with all weights equal, are numerically unaffected by \code{draws}. Since version 0.2.0 the
+#'   default of \code{draws.band} is 1000 (it was 20), so the critical value of the simultaneous band
+#'   of a call that does not pass \code{draws.band} rests on 1000 resampled curves. Zero-weight rows
+#'   contribute nothing and do not affect which variance formula runs.
+#'
+#'   \code{weight_variance} and \code{weight_model} are passed to the overall \code{KM_diff()} call
+#'   (pointwise limits and band). The subgroup curves are point estimates and are computed as before.
+#' @inheritSection df_counting Estimated weights
 #' @return (Invisible) list containing KM_diff results, time points, subgroup curves, risk tables, and confidence intervals.
 #' @importFrom graphics plot lines legend title axis box polygon matplot
 #' @export

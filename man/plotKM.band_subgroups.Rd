@@ -167,5 +167,101 @@ standardisation of the simultaneous band come from \code{\link{KM_diff}} with th
 variance is the analytic one (Greenwood's formula, or the robust variance when the weights are
 not all equal). Before, the default \code{draws = 20} made the pointwise standard error of a
 weighted plot, and with it the band, a 20-draw resampling variance. Plots without weights, or
-with all weights equal, are numerically unaffected by \code{draws}.
+with all weights equal, are numerically unaffected by \code{draws}. Since version 0.2.0 the
+default of \code{draws.band} is 1000 (it was 20), so the critical value of the simultaneous band
+of a call that does not pass \code{draws.band} rests on 1000 resampled curves. Zero-weight rows
+contribute nothing and do not affect which variance formula runs.
+
+\code{weight_variance} and \code{weight_model} are passed to the overall \code{KM_diff()} call
+(pointwise limits and band). The subgroup curves are point estimates and are computed as before.
 }
+\section{Estimated weights}{
+
+Propensity-score weights are estimated from the data. \code{weight_variance} says how standard
+errors, intervals, bands and tests treat them.
+\describe{
+\item{\code{"known"} (default)}{The weights are fixed, known numbers: the formulas of the two
+sections above. \code{weight_model} is ignored.}
+\item{\code{"estimated"}}{The weights were estimated by a logistic regression for the treatment,
+given as \code{weight_model} (the object returned by \code{\link{ps_weights}}), and that
+estimation is carried into the inference.}
+}
+Estimates never change: survival curves, their difference, RMST, the log-rank score, hazard
+ratios, counts and risk tables are identical under the two options. Only standard errors,
+intervals, bands and tests differ.
+
+Notation. There are \eqn{n} subjects, the rows analysed. Subject \eqn{i} has arm \eqn{A_i},
+row \eqn{x_i} of the model matrix of the propensity model (\eqn{p} columns), fitted probability
+\eqn{e_i} and weight \eqn{w_i} (written \eqn{a_i} in the score formulas above). The influence of
+subject \eqn{i} on the fitted coefficients and the derivative of its weight in the coefficients are
+\deqn{IF_i = \Big\{\sum_j x_j x_j' e_j (1 - e_j)\Big\}^{-1} x_i (A_i - e_i), \qquad dw_i = -\frac{1 - e_i}{e_i} x_i \ (A_i = 1), \quad dw_i = \frac{e_i}{1 - e_i} x_i \ (A_i = 0)}{IF_i = { sum_j x_j x_j' e_j (1 - e_j) }^(-1) x_i (A_i - e_i);  dw_i = -((1 - e_i) / e_i) x_i (treated),  dw_i = (e_i / (1 - e_i)) x_i (control)}
+(for stabilised weights \eqn{w_i} and \eqn{dw_i} are multiplied by the arm proportion).
+
+Kaplan-Meier estimate of a group \eqn{g} (an arm; an arm within a stratum; all subjects). With
+\eqn{\psi_i(t)}{psi_i(t)} the influence value of the section "Variance of the Kaplan-Meier
+estimate", computed from the group's own weighted counts,
+\deqn{D_g(t) = \sum_{k \in g} \psi_k(t)\, dw_k, \qquad \Phi_i(t) = 1(i \in g)\, w_i \psi_i(t) + IF_i' D_g(t) \quad (i = 1, \ldots, n),}{D_g(t) = sum_{k in g} psi_k(t) dw_k,   Phi_i(t) = 1(i in g) w_i psi_i(t) + IF_i' D_g(t)   (i = 1, ..., n),}
+\deqn{\widehat{Var}[\hat S_g(t)] = \hat S_g(t)^2 \sum_{i=1}^n \Phi_i(t)^2.}{Var[S_g(t)] = S_g(t)^2 * sum_{i=1}^n Phi_i(t)^2.}
+Every subject contributes, also those outside the group, through the model. The variance of the
+difference of the two arms is
+\deqn{\widehat{Var}[\hat S_1(t) - \hat S_0(t)] = \sum_{i=1}^n \{\hat S_1(t) \Phi^1_i(t) - \hat S_0(t) \Phi^0_i(t)\}^2,}{Var[S_1(t) - S_0(t)] = sum_{i=1}^n ( S_1(t) Phi1_i(t) - S_0(t) Phi0_i(t) )^2,}
+which is \strong{not} the sum of the two arm variances: the arms share the model's coefficients.
+A resampled curve of arm \eqn{a} is
+\eqn{-\hat S_a(t) \sum_{i=1}^n G_i \Phi^a_i(t)}{-S_a(t) sum_{i=1}^n G_i Phi^a_i(t)} with the
+standard-normal multipliers \eqn{G_i} that \code{\link{KM_diff}} generates in any case; the
+resampled difference curves, the simultaneous band and the RMST variance and band of
+\code{\link{cumulative_rmst_bands}} follow from them unchanged.
+
+Score of the log-rank test and of the weighted Cox estimate. With
+\eqn{\psi_i(\beta)}{psi_i(b)} the contribution of the section "Variance of the log-rank and Cox
+score with subject weights", computed within each stratum,
+\deqn{B(\beta) = \sum_{j=1}^n \frac{\psi_j(\beta)}{a_j}\, dw_j, \qquad \psi^{ew}_i(\beta) = \psi_i(\beta) + IF_i' B(\beta), \qquad \widehat{Var}\{U(\beta)\} = \sum_{i=1}^n \psi^{ew}_i(\beta)^2.}{B(b) = sum_{j=1}^n (psi_j(b) / a_j) dw_j,   psi_ew_i(b) = psi_i(b) + IF_i' B(b),   Var(U(b)) = sum_{i=1}^n psi_ew_i(b)^2.}
+The log-rank z-score, the variance of the log hazard ratio estimate (the sum at
+\eqn{\hat\beta}{bhat} over the squared information) and a resampled score
+(\eqn{-\sum_i G_i \psi^{ew}_i(\beta)}{-sum_i G_i psi_ew_i(b)}) are formed as before with
+\eqn{\psi^{ew}}{psi_ew} in place of \eqn{\psi}{psi}. In a stratified analysis the variance is this
+single sum over all subjects, not a sum of per-stratum variances. The cumulative variance of
+\code{\link{wlr_cumulative}} is \eqn{\sum_i \{c_i(t) + IF_i' B(t)\}^2}{sum_i (c_i(t) + IF_i' B(t))^2}
+with \eqn{c_i(t)} the contribution of subject \eqn{i} to the score up to \eqn{t} and
+\eqn{B(t) = \sum_j \{c_j(t) / a_j\} dw_j}{B(t) = sum_j (c_j(t) / a_j) dw_j}; in
+\code{\link{wlr_dhat_estimates}} the contribution to the survival difference is
+\eqn{d_i + IF_i' (\hat S_0 D_0 - \hat S_1 D_1)}{d_i + IF_i' (S_0 D_0 - S_1 D_1)} at the grid point
+read for \code{tzero}, and the covariance uses both adjusted contributions. The outputs of
+\code{df_counting()} that come from the \code{survival} package (\code{logrank_results},
+\code{cox_results$score}, \code{$se}, \code{$hr_ci}, \code{$pval}) carry the same adjustment,
+applied to \code{coxph()}'s weighted score and dfbeta residuals \eqn{r}:
+\eqn{r_i + IF_i' \sum_j (r_j / w_j) dw_j}{r_i + IF_i' sum_j (r_j / w_j) dw_j}.
+
+How to use it. Fit the propensity model on exactly the rows to be analysed with
+\code{\link{ps_weights}}, put its weights in a column of \code{df}, and pass
+\code{weight_variance = "estimated"} and \code{weight_model} to \code{df_counting()},
+\code{\link{KM_diff}}, \code{\link{cumulative_rmst_bands}} or \code{\link{plotKM.band_subgroups}}.
+\code{\link{cox_rhogamma}}, \code{\link{wlr_cumulative}} and \code{\link{wlr_dhat_estimates}} take the
+option from the \code{df_counting()} result they are given (its elements \code{weight_variance} and
+\code{ew_parts}). The rows of \code{df}, the treatment column and the weight column must be those of
+\code{weight_model}; anything else is an error.
+
+Scope and limits of this version.
+\itemize{
+\item A logistic \code{glm} for a binary treatment, fitted on exactly the rows analysed. For
+weights from any other model use \code{"known"}.
+\item A subgroup analysis that reuses weights from a model fitted on the full sample must use
+\code{"known"}: the model's rows are then not the rows analysed. (The subgroup curves of
+\code{plotKM.band_subgroups()} are point estimates and are not affected.)
+\item \code{draws > 0} (the resampling-based pointwise variance) is not available with
+\code{"estimated"}; \code{draws.band} and the resampling of \code{cox_rhogamma()} are.
+\item The time weights of the scheme (Fleming-Harrington and the others) depend on the weighted
+pooled curve; that dependence on the estimated weights is ignored.
+\item With stabilised weights the arm proportion is treated as a fixed number. The Kaplan-Meier
+quantities do not depend on that: they are unchanged when an arm's weights are multiplied by a
+constant.
+\item With \code{"estimated"} the influence-based formulas always run; whether the weights are all
+equal is not tested.
+\item Carrying the estimation through does not repair extreme weights: when the effective sample
+size (\code{df_counting()$ess}) is a small fraction of an arm, standard errors, intervals and
+tests can be too optimistic under either option.
+}
+The device of carrying the estimation of a nuisance quantity into the inference by perturbing its
+estimate is that of Leon, Cai and Wei (2009); it is used here in linearised form.
+}
+

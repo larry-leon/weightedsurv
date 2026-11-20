@@ -215,6 +215,8 @@ cox_score_rhogamma <- function(beta, time, delta, z, w_hat = rep(1,length(time))
 #'   \item{cox_text_star}{Formatted string with HR and resampling CI (if draws > 0)}
 #'   \item{z.score_debiased}{Bias-corrected score statistic (if draws > 0)}
 #'   \item{zlogrank_text}{Formatted log-rank test result}
+#'   \item{weight_variance}{\code{"known"}, or \code{"estimated"} when \code{dfcount} was made with
+#'     \code{weight_variance = "estimated"}}
 #' }
 #'
 #' @details
@@ -244,7 +246,17 @@ cox_score_rhogamma <- function(beta, time, delta, z, w_hat = rep(1,length(time))
 #' \code{df_counting()$z.score} for the same scheme. With no weights or all weights equal, every
 #' result is as before.
 #'
+#' When \code{dfcount} was made with \code{weight_variance = "estimated"}
+#' (\code{\link{df_counting}} with a \code{\link{ps_weights}} object), the estimation of the weights is
+#' carried into \code{fit$sig2_score}, \code{fit$z.score}, \code{z.score}, \code{fit$sig_bhat_asy},
+#' \code{hr_ci_asy}, \code{zlogrank_text} and \code{cox_text_asy}, and with \code{draws > 0} into the
+#' resampled scores and everything computed from them (section "Estimated weights"). \code{bhat}, the
+#' scores, the information and the time weights are unchanged. The result's element
+#' \code{weight_variance} says which option was used. A direct call to
+#' \code{\link{cox_score_rhogamma}} is not affected.
+#'
 #' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
+#' @inheritSection df_counting Estimated weights
 #'
 #' @note The treatment variable in \code{dfcount} must be coded as 0=control, 1=experimental.
 #'
@@ -455,7 +467,10 @@ ans
 #'   \code{score_star_null} is \eqn{-\sum_i G_i \psi_i(0)}{-sum_i G_i psi_i(0)}, so their variance over
 #'   draws is the variance of the score used for \code{sig_bhat_asy} and the log-rank z-score
 #'   (\code{K_wt_rg} and \code{K_zero} are then not used). \code{bhat_center_star}, \code{Z_bstar} and
-#'   \code{sig_bhat_star} are formed from \code{score_star} as before.
+#'   \code{sig_bhat_star} are formed from \code{score_star} as before. When \code{fit_rhogamma} comes
+#'   from a \code{\link{df_counting}} result made with \code{weight_variance = "estimated"} (it then holds
+#'   \code{ew_parts}), the contributions carry the estimation of the weights,
+#'   \eqn{\psi_i + IF_i' B}{psi_i + IF_i' B} (section "Estimated weights" of \code{\link{df_counting}}).
 #' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
 #' @importFrom stats var rnorm
 #' @export

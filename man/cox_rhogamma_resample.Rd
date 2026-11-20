@@ -52,7 +52,10 @@ per-subject score contributions described below:
 \code{score_star_null} is \eqn{-\sum_i G_i \psi_i(0)}{-sum_i G_i psi_i(0)}, so their variance over
 draws is the variance of the score used for \code{sig_bhat_asy} and the log-rank z-score
 (\code{K_wt_rg} and \code{K_zero} are then not used). \code{bhat_center_star}, \code{Z_bstar} and
-\code{sig_bhat_star} are formed from \code{score_star} as before.
+\code{sig_bhat_star} are formed from \code{score_star} as before. When \code{fit_rhogamma} comes
+from a \code{\link{df_counting}} result made with \code{weight_variance = "estimated"} (it then holds
+\code{ew_parts}), the contributions carry the estimation of the weights,
+\eqn{\psi_i + IF_i' B}{psi_i + IF_i' B} (section "Estimated weights" of \code{\link{df_counting}}).
 }
 \section{Variance of the log-rank and Cox score with subject weights}{
 
@@ -79,8 +82,9 @@ strata. For Fleming-Harrington (0, 0) weights this is the robust variance of
 \code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
 and the same robust standard error. Results no longer depend on how the weights are scaled
 (weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
-The weights are treated as fixed and known: with estimated propensity-score weights the
-intervals are conservative (the estimation of the weights is ignored), and when the weights are
-extreme (low effective sample size) the intervals are too short.
+By default the weights are treated as fixed and known. For weights estimated by a logistic
+propensity model, \code{weight_variance = "estimated"} carries their estimation into the test and
+the intervals (section "Estimated weights"). When the weights are extreme (low effective sample
+size) the intervals can be too short under either option.
 }
 

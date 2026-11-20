@@ -51,8 +51,22 @@
 #'
 #' @return A list with the following components:
 #' \describe{
-#'   \item{cox_results}{List with Cox model results including hazard ratio, confidence interval, p-value, and formatted text}
-#'   \item{logrank_results}{List with log-rank test chi-square statistic, p-value, and formatted text}
+#'   \item{cox_results}{List with the results of \code{survival::coxph()}: \code{cox_fit}, \code{hr},
+#'     \code{hr_ci}, \code{pval}, \code{score}, \code{cox_text} and \code{se}, the standard error of the
+#'     log hazard ratio behind \code{hr_ci} and \code{pval} (the robust one of \code{coxph(robust = TRUE)};
+#'     \code{NA} when the model could not be fitted). \code{score} is the score test of the model: with no
+#'     weights, or with all positive weights equal, \code{summary(cox_fit)$sctest}; with subject weights
+#'     that are not all equal, the robust score test \code{summary(cox_fit)$robscore} (the model-based
+#'     one reads the weights as counts).}
+#'   \item{logrank_results}{List with \code{chisq}, \code{pval}, \code{logrank_text} and \code{method}.
+#'     With no weights, or with all positive weights equal, the test of \code{survival::survdiff()}
+#'     (\code{method = "survdiff"}; \code{rho} from the scheme when it is \code{"fh"}). With subject weights
+#'     that are not all equal \code{survdiff()} has no counterpart, and the result is the robust score
+#'     test at 0 of the weighted Cox model (\code{coxph(weights = , init = 0, iter.max = 0, robust = TRUE,
+#'     ties = "breslow")} on the positive-weight rows, strata included; \code{method =
+#'     "coxph_robust_score"}): the \code{rho = 0} test whatever the scheme. Its \code{chisq} equals
+#'     \code{z.score^2} (\code{z.score_stratified^2}) for Fleming-Harrington (0, 0) weights, so
+#'     \code{\link{check_results}} agrees on weighted data.}
 #'   \item{z.score}{Standardized weighted log-rank test statistic (with subject weights that are not
 #'     all equal, standardized by the score-residual variance; see the section on subject weights)}
 #'   \item{at_points}{Vector of all time points used in calculations}
@@ -66,6 +80,18 @@
 #'   \item{riskpoints0, riskpoints1}{Risk set counts at specified time points}
 #'   \item{z.score_stratified}{Stratified z-score (if stratified analysis), with \code{lr_stratified} and
 #'     \code{sig2_lr_stratified}}
+#'   \item{ess}{Data frame with one row per arm, in the order of \code{quantile_results}
+#'     (\code{arms[1]}, the treated arm, then \code{arms[2]}): \code{group}; \code{n}, the rows of the arm
+#'     with positive weight; \code{ess}, the effective sample size
+#'     \eqn{(\sum w)^2 / \sum w^2}{(sum w)^2 / sum(w^2)} over those rows; and \code{ratio = ess / n}.
+#'     Without weights, and with constant weights, \code{ess = n}. A ratio near 1 means the weights are
+#'     even; a low ratio means that a few subjects carry most of the weight, and standard errors,
+#'     intervals and tests can then be too optimistic, whether the weights are treated as known or
+#'     as estimated. No warning or message depends on it.}
+#'   \item{weight_variance}{\code{"known"} or \code{"estimated"}: how the weights were treated.}
+#'   \item{ew_parts}{Only with \code{weight_variance = "estimated"}: list with \code{IF} and \code{dw}
+#'     of \code{weight_model}, rows in the order of \code{time}; read by \code{\link{cox_rhogamma}},
+#'     \code{\link{wlr_cumulative}} and \code{\link{wlr_dhat_estimates}}.}
 #' }
 #'
 #' @details
@@ -83,7 +109,9 @@
 #' Input checks: missing values (in any named column, including \code{strata.name}), non-finite or
 #' negative times, negative weights and an empty arm are errors; rows are never dropped silently.
 #' Zero weights are allowed: those rows contribute nothing, and the Cox model and log-rank test are
-#' fitted on the positive-weight rows. A stratum in which one arm is empty contributes nothing to the
+#' fitted on the positive-weight rows. Zero-weight rows do not affect which variance formula runs
+#' either: whether the weights are "all equal" is decided on the positive weights, so a 0/1 weight
+#' column gives the results of the positive-weight rows analysed without weights. A stratum in which one arm is empty contributes nothing to the
 #' stratified statistics (that arm's stratum curve is \code{NA}). On degenerate data (an arm without events, no events at all, one subject
 #' per arm) a result is still returned; quantities that cannot be computed are \code{NA}, with one
 #' warning that says why.
@@ -105,9 +133,10 @@
 #' draws of \eqn{\sum_i G_i w_i \psi_i(t)} (standard-normal multipliers \eqn{G_i}), which estimates
 #' the same quantity; resampled curves for weighted data are built from the same per-subject
 #' contributions (see \code{\link{resampling_survival}}).
-#' The weights are treated as fixed and known: with estimated propensity-score weights the standard
-#' error is conservative (it ignores the estimation of the weights), and when the weights are
-#' extreme (low effective sample size) it is too small.
+#' By default the weights are treated as fixed and known. For weights estimated by a logistic
+#' propensity model, \code{weight_variance = "estimated"} carries their estimation into the standard
+#' error (section "Estimated weights" of \code{\link{df_counting}}). When the weights are extreme
+#' (low effective sample size) the standard error can be too small under either option.
 #'
 #' @section Variance of the log-rank and Cox score with subject weights:
 #' With no subject weights, or with all subject weights equal, the weighted log-rank test and the
@@ -133,9 +162,98 @@
 #' \code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
 #' and the same robust standard error. Results no longer depend on how the weights are scaled
 #' (weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
-#' The weights are treated as fixed and known: with estimated propensity-score weights the
-#' intervals are conservative (the estimation of the weights is ignored), and when the weights are
-#' extreme (low effective sample size) the intervals are too short.
+#' By default the weights are treated as fixed and known. For weights estimated by a logistic
+#' propensity model, \code{weight_variance = "estimated"} carries their estimation into the test and
+#' the intervals (section "Estimated weights"). When the weights are extreme (low effective sample
+#' size) the intervals can be too short under either option.
+#'
+#' @section Estimated weights:
+#' Propensity-score weights are estimated from the data. \code{weight_variance} says how standard
+#' errors, intervals, bands and tests treat them.
+#' \describe{
+#'   \item{\code{"known"} (default)}{The weights are fixed, known numbers: the formulas of the two
+#'     sections above. \code{weight_model} is ignored.}
+#'   \item{\code{"estimated"}}{The weights were estimated by a logistic regression for the treatment,
+#'     given as \code{weight_model} (the object returned by \code{\link{ps_weights}}), and that
+#'     estimation is carried into the inference.}
+#' }
+#' Estimates never change: survival curves, their difference, RMST, the log-rank score, hazard
+#' ratios, counts and risk tables are identical under the two options. Only standard errors,
+#' intervals, bands and tests differ.
+#'
+#' Notation. There are \eqn{n} subjects, the rows analysed. Subject \eqn{i} has arm \eqn{A_i},
+#' row \eqn{x_i} of the model matrix of the propensity model (\eqn{p} columns), fitted probability
+#' \eqn{e_i} and weight \eqn{w_i} (written \eqn{a_i} in the score formulas above). The influence of
+#' subject \eqn{i} on the fitted coefficients and the derivative of its weight in the coefficients are
+#' \deqn{IF_i = \Big\{\sum_j x_j x_j' e_j (1 - e_j)\Big\}^{-1} x_i (A_i - e_i), \qquad dw_i = -\frac{1 - e_i}{e_i} x_i \ (A_i = 1), \quad dw_i = \frac{e_i}{1 - e_i} x_i \ (A_i = 0)}{IF_i = { sum_j x_j x_j' e_j (1 - e_j) }^(-1) x_i (A_i - e_i);  dw_i = -((1 - e_i) / e_i) x_i (treated),  dw_i = (e_i / (1 - e_i)) x_i (control)}
+#' (for stabilised weights \eqn{w_i} and \eqn{dw_i} are multiplied by the arm proportion).
+#'
+#' Kaplan-Meier estimate of a group \eqn{g} (an arm; an arm within a stratum; all subjects). With
+#' \eqn{\psi_i(t)}{psi_i(t)} the influence value of the section "Variance of the Kaplan-Meier
+#' estimate", computed from the group's own weighted counts,
+#' \deqn{D_g(t) = \sum_{k \in g} \psi_k(t)\, dw_k, \qquad \Phi_i(t) = 1(i \in g)\, w_i \psi_i(t) + IF_i' D_g(t) \quad (i = 1, \ldots, n),}{D_g(t) = sum_{k in g} psi_k(t) dw_k,   Phi_i(t) = 1(i in g) w_i psi_i(t) + IF_i' D_g(t)   (i = 1, ..., n),}
+#' \deqn{\widehat{Var}[\hat S_g(t)] = \hat S_g(t)^2 \sum_{i=1}^n \Phi_i(t)^2.}{Var[S_g(t)] = S_g(t)^2 * sum_{i=1}^n Phi_i(t)^2.}
+#' Every subject contributes, also those outside the group, through the model. The variance of the
+#' difference of the two arms is
+#' \deqn{\widehat{Var}[\hat S_1(t) - \hat S_0(t)] = \sum_{i=1}^n \{\hat S_1(t) \Phi^1_i(t) - \hat S_0(t) \Phi^0_i(t)\}^2,}{Var[S_1(t) - S_0(t)] = sum_{i=1}^n ( S_1(t) Phi1_i(t) - S_0(t) Phi0_i(t) )^2,}
+#' which is \strong{not} the sum of the two arm variances: the arms share the model's coefficients.
+#' A resampled curve of arm \eqn{a} is
+#' \eqn{-\hat S_a(t) \sum_{i=1}^n G_i \Phi^a_i(t)}{-S_a(t) sum_{i=1}^n G_i Phi^a_i(t)} with the
+#' standard-normal multipliers \eqn{G_i} that \code{\link{KM_diff}} generates in any case; the
+#' resampled difference curves, the simultaneous band and the RMST variance and band of
+#' \code{\link{cumulative_rmst_bands}} follow from them unchanged.
+#'
+#' Score of the log-rank test and of the weighted Cox estimate. With
+#' \eqn{\psi_i(\beta)}{psi_i(b)} the contribution of the section "Variance of the log-rank and Cox
+#' score with subject weights", computed within each stratum,
+#' \deqn{B(\beta) = \sum_{j=1}^n \frac{\psi_j(\beta)}{a_j}\, dw_j, \qquad \psi^{ew}_i(\beta) = \psi_i(\beta) + IF_i' B(\beta), \qquad \widehat{Var}\{U(\beta)\} = \sum_{i=1}^n \psi^{ew}_i(\beta)^2.}{B(b) = sum_{j=1}^n (psi_j(b) / a_j) dw_j,   psi_ew_i(b) = psi_i(b) + IF_i' B(b),   Var(U(b)) = sum_{i=1}^n psi_ew_i(b)^2.}
+#' The log-rank z-score, the variance of the log hazard ratio estimate (the sum at
+#' \eqn{\hat\beta}{bhat} over the squared information) and a resampled score
+#' (\eqn{-\sum_i G_i \psi^{ew}_i(\beta)}{-sum_i G_i psi_ew_i(b)}) are formed as before with
+#' \eqn{\psi^{ew}}{psi_ew} in place of \eqn{\psi}{psi}. In a stratified analysis the variance is this
+#' single sum over all subjects, not a sum of per-stratum variances. The cumulative variance of
+#' \code{\link{wlr_cumulative}} is \eqn{\sum_i \{c_i(t) + IF_i' B(t)\}^2}{sum_i (c_i(t) + IF_i' B(t))^2}
+#' with \eqn{c_i(t)} the contribution of subject \eqn{i} to the score up to \eqn{t} and
+#' \eqn{B(t) = \sum_j \{c_j(t) / a_j\} dw_j}{B(t) = sum_j (c_j(t) / a_j) dw_j}; in
+#' \code{\link{wlr_dhat_estimates}} the contribution to the survival difference is
+#' \eqn{d_i + IF_i' (\hat S_0 D_0 - \hat S_1 D_1)}{d_i + IF_i' (S_0 D_0 - S_1 D_1)} at the grid point
+#' read for \code{tzero}, and the covariance uses both adjusted contributions. The outputs of
+#' \code{df_counting()} that come from the \code{survival} package (\code{logrank_results},
+#' \code{cox_results$score}, \code{$se}, \code{$hr_ci}, \code{$pval}) carry the same adjustment,
+#' applied to \code{coxph()}'s weighted score and dfbeta residuals \eqn{r}:
+#' \eqn{r_i + IF_i' \sum_j (r_j / w_j) dw_j}{r_i + IF_i' sum_j (r_j / w_j) dw_j}.
+#'
+#' How to use it. Fit the propensity model on exactly the rows to be analysed with
+#' \code{\link{ps_weights}}, put its weights in a column of \code{df}, and pass
+#' \code{weight_variance = "estimated"} and \code{weight_model} to \code{df_counting()},
+#' \code{\link{KM_diff}}, \code{\link{cumulative_rmst_bands}} or \code{\link{plotKM.band_subgroups}}.
+#' \code{\link{cox_rhogamma}}, \code{\link{wlr_cumulative}} and \code{\link{wlr_dhat_estimates}} take the
+#' option from the \code{df_counting()} result they are given (its elements \code{weight_variance} and
+#' \code{ew_parts}). The rows of \code{df}, the treatment column and the weight column must be those of
+#' \code{weight_model}; anything else is an error.
+#'
+#' Scope and limits of this version.
+#' \itemize{
+#'   \item A logistic \code{glm} for a binary treatment, fitted on exactly the rows analysed. For
+#'     weights from any other model use \code{"known"}.
+#'   \item A subgroup analysis that reuses weights from a model fitted on the full sample must use
+#'     \code{"known"}: the model's rows are then not the rows analysed. (The subgroup curves of
+#'     \code{plotKM.band_subgroups()} are point estimates and are not affected.)
+#'   \item \code{draws > 0} (the resampling-based pointwise variance) is not available with
+#'     \code{"estimated"}; \code{draws.band} and the resampling of \code{cox_rhogamma()} are.
+#'   \item The time weights of the scheme (Fleming-Harrington and the others) depend on the weighted
+#'     pooled curve; that dependence on the estimated weights is ignored.
+#'   \item With stabilised weights the arm proportion is treated as a fixed number. The Kaplan-Meier
+#'     quantities do not depend on that: they are unchanged when an arm's weights are multiplied by a
+#'     constant.
+#'   \item With \code{"estimated"} the influence-based formulas always run; whether the weights are all
+#'     equal is not tested.
+#'   \item Carrying the estimation through does not repair extreme weights: when the effective sample
+#'     size (\code{df_counting()$ess}) is a small fraction of an arm, standard errors, intervals and
+#'     tests can be too optimistic under either option.
+#' }
+#' The device of carrying the estimation of a nuisance quantity into the inference by perturbing its
+#' estimate is that of Leon, Cai and Wei (2009); it is used here in linearised form.
 #'
 #' @section Weighting Schemes:
 #' \describe{
@@ -192,6 +310,10 @@
 #'
 #' Magirr, D. and Burman, C. F. (2019). Modestly weighted logrank tests.
 #' Statistics in Medicine, 38(20), 3782-3790.
+#'
+#' Leon, L. F., Cai, T. and Wei, L. J. (2009). Robust inferences for covariate effects on survival
+#' time with censored linear regression models. Statistics in Biosciences, 1, 50-64.
+#' \doi{10.1007/s12561-009-9002-5}
 #'
 #' @family survival_analysis
 #' @family weighted_tests
