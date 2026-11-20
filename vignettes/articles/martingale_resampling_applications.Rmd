@@ -27,6 +27,8 @@ options(warn = -1)
 library(survival)
 library(ggplot2)
 library(weightedsurv)
+# formatting of the numbers quoted in the text
+fmt <- function(x, digits = 2) formatC(x, format = "f", digits = digits)
 ```
 
 # Introduction
@@ -165,30 +167,46 @@ gbsg_validate <- within(rotterdam, {
   SG0 <- ifelse(er <= 0, 0, 1)
 })
 
-df_rotterdam <- subset(gbsg_validate, nodes > 0)
+# node-positive women, as in the GBSG trial
+df_rotterdam_np <- subset(gbsg_validate, nodes > 0)
 ```
 
-We fit a propensity score model and compute stabilized IPTW weights:
+`ps_weights()` fits the logistic propensity score model and returns the weights; `type = "stabilized"` gives stabilized IPTW weights (the default is `type = "ipw"`). We first look at all node-positive women:
+
+```{r rotterdam-ps-np}
+pw_np <- ps_weights(
+  treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, 
+  data = df_rotterdam_np, 
+  type = "stabilized"
+)
+df_rotterdam_np$sw.weights <- pw_np$weights
+
+ess_np <- df_counting(
+  df = df_rotterdam_np, 
+  tte.name = tte.name, 
+  event.name = event.name, 
+  treat.name = treat.name, 
+  arms = arms, 
+  weight.name = "sw.weights"
+)$ess
+knitr::kable(ess_np, digits = c(0, 0, 1, 3))
+```
+
+`df_counting()$ess` gives, by arm, the number of subjects, the effective sample size $(\sum_i w_i)^2 / \sum_i w_i^2$ and their ratio; a low ratio means that a few subjects carry most of the weight. Here the ratio of the treated arm is `r fmt(ess_np$ratio[1], 2)` and the largest weight is `r fmt(max(df_rotterdam_np$sw.weights), 1)`: hormonal therapy went mostly to postmenopausal women without chemotherapy (`r sum(df_rotterdam_np$treat == 1 & df_rotterdam_np$meno == 1 & df_rotterdam_np$chemo == 0)` of the `r sum(df_rotterdam_np$treat == 1)` treated women), and the few other treated women receive large weights. The weighted example is therefore restricted to postmenopausal women without chemotherapy, with the propensity model fitted on those rows:
 
 ```{r rotterdam-ps}
-fit.ps <- glm(
-  treat ~ age + meno + size + grade3 + nodes + pgr + chemo + er, 
+df_rotterdam <- subset(df_rotterdam_np, meno == 1 & chemo == 0)
+
+pw <- ps_weights(
+  treat ~ age + size + grade3 + nodes + pgr + er, 
   data = df_rotterdam, 
-  family = "binomial"
+  type = "stabilized"
 )
-
-pihat <- fit.ps$fitted
-pihat.null <- glm(treat ~ 1, family = "binomial", data = df_rotterdam)$fitted
-
-wt.1 <- pihat.null / pihat
-wt.0 <- (1 - pihat.null) / (1 - pihat)
-df_rotterdam$sw.weights <- ifelse(df_rotterdam$treat == 1, wt.1, wt.0)
-
-# Truncated weights (winsorized at 5th/95th percentiles)
-df_rotterdam$sw.weights_trunc <- with(df_rotterdam, 
-  pmin(pmax(sw.weights, quantile(sw.weights, 0.05)), quantile(sw.weights, 0.95))
-)
+pw
+df_rotterdam$sw.weights <- pw$weights
 ```
+
+The restricted population has `r nrow(df_rotterdam)` women (`r sum(df_rotterdam$treat == 0)` control, `r sum(df_rotterdam$treat == 1)` treated). The object `pw` is passed below as `weight_model` together with `weight_variance = "estimated"`, so that standard errors, intervals and bands account for the estimation of the weights (the default, `"known"`, treats the weights as fixed numbers; no estimate differs between the two, and the `weightedsurv_examples` vignette shows them side by side).
 
 
 ## Unweighted vs. Weighted KM Curves
@@ -212,7 +230,9 @@ dfcount_rotterdam_wtd <- df_counting(
   arms = arms, 
   by.risk = 36, 
   risk.add = -50, 
-  weight.name = "sw.weights"
+  weight.name = "sw.weights",
+  weight_variance = "estimated", 
+  weight_model = pw
 )
 
 par(mfrow = c(1, 2))
@@ -234,6 +254,14 @@ plot_weighted_km(
 )
 title(main = "Weighted K-M curves (stabilized PS)")
 ```
+
+Effective sample size by arm in the restricted population:
+
+```{r rotterdam-ess}
+knitr::kable(dfcount_rotterdam_wtd$ess, digits = c(0, 0, 1, 3))
+```
+
+Both ratios are close to 1 (largest weight `r fmt(max(df_rotterdam$sw.weights), 1)`): the weights are spread evenly within each arm.
 
 
 ## Comparison: GBSG Trial vs. Rotterdam PS-Weighted
@@ -290,8 +318,9 @@ temp_rotterdam <- plotKM.band_subgroups(
   event.name = event.name, 
   weight.name = "sw.weights",
   draws.band = 1000, 
-  qtau = 0.025, 
-  show_resamples = TRUE
+  show_resamples = TRUE,
+  weight_variance = "estimated", 
+  weight_model = pw
 )
 legend("topleft", 
   c("Difference estimate", "95% pointwise CIs"),
@@ -300,7 +329,7 @@ legend("topleft",
 title(main = "Rotterdam PS-weighted survival differences")
 ```
 
-The grey traces show individual resampled processes ($W^{\dagger}$), illustrating the perturbation-resampling distribution from which the simultaneous band critical value is computed.
+The first figure shows the first 20 resampled survival-difference curves, each divided by the standard error of the difference at that time (`show_resamples = TRUE`). They illustrate the perturbation-resampling distribution from which the critical value of the simultaneous band is computed: the critical value is the 95% quantile, over the `draws.band` resampled curves, of the largest absolute standardized value, and the band is the estimate plus and minus the critical value times the standard error. The supremum is taken over the whole time range of the call, up to the smaller of the two arms' last event times (or `tau_add`, when that is later); no quantile range is trimmed. With subject weights that are not all equal the resampled curves are built from per-subject influence contributions (see the workflow summary below), here with the weights treated as estimated.
 
 
 # Cumulative RMST Curves Across Follow-Up
@@ -333,7 +362,6 @@ temp_gbsg <- plotKM.band_subgroups(
   treat.name = treat.name, 
   event.name = event.name, 
   draws.band = draws, 
-  qtau = 0.025, 
   show_resamples = FALSE
 )
 legend("topleft", 
@@ -376,8 +404,9 @@ temp_rotterdam2 <- plotKM.band_subgroups(
   event.name = event.name, 
   weight.name = "sw.weights",
   draws.band = draws, 
-  qtau = 0.025, 
-  show_resamples = FALSE
+  show_resamples = FALSE,
+  weight_variance = "estimated", 
+  weight_model = pw
 )
 legend("topleft", 
   c("Difference estimate", "95% pointwise CIs"),
@@ -395,7 +424,9 @@ get_bands_rotterdam <- cumulative_rmst_bands(
   weight.name = "sw.weights", 
   draws_sb = draws, 
   xlab = "months", 
-  rmst_max_cex = 0.7
+  rmst_max_cex = 0.7,
+  weight_variance = "estimated", 
+  weight_model = pw
 )
 legend("topleft", 
   c("Cumulative RMST estimate", "95% pointwise CIs"),
@@ -416,15 +447,21 @@ The typical workflow for martingale resampling analyses in `weightedsurv` follow
 
 **Step 2: Cumulative RMST bands.** Pass the fitted object from Step 1 to `cumulative_rmst_bands()`, which computes the cumulative RMST difference curve and its simultaneous bands using the *same* fitted survival estimates.
 
-For weighted analyses (e.g., propensity-score adjustment), both functions accept a `weight.name` argument specifying the column of subject-specific weights in the data frame.  The resampling distribution is modified accordingly, with the at-risk process $\bar{Y}_j(t)$ replaced by the weighted version $\bar{Y}_j^w(t) = \sum_i w_i Y_{i,j}(t)$.
+For weighted analyses (e.g., propensity-score adjustment), both functions accept a `weight.name` argument specifying the column of subject-specific weights in the data frame.  When the weights are not all equal, a resampled curve of arm $j$ is no longer built from the event increments alone: it is $-\hat{S}_j(t) \sum_i G_i\, w_i\, \psi_i(t)$, where $\psi_i(t)$ is subject $i$'s influence contribution to the weighted Kaplan-Meier curve, computed from the weighted at-risk process $\bar{Y}_j^w(t) = \sum_i w_i Y_{i,j}(t)$ and the weighted event counts (the formula is in the help page of `KM_diff()`), and $G_i$ are the standard normal multipliers.  The variance of these curves across draws is the robust variance of the weighted Kaplan-Meier curve.  Without weights, or with all weights equal, the event increments are perturbed as described above.
+
+By default the weights are treated as fixed, known numbers.  When they come from a logistic propensity model fitted on the rows analysed, `ps_weights()` returns the weights together with what is needed to carry their estimation into the inference; passing that object as `weight_model` with `weight_variance = "estimated"` to both functions adds each subject's contribution through the propensity model to the resampled curves, and so to the pointwise limits and the bands.  No estimate changes.
 
 ```{r workflow-example, eval=FALSE}
+# Optional, for a propensity-score weighted analysis: weights from a logistic model
+pw <- ps_weights(treat ~ x1 + x2, data = mydata, type = "stabilized")
+mydata$sw.weights <- pw$weights
+
 # Step 1: KM survival difference with simultaneous bands
 fit <- plotKM.band_subgroups(
   df = mydata,
   tte.name = "tte", treat.name = "treat", event.name = "event",
-  weight.name = "ps_weights",   # optional: for weighted analysis
-
+  weight.name = "sw.weights",   # optional: for weighted analysis
+  weight_variance = "estimated", weight_model = pw,   # optional: weights treated as estimated
   draws.band = 1000
 )
 
@@ -433,7 +470,8 @@ rmst_result <- cumulative_rmst_bands(
   df = mydata, 
   fit = fit$fit_itt,
   tte.name = "tte", event.name = "event", treat.name = "treat",
-  weight.name = "ps_weights",   # must match Step 1
+  weight.name = "sw.weights",   # must match Step 1
+  weight_variance = "estimated", weight_model = pw,   # must match Step 1
   draws_sb = 1000
 )
 ```
@@ -445,7 +483,7 @@ This vignette illustrated how martingale resampling provides flexible, nonparame
 
 - **Simultaneous coverage:** Confidence bands maintain nominal coverage uniformly across all time points, unlike pointwise intervals.
 - **Model-free:** No proportional hazards or other parametric assumptions are required.
-- **Weighted extension:** The same resampling framework applies naturally to propensity-score weighted analyses of observational data.
+- **Weighted extension:** The same multipliers apply to propensity-score weighted analyses of observational data, with the resampled curves built from per-subject influence contributions; the estimation of the weights can be carried into the bands (`weight_variance = "estimated"`).
 - **Complementary perspectives:** KM survival differences capture the instantaneous treatment gap, while cumulative RMST differences summarize the cumulative treatment benefit in clinically interpretable units (months gained).
 
 The `weightedsurv` package implements these methods via `plotKM.band_subgroups()` for KM difference bands and `cumulative_rmst_bands()` for RMST curves, with a shared workflow that ensures consistency between the two analyses.
