@@ -1,0 +1,47 @@
+oc_sim.R version=cran (weightedsurv 0.1.0, <temp>/oc_cran) cells=1:19 reps=2000 cores=7 out=raw  started 2026-11-19 16:57:50
+  cell  1 U-400        2000 replicates   113.6 s  failures: none
+  cell  2 R-400        2000 replicates   110.4 s  failures: none
+  cell  3 S-400        2000 replicates   116.9 s  failures: none
+  cell  4 D-200        2000 replicates    41.4 s  failures: none
+  cell  5 D-400        2000 replicates   100.2 s  failures: none
+  cell  6 D-800        2000 replicates   293.9 s  failures: none
+  cell  7 E-200        2000 replicates    41.9 s  failures: none
+  cell  8 E-400        2000 replicates   104.0 s  failures: none
+  cell  9 E-800        2000 replicates   352.1 s  failures: none
+  cell 10 F-400        2000 replicates   103.8 s  failures: none
+  cell 11 F-800        2000 replicates   300.1 s  failures: none
+  cell 12 Dt-400       2000 replicates    16.3 s  failures: none
+  cell 13 U-400-null   2000 replicates    84.0 s  failures: none
+  cell 14 D-400-null   2000 replicates    98.0 s  failures: none
+  cell 15 E-400-null   2000 replicates    88.9 s  failures: none
+  cell 16 F-400-null   2000 replicates    95.4 s  failures: none
+  cell 17 U-400-delay  2000 replicates    82.7 s  failures: none
+  cell 18 D-400-delay  2000 replicates    99.7 s  failures: none
+  cell 19 E-400-delay  2000 replicates    76.0 s  failures: none
+oc_sim.R version=cran done: wall-clock 2320.6 s (38.7 min)
+oc_sim.R version=proposed (weightedsurv 0.2.0, /Users/larryleon/Documents/GitHub/weightedsurv) cells=1:19 reps=2000 cores=7 out=raw  started 2026-11-19 16:57:50
+  cell  1 U-400        2000 replicates   132.2 s  failures: none
+  cell  2 R-400        2000 replicates   101.2 s  failures: none
+  cell  3 S-400        2000 replicates   107.1 s  failures: none
+  cell  4 D-200        2000 replicates    47.1 s  failures: none
+  cell  5 D-400        2000 replicates    92.9 s  failures: none
+  cell  6 D-800        2000 replicates   234.2 s  failures: none
+  cell  7 E-200        2000 replicates    59.8 s  failures: none
+  cell  8 E-400        2000 replicates   116.6 s  failures: proposed_ew.cox0.fail=1 proposed_ew.cox1.fail=1
+  cell  9 E-800        2000 replicates   339.6 s  failures: proposed_ew.cox0.fail=6 proposed_ew.cox1.fail=6
+  cell 10 F-400        2000 replicates    95.2 s  failures: none
+  cell 11 F-800        2000 replicates   235.2 s  failures: none
+  cell 12 Dt-400       2000 replicates     5.7 s  failures: none
+  cell 13 U-400-null   2000 replicates   101.9 s  failures: none
+  cell 14 D-400-null   2000 replicates    85.1 s  failures: none
+  cell 15 E-400-null   2000 replicates   108.5 s  failures: proposed_ew.cox0.fail=3 proposed_ew.cox1.fail=3
+  cell 16 F-400-null   2000 replicates    86.0 s  failures: none
+  cell 17 U-400-delay  2000 replicates   100.1 s  failures: none
+  cell 18 D-400-delay  2000 replicates    86.3 s  failures: none
+  cell 19 E-400-delay  2000 replicates   110.3 s  failures: proposed_ew.cox0.fail=1 proposed_ew.cox1.fail=1
+oc_sim.R version=proposed done: wall-clock 2247.4 s (37.5 min)
+oc_boot.R cells=5,8,10 reps=500 B=200 cores=12 (survival 3.8.11)  started 2026-11-19 17:36:35
+  cell  5 D-400        500 replicates x 200 resamples    22.5 s  resamples that failed: 0
+  cell  8 E-400        500 replicates x 200 resamples    29.3 s  resamples that failed: 0
+  cell 10 F-400        500 replicates x 200 resamples    22.3 s  resamples that failed: 0
+oc_boot.R done: wall-clock 74.2 s (1.2 min)

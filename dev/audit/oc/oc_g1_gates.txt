@@ -1,0 +1,16 @@
+G1.1 truth, ph: max |mean(T^a > t) - S_a(t)| = 0.00056 (limit 0.002)
+G1.1 truth, cell 3: max |weighted mean - formula| = 0.00058 (limit 0.003)
+G1.1 truth, ph, conf with true weights: max |weighted mean among treat == a - S_a(t)| = 0.00125 (limit 0.004)
+G1.1 truth, null: max |mean(T^a > t) - S_a(t)| = 0.00070 (limit 0.002)
+G1.1 truth, null, conf with true weights: max |weighted mean among treat == a - S_a(t)| = 0.00089 (limit 0.004)
+G1.1 truth, delay: max |mean(T^a > t) - S_a(t)| = 0.00055 (limit 0.002)
+G1.1 truth, delay, conf with true weights: max |weighted mean among treat == a - S_a(t)| = 0.00132 (limit 0.004)
+G1.2 cox_robust, FH(0,0): |U| / sqrt(sum(psi^2)) at bhat = 1.57e-14 (limit 1e-6)
+G1.2 cox_robust, FH(0,0): SE 0.2382913305, coxph(robust = TRUE) 0.2382913305, relative difference 1.55e-13 (limit 1e-6)
+G1.2 cox_robust, FH(0,1): |U| / sqrt(sum(psi^2)) at bhat = 3.03e-15 (limit 1e-6)
+G1.5a (dataset): S^2 sum w^2 psi^2 from P_a against sig2_surv0 / sig2_surv1: max relative difference 1.57e-14 (limit 1e-8)
+G1.5b: script's -S sum G w psi against surv0_star / surv1_star: max absolute difference 6.66e-16 (limit 1e-8)
+G1.5c: IF = 0, script band against c_alpha_band, sb_lower, sb_upper: max absolute difference 5.77e-15 (limit 1e-8)
+G1.5d: IF = 0, script RMST pointwise and band limits against cumulative_rmst_bands(): max absolute difference 0 (limit 1e-8)
+Part D gates: 5a(dataset) PASS, 5b PASS, 5c PASS, 5d PASS
+G1 items 1 and 2: PASS

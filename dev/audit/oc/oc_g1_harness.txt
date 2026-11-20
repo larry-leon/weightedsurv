@@ -1,0 +1,7 @@
+G1.3 cell 1: checksums identical between versions in all 200 replicates: TRUE
+G1.3 cell 5: checksums identical between versions in all 200 replicates: TRUE
+G1.3 cell 1: calls that errored: cran 0, proposed 0
+G1.3 cell 1, proposed, delta(18): truth 0.13041 bias 0.00571 (limit |bias| 0.01); pointwise coverage 0.955 (limits 0.91-0.99)
+G1.5a (200 replicates of cell 8), delta(18): mean proposed_ew SE / mean proposed SE = 0.867 (limits 0.75-0.98); proposed_ew SE/SD = 0.965 (limits 0.80-1.15); proposed SE/SD = 1.113
+Part D gate 5a (200 replicates): PASS 
+G1 item 3: PASS

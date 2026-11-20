@@ -1,0 +1,5 @@
+load_all 0.1.0: TRUE  version: 0.1.0 
+load_all HEAD : TRUE  version: 0.2.0 
+identity 1: SE surv1(18) package 0.0640167487 survfit(robust) 0.0640167487 relative difference 6.5e-16
+identity 2: var over 2000 draws of surv1_star / sig2_surv1, where 0.1 < surv1 < 0.9: min 0.9142 max 1.0038 (306 grid points)
+G0 identity checks PASS
