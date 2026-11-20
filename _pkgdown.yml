@@ -29,6 +29,7 @@ articles:
       - articles/weightedcox_methodology
       - articles/weightedkm_methodology
       - articles/weightedrmst_methodology
+      - articles/estimated_weights_methodology
 
   - title: "Simulation Studies"
     desc: >
