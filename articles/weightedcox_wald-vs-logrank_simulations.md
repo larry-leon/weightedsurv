@@ -845,10 +845,10 @@ res_demo <- run_weighted_cox_sims(
 )
 ```
 
-    ## 82.054 sec elapsed
+    ## 66.579 sec elapsed
     ## Scenarios: 6 | Sims per scenario: 10 | Total tasks: 60 
     ## Completed: 60 | Failed: 0 
-    ## Elapsed: 1.37 minutes
+    ## Elapsed: 1.11 minutes
 
 ``` r
 

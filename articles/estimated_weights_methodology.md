@@ -1115,8 +1115,8 @@ se_diff_pkg <- sqrt(fit_est$sig2_dhat)
 ```
 
 The contributions are centred (section 4.1):
-$`\sum_{i: A_i = a} w_i \psi_i(t)`$ is -7.3e-18 in the treated arm and
--1.9e-17 in the control arm.
+$`\sum_{i: A_i = a} w_i \psi_i(t)`$ is 1.8e-17 in the treated arm and
+-6.3e-18 in the control arm.
 
 ### Log hazard ratio, FH(0, 0)
 
@@ -1161,7 +1161,7 @@ c(psi_at_bhat = max(abs(-unit$score_star - sc_bhat$psi)), psi_at_zero = max(abs(
 ```
 
     ##  psi_at_bhat  psi_at_zero 
-    ## 2.220446e-16 4.440892e-16
+    ## 4.440892e-16 4.440892e-16
 
 ### By hand against the package
 
@@ -1185,9 +1185,9 @@ knitr::kable(
 
 | Quantity | By hand, estimated | Package, estimated | Difference | Package, known |
 |:---|---:|---:|---:|---:|
-| SE of the survival difference at 60 months | 0.0351664399 | 0.0351664399 | 1.4e-17 | 0.0373479646 |
+| SE of the survival difference at 60 months | 0.0351664399 | 0.0351664399 | 6.9e-18 | 0.0373479646 |
 | SE of the log hazard ratio, FH(0,0) | 0.0840255194 | 0.0840255194 | 0.0e+00 | 0.0912795746 |
-| Log-rank z, FH(0,0) | 4.8686437524 | 4.8686437524 | 8.9e-16 | 4.4490619446 |
+| Log-rank z, FH(0,0) | 4.8686437524 | 4.8686437524 | 1.8e-15 | 4.4490619446 |
 
 ``` r
 

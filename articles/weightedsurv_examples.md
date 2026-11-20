@@ -1100,7 +1100,7 @@ dfcount_rotterdam_known <- get_dfcounting(df=df_rotterdam, tte.name=tte.name, ev
 
 The weighted K-M standard errors agree with those of
 [`survfit()`](https://rdrr.io/pkg/survival/man/survfit.html): the
-largest absolute difference is 6^{-17} in the control arm and 8^{-17} in
+largest absolute difference is 5^{-17} in the control arm and 5^{-17} in
 the treated arm.
 
 ### Check SE’s calculated via resampling (draws = 5000)
@@ -1197,7 +1197,7 @@ title(main = "Treat SEs")
 ![](weightedsurv_examples_files/figure-html/unnamed-chunk-35-1.png)
 
 The weighted K-M curves of the two packages agree (largest absolute
-difference 10^{-15}). The standard errors still differ: the ratio of the
+difference 9^{-16}). The standard errors still differ: the ratio of the
 weightedsurv standard error (grey) to the `iptw_km` standard error of
 `adjustedCurves` (red) ranges from 1.00 to 1.06 in the control arm and
 from 0.90 to 1.05 in the treated arm. The weighted K-M standard errors

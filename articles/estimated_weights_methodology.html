@@ -3852,7 +3852,7 @@ order.</p>
 <span><span class="va">se_diff_pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">fit_est</span><span class="op">$</span><span class="va">sig2_dhat</span><span class="op">)</span></span></code></pre></div>
 <p>The contributions are centred (section 4.1):
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mi>a</mi></mrow></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>ψ</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sum_{i: A_i = a} w_i \psi_i(t)</annotation></semantics></math>
-is -7.3e-18 in the treated arm and -1.9e-17 in the control arm.</p>
+is 1.8e-17 in the treated arm and -6.3e-18 in the control arm.</p>
 </div>
 <div class="section level3">
 <h3 id="log-hazard-ratio-fh0-0">Log hazard ratio, FH(0, 0)<a class="anchor" aria-label="anchor" href="#log-hazard-ratio-fh0-0"></a>
@@ -3891,7 +3891,7 @@ one by one.</p>
 <span>                              G0.draws <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="va">A</span> <span class="op">==</span> <span class="fl">0</span>, <span class="op">]</span>, G1.draws <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">[</span><span class="va">A</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span>, draws <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>psi_at_bhat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="op">-</span><span class="va">unit</span><span class="op">$</span><span class="va">score_star</span> <span class="op">-</span> <span class="va">sc_bhat</span><span class="op">$</span><span class="va">psi</span><span class="op">)</span><span class="op">)</span>, psi_at_zero <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="op">-</span><span class="va">unit</span><span class="op">$</span><span class="va">score_star_null</span> <span class="op">-</span> <span class="va">sc_zero</span><span class="op">$</span><span class="va">psi</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  psi_at_bhat  psi_at_zero </span></span>
-<span><span class="co">## 2.220446e-16 4.440892e-16</span></span></code></pre>
+<span><span class="co">## 4.440892e-16 4.440892e-16</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="by-hand-against-the-package">By hand against the package<a class="anchor" aria-label="anchor" href="#by-hand-against-the-package"></a>
@@ -3931,7 +3931,7 @@ one by one.</p>
 <td align="left">SE of the survival difference at 60 months</td>
 <td align="right">0.0351664399</td>
 <td align="right">0.0351664399</td>
-<td align="right">1.4e-17</td>
+<td align="right">6.9e-18</td>
 <td align="right">0.0373479646</td>
 </tr>
 <tr class="even">
@@ -3945,7 +3945,7 @@ one by one.</p>
 <td align="left">Log-rank z, FH(0,0)</td>
 <td align="right">4.8686437524</td>
 <td align="right">4.8686437524</td>
-<td align="right">8.9e-16</td>
+<td align="right">1.8e-15</td>
 <td align="right">4.4490619446</td>
 </tr>
 </tbody>
