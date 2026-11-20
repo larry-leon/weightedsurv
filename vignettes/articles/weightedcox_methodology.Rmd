@@ -20,6 +20,8 @@ knitr::opts_chunk$set(
   fig.width = 8,
   fig.height = 6
 )
+# packages not in Imports: a chunk that uses one is evaluated only when it is installed
+has_tables <- all(vapply(c("data.table", "gt"), requireNamespace, logical(1), quietly = TRUE))
 ```
 
 # Overview
@@ -82,12 +84,12 @@ $$w(t) = \frac{1}{\max\bigl(\hat{\bar{F}}(t^-),\, \hat{\bar{F}}(t^\star)\bigr)},
 which provides modest downweighting of early time-points relative to the user-specified cutoff $t^\star$.
 
 **Schemper:**
-$$w(t) = \frac{\hat{\bar{F}}(t^-)}{\hat{\bar{G}}(t)},$$
-where $\hat{\bar{G}}$ is the pooled Kaplan-Meier censoring survivor function.  This scheme produces an "average hazard ratio" estimator that is approximately free of the censoring distribution.
+$$w(t) = \frac{\hat{\bar{F}}(t^-)}{\hat{\bar{G}}(t^-)},$$
+where $\hat{\bar{G}}(t^-)$ is the left-continuous pooled Kaplan-Meier censoring survivor function (the weight is 0 where $\hat{\bar{G}}(t^-) = 0$).  This scheme produces an "average hazard ratio" estimator that is approximately free of the censoring distribution.
 
 **Xu-O'Quigley (XO):**
-$$w(t) = \frac{\hat{\bar{F}}(t^-)}{\bar{Y}(t)/n},$$
-which also yields a censoring-independent average hazard ratio estimator.
+$$w(t) = \frac{\hat{\bar{F}}(t^-)}{\bar{Y}(t)},$$
+where $\bar{Y}(t)$ is the pooled number at risk (with subject weights, the weighted number at risk; the weight is 0 where $\bar{Y}(t) = 0$), which also yields a censoring-independent average hazard ratio estimator.
 
 **Custom time-based:** Step-function weights of the form $w(t) = w_0\, I(t \le \tau) + w_1\, I(t > \tau)$, which allow the analyst to zero-out contributions before or after a pre-specified time-point.
 
@@ -196,7 +198,7 @@ We illustrate using the GBSG randomized trial data available in the `survival` p
 ```{r data-prep}
 library(survival)
 library(weightedsurv)
-library(data.table)
+if (has_tables) library(data.table)
 
 # Prepare GBSG data
 df_gbsg <- gbsg
@@ -297,7 +299,9 @@ fit_custom <- cox_rhogamma(
 
 ### Comparison of Results
 
-```{r results-table}
+The table needs the data.table and gt packages.
+
+```{r results-table, eval = has_tables}
 library(gt)
 
 results <- data.table(
@@ -436,7 +440,7 @@ The weighted Cox score statistic evaluated at $\beta = 0$ is algebraically equiv
 
 $$W_K = \int_0^\infty \left\{ \frac{K(t)}{\bar{Y}_0(t)}\, d\bar{N}_0(t) - \frac{K(t)}{\bar{Y}_1(t)}\, d\bar{N}_1(t) \right\},$$
 
-with $K(t) = \sqrt{\frac{n_0 + n_1}{n_0\, n_1}}\, w(t) \frac{\bar{Y}_0(t)\, \bar{Y}_1(t)}{\bar{Y}(t)}$.  
+with $K(t) = w(t) \frac{\bar{Y}_0(t)\, \bar{Y}_1(t)}{\bar{Y}(t)}$, as `score_calculation()` computes it (without a factor $\sqrt{(n_0 + n_1)/(n_0\, n_1)}$).  Such a constant factor would multiply the statistic and its standard error alike, so the z-statistic is unchanged by it.  
 
 This duality connects hypothesis testing (via the weighted log-rank test) and estimation (via the weighted Cox model) under the same weighting scheme, and justifies referring to the weighted Cox estimator as the "companion" to the weighted log-rank test.  In `weightedsurv`, the `check_results()` function verifies this equivalence numerically.
 
@@ -479,7 +483,7 @@ The weighted Cox model estimation framework in `weightedsurv` provides:
 - **Dual inference**: Both asymptotic and resampling-based standard errors and confidence intervals
 - **Score-test duality**: Direct connection between weighted Cox estimation and weighted log-rank testing
 - **Propensity-score compatibility**: Subject-specific case weights can be combined with time-dependent weighting
-- **Simultaneous inference**: Support for simultaneous confidence intervals needed when the weighting scheme is selected via a combination test
+- **Simultaneous inference**: for each scheme, `cox_rhogamma()` returns the standardized resampled values (`fit_resamples$Z_bstar`), based on the same multipliers $G_i$ in every call; the critical value $c_{\max}$ of simultaneous confidence intervals across schemes (needed when the weighting scheme is selected via a combination test) is computed from them and is not returned
 
 The key functions are:
 
