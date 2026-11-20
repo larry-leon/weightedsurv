@@ -442,6 +442,30 @@ cox_rhogamma_resample <- function(fit_rhogamma, i_bhat, K_wt_rg, i_zero, K_zero,
   y1 <- time[idx1]; d1 <- delta[idx1]
   w0_hat <- w_hat[idx0]; w1_hat <- w_hat[idx1]
 
+  if (length(unique(w_hat)) > 1) {
+    # Subject weights not all equal: each resampled score is -sum_i G_ib psi_i(b), with psi_i the
+    # per-subject score contributions (see ws_score_psi()) at bhat and at 0. Row i of G is that
+    # subject's row in the multiplier matrices (G0.draws for controls, G1.draws for treated).
+    G <- matrix(0, nrow = n, ncol = ncol(G0.draws))
+    G[idx0, ] <- G0.draws
+    G[idx1, ] <- G1.draws
+    psi_bhat <- ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = bhat)$psi
+    psi_zero <- ws_score_psi(time, delta, z, w_hat, K = wt_rg, beta = 0)$psi
+    score_star <- -colSums(G * psi_bhat)
+    score_star_null <- -colSums(G * psi_zero)
+    bhat_center_star <- score_star / i_bhat
+    Z_bstar <- bhat_center_star / sig_bhat_asy
+    var_bhat_star <- var(bhat_center_star, na.rm = TRUE)
+    sig_bhat_star <- sqrt(var_bhat_star)
+    return(list(
+      score_star = score_star,
+      score_star_null = score_star_null,
+      bhat_center_star = bhat_center_star,
+      Z_bstar = Z_bstar,
+      sig_bhat_star = sig_bhat_star
+    ))
+  }
+
   event_mat0 <- outer(y0, at_points, FUN = "<=")
   risk_mat0  <- outer(y0, at_points, FUN = ">=")
   event_mat1 <- outer(y1, at_points, FUN = "<=")
