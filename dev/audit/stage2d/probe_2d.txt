@@ -1,0 +1,39 @@
+
+weightedsurv KM audit probe
+source   : LOCAL TREE via pkgload::load_all 
+R        : R version 4.5.2 (2025-10-31) | survival 3.8.11 
+survival attached: FALSE 
+
+| id   | status         | area        | probe -> observed
+| OK1  | PASS           | control     | Unweighted S and Greenwood SE equal survfit (veteran; n=300 heavy ties) -> max abs diff (S and SE) = 2.2e-16
+| OK2  | PASS           | control     | Weighted S equals survfit(weights=) (no ties and heavy ties) -> max abs diff S = 5.6e-16
+| OK3  | PASS           | control     | Weighted SE, natural-scale weights, no ties: within 10% of survfit robust where S>0.1 -> pkg SE / survfit robust SE in [1.000, 1.000]
+| K1   | NOT_REPRODUCED | KM estimate | KM_diff(modify_tau=TRUE): KM on a grid that omits event times (continuous times, n=60) -> max|S-survfit| arm0 0.0000, arm1 0.0000; min package S = 0.1216
+| K1b  | NOT_REPRODUCED | KM estimate | KM_diff(at_points = seq(0,30,5)): user grid without event times -> max|S0-survfit| = 0.0000
+| K2   | NOT_REPRODUCED | KM quantile | Median when S(t) equals 0.5 on an interval (no censoring, n even 2..60) -> 0 of 30 medians differ from survfit (package returns the left end, survfit the midpoint)
+| K2b  | NOT_REPRODUCED | KM quantile | Same case through df_counting() with default arguments: is anything signalled? -> control median: package 5.50, survfit 5.50; quantile warnings raised: 0
+| K3   | NOT_REPRODUCED | KM variance | Weighted SE is not invariant to rescaling the weights (w vs w/sum(w)) -> SE(w/sum w)/SE(w) at 25/50/75/95% of grid: 1.00, 1.00, 1.00, 1.00
+| K4   | NOT_REPRODUCED | KM variance | Weighted SE with tied event times vs survfit robust -> pkg SE / survfit robust SE at 4 times: 1.00, 1.00, 1.00, 1.00
+| K5   | NOT_REPRODUCED | KM variance | All weights equal to 2 vs weights 2 with one perturbed by 1e-9 (branch discontinuity) -> SE: w=1 0.0420 | w=2 0.0420 | w~2 0.0420
+| K6   | NOT_REPRODUCED | KM estimate | Weighted KM whose last observation is an event: floating-point residue, negative S -> min(S) < 0 in 0 of 400 single-arm sims; KM_plot_2sample_weighted_counting() stops in 0 of 60 datasets
+| K7   | NOT_REPRODUCED | KM estimate | Unsorted at_points are accepted and give values outside [0,1] -> error: at_points must be non-decreasing (sorted); duplicates are allowed.
+| R1   | NOT_REPRODUCED | robustness  | KM_diff() when one arm is empty -> error: No observations in the control arm (treat == 0).
+| R2   | NOT_REPRODUCED | robustness  | df_counting() when one arm has no events -> no error (0 warnings)
+| R3a  | NOT_REPRODUCED | robustness  | KM_diff() with an NA time -> error: Column 'time' has 1 missing (NA) value(s); rows are not dropped, so remove or impute them first.
+| R3b  | NOT_REPRODUCED | robustness  | df_counting() with an NA time -> error: Column 'time' has 1 missing (NA) value(s); rows are not dropped, so remove or impute them first.
+| R3c  | NOT_REPRODUCED | robustness  | KM_diff() with an NA weight: silent NA survival -> error: Column 'w' has 1 missing (NA) value(s); rows are not dropped, so remove or impute them first.
+| R4a  | NOT_REPRODUCED | robustness  | KM_diff() accepts negative weights -> error: Column 'w' (weights) has negative values; weights must be >= 0.
+| R4b  | NOT_REPRODUCED | robustness  | df_counting() with zero weights: false 'Discrepancy in KM curve fit' -> KM itself correct: TRUE; discrepancy warnings: 0
+| R5   | NOT_REPRODUCED | robustness  | KM_diff(draws.band = 10) with default show_resamples -> no error (0 warnings)
+| R6   | NOT_REPRODUCED | robustness  | Stratified df_counting() when survival is not attached -> no error
+| R7   | NOT_REPRODUCED | robustness  | Event coded 1/2: df_counting() accepts, KM_diff() rejects -> df_counting: ok; KM_diff: ok
+| I1   | NOT_REPRODUCED | inference   | Simultaneous-band critical value ignores alpha -> c_alpha: alpha=0.05 -> 2.9796, alpha=0.20 -> 2.3417
+| I2a  | NOT_REPRODUCED | inference   | wlr_dhat_estimates(): pooled S taken one grid point after tzero -> sig2_dhat returned 0.010431; with S_pooled(tzero) it is 0.010431 (ratio 1.0000)
+| I2b  | NOT_REPRODUCED | inference   | wlr_dhat_estimates() with tzero beyond the last time -> no error; length(dhat) = 1
+| I3   | REPRODUCED     | inference   | cumulative_rmst_bands(): trapezoid rule on the KM step function vs exact area -> tau=28.63: package 4.2836, exact step-function area 4.2688
+| I4   | NOT_REPRODUCED | inference   | Quantile self-check uses survfit's 0.95 limits whatever conf_level is -> quantile-discrepancy warnings: conf_level 0.95 -> 0, 0.90 -> 0
+| I5   | NOT_REPRODUCED | inference   | qprob != 0.5: quantile_results and the survfit cross-check use opposite conventions -> control, qprob=0.25: quantile_results 15.54 (survfit probs=0.75 is 15.54); quantile_check 15.54 (survfit probs=0.25 is 4.29)
+| P2   | NOT_REPRODUCED | package     | Functions overwrite the caller's RNG state (set.seed inside) -> next runif after user seeds 123 / 999: 0.287578 / 0.389071
+| P5   | INFO           | package     | df_counting() cost at n = 2000 (O(n^2) matrices) -> elapsed 0.3s, peak R memory 18831438 MB
+
+INFO: 1 | NOT_REPRODUCED: 25 | PASS: 3 | REPRODUCED: 1

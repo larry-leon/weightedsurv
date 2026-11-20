@@ -1,0 +1,13 @@
+m6_sim.R: weightedsurv 0.2.0 at 53b5748; reps = 2000, cores = 12; started 2026-11-19 19:15:52
+  cell  1 U-400                  20.3 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 0.3 min, projected total 3.7 min
+  cell  2 R-400                  17.9 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 0.6 min, projected total 3.5 min
+  cell  5 D-400                  19.4 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 1.0 min, projected total 3.5 min
+  cell  8 E-400                  17.7 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 1.3 min, projected total 3.5 min
+  cell 10 F-400                  18.1 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 1.6 min, projected total 3.4 min
+  cell 14 D-400-null             19.0 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 1.9 min, projected total 3.4 min
+  cell 16 F-400-null             17.0 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 2.2 min, projected total 3.4 min
+  cell 12 Dt-400                 14.5 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 2.4 min, projected total 3.3 min
+  cell 21 Dt-400-null            14.4 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 2.6 min, projected total 3.2 min
+  cell 22 D-400-null-strata      11.4 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 2.8 min, projected total 3.1 min
+  cell 23 Dt-400-null-strata      6.9 s; failures FH(0,0) 0, FH(0,1) 0; elapsed 2.9 min, projected total 2.9 min
+m6_sim.R: done in 2.9 min

@@ -1,0 +1,10 @@
+ties = FALSE t =   1.48: events 0/1 up to t 10/9; cumulative z^2 0.25126373, coxph robust score on data censored at t 0.25126373, relative difference 6e-15
+ties = FALSE t =   3.29: events 0/1 up to t 24/22; cumulative z^2 0.01230927, coxph robust score on data censored at t 0.01230927, relative difference 5e-14
+ties = FALSE t =   8.75: events 0/1 up to t 51/40; cumulative z^2 1.08351532, coxph robust score on data censored at t 1.08351532, relative difference 5.1e-15
+ties = FALSE t =  16.26: events 0/1 up to t 84/52; cumulative z^2 3.41302498, coxph robust score on data censored at t 3.41302498, relative difference 1.7e-14
+ties = FALSE t =  26.33: events 0/1 up to t 99/64; cumulative z^2 3.83839984, coxph robust score on data censored at t 3.83839984, relative difference 1.3e-14
+ties = TRUE  t =   2.00: events 0/1 up to t 17/13; cumulative z^2 0.57527340, coxph robust score on data censored at t 0.57527340, relative difference 2.9e-15
+ties = TRUE  t =   4.00: events 0/1 up to t 27/22; cumulative z^2 0.28031904, coxph robust score on data censored at t 0.28031904, relative difference 8.9e-16
+ties = TRUE  t =   9.00: events 0/1 up to t 52/41; cumulative z^2 0.91196725, coxph robust score on data censored at t 0.91196725, relative difference 4.3e-15
+ties = TRUE  t =  17.00: events 0/1 up to t 85/53; cumulative z^2 3.42511484, coxph robust score on data censored at t 3.42511484, relative difference 5.6e-16
+ties = TRUE  t =  27.00: events 0/1 up to t 99/65; cumulative z^2 3.47748194, coxph robust score on data censored at t 3.47748194, relative difference 2.7e-15

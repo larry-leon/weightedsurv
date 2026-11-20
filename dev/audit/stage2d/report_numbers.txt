@@ -1,0 +1,35 @@
+B. Golden datasets, weights wv: Stage 2c (golden_s2c.rds) -> Stage 2d (current code)
+| dataset | n | log-rank z FH(0,0): 2c -> 2d (coxph robust) | log-rank z FH(0,1): 2c -> 2d | cox_rhogamma SE FH(0,0): 2c -> 2d (coxph robust) | SE FH(0,1): 2c -> 2d | stratified z FH(0,0): 2c -> 2d (coxph robust) | resampling SE FH(0,0), draws = 200: 2c -> 2d |
+|---|---|---|---|---|---|---|---|
+| veteran | 137 | 0.713 -> 0.505 (0.505) | 2.172 -> 1.620 | 0.1421 -> 0.2027 (0.2027) | 0.1680 -> 0.2332 | -0.504 -> -0.377 (-0.377) | 0.2019 -> 0.2085 |
+| gbsg | 686 | 4.721 -> 3.461 (3.461) | 3.832 -> 2.751 | 0.0994 -> 0.1371 (0.1371) | 0.1161 -> 0.1622 | 4.494 -> 3.278 (3.278) | 0.1347 -> 0.1326 |
+| gbsg_er_le0 | 82 | -2.664 -> -1.661 (-1.661) | -1.109 -> -0.701 | 0.2375 -> 0.3634 (0.3634) | 0.2948 -> 0.4605 | – | 0.3315 -> 0.3448 |
+| gbsg_er_gt0 | 604 | 4.691 -> 3.392 (3.392) | 3.158 -> 2.241 | 0.1071 -> 0.1500 (0.1500) | 0.1231 -> 0.1744 | 4.489 -> 3.268 (3.268) | 0.1473 -> 0.1353 |
+| sim_cont | 200 | 2.007 -> 1.389 (1.389) | 2.333 -> 1.628 | 0.1475 -> 0.2146 (0.2146) | 0.1770 -> 0.2520 | – | 0.1930 -> 0.2321 |
+| sim_ties | 200 | 3.304 -> 2.413 (2.413) | 2.380 -> 1.744 | 0.1406 -> 0.1954 (0.1954) | 0.1707 -> 0.2379 | – | 0.2026 -> 0.1978 |
+| sim_weighted | 300 | 3.502 -> 2.418 (2.418) | 1.737 -> 1.183 | 0.1140 -> 0.1643 (0.1643) | 0.1335 -> 0.1966 | – | 0.1709 -> 0.1580 |
+| sim_strata | 300 | 2.201 -> 1.579 (1.579) | 1.871 -> 1.354 | 0.1168 -> 0.1631 (0.1631) | 0.1387 -> 0.1914 | 2.359 -> 1.614 (1.614) | 0.1575 -> 0.1629 |
+
+Point estimates (unchanged): score and bhat, 2c -> 2d
+  veteran stratified score -2.98386897 -> -2.98386897
+  veteran: lr 4.918121094 -> 4.918121094; bhat FH(0,0) -0.1014387671 -> -0.1014387671; bhat FH(0,1) -0.3614912181 -> -0.3614912181
+  gbsg stratified score 48.10647774 -> 48.10647774
+  gbsg: lr 50.85598014 -> 50.85598014; bhat FH(0,0) -0.4654851122 -> -0.4654851122; bhat FH(0,1) -0.4387173307 -> -0.4387173307
+  gbsg_er_le0: lr -9.798350973 -> -9.798350973; bhat FH(0,0) 0.6221798255 -> 0.6221798255; bhat FH(0,1) 0.3242451593 -> 0.3242451593
+  gbsg_er_gt0 stratified score 44.26713453 -> 44.26713453
+  gbsg_er_gt0: lr 46.54219165 -> 46.54219165; bhat FH(0,0) -0.4976544764 -> -0.4976544764; bhat FH(0,1) -0.3844878583 -> -0.3844878583
+  sim_cont: lr 13.67214688 -> 13.67214688; bhat FH(0,0) -0.2953688558 -> -0.2953688558; bhat FH(0,1) -0.4095516973 -> -0.4095516973
+  sim_ties: lr 21.76769622 -> 21.76769622; bhat FH(0,0) -0.4634884506 -> -0.4634884506; bhat FH(0,1) -0.4044505204 -> -0.4044505204
+  sim_weighted: lr 30.70478489 -> 30.70478489; bhat FH(0,0) -0.3970210233 -> -0.3970210233; bhat FH(0,1) -0.2315480817 -> -0.2315480817
+  sim_strata stratified score 19.45933217 -> 19.45933217
+  sim_strata: lr 18.68071149 -> 18.68071149; bhat FH(0,0) -0.2565825458 -> -0.2565825458; bhat FH(0,1) -0.2585978757 -> -0.2585978757
+
+E. dataset sim_weighted (n = 300), weights wv
+df_counting()$z.score^2 = 5.8488 (coxph robust score test 5.8488)
+df_counting()$logrank_results$chisq = 10.9951; survdiff() without weights = 10.9951; logrank_text: Logrank p = <0.001; zlogrank_text: logrank (1-sided) p = 0.01
+check_results(): zlr_sq = 5.8488, logrank_chisq = 10.9951, zCox_sq = 5.8488; warning: Statistics differ by more than 1%. Check for computational issues.
+df_counting()$cox_results$score = 12.1843 = summary(coxph)$sctest (model-based score test of the weighted fit; Efron ties); summary(coxph)$robscore = 5.8488; coxph(ties = 'breslow')$rscore = 5.8488
+df_counting()$cox_results: coxph(weights, robust = TRUE) with the default ties (efron): HR 0.6723, robust SE 0.1643; cox_rhogamma FH(0,0): HR 0.6723, SE 0.1643 (Breslow)
+plotKM.band_subgroups() risk table at t = 0/6/12/18: printed counts 300/166/88/40 (unweighted numbers of subjects with time >= t); weighted numbers at risk 494/288.6/152/67.9
+plotKM.band_subgroups() max_tau = 23.7730 = smaller of the arms' last event times, weights not used (a zero-weight event would count)
+formals: plotKM.band_subgroups draws = 0, draws.band = 20; KM_diff draws = 0, draws.band = 0

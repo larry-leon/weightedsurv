@@ -1,0 +1,25 @@
+REQUIRED cell  2 R-400        FH(0,0): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 8.88e-16, |z| df_counting 3.49e-14, |z| cox_rhogamma 3e-15 (limit 1e-8): PASS
+evidence cell  2 R-400              FH(0,0): max relative difference from coxph robust: z^2 against rscore 7.57e-13, sig_bhat_asy 6.68e-10
+REQUIRED cell  2 R-400        FH(0,1): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 6.66e-16, |z| df_counting 1.32e-13, |z| cox_rhogamma 1.05e-14 (limit 1e-8): PASS
+REQUIRED cell  5 D-400        FH(0,0): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 1.89e-15, |z| df_counting 9.06e-13, |z| cox_rhogamma 8.17e-13 (limit 1e-8): PASS
+evidence cell  5 D-400              FH(0,0): max relative difference from coxph robust: z^2 against rscore 2.72e-12, sig_bhat_asy 5.93e-10
+REQUIRED cell  5 D-400        FH(0,1): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 2.44e-15, |z| df_counting 3.26e-13, |z| cox_rhogamma 6.25e-13 (limit 1e-8): PASS
+REQUIRED cell  8 E-400        FH(0,0): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 2e-15, |z| df_counting 5.95e-14, |z| cox_rhogamma 9.21e-14 (limit 1e-8): PASS
+evidence cell  8 E-400              FH(0,0): max relative difference from coxph robust: z^2 against rscore 1.92e-12, sig_bhat_asy 4.19e-10
+REQUIRED cell  8 E-400        FH(0,1): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 2.11e-15, |z| df_counting 1.09e-12, |z| cox_rhogamma 8.92e-13 (limit 1e-8): PASS
+REQUIRED cell 10 F-400        FH(0,0): 2000 replicates without tied times (0 with); max relative difference from cox_robust(): sig_bhat_asy 2e-15, |z| df_counting 9.56e-12, |z| cox_rhogamma 7.83e-12 (limit 1e-8): PASS
+evidence cell 10 F-400              FH(0,0): max relative difference from coxph robust: z^2 against rscore 5.06e-11, sig_bhat_asy 1.36e-09
+REQUIRED cell 10 F-400        FH(0,1): 2000 replicates without tied times (0 with); max relative difference from cox_robust(): sig_bhat_asy 2.11e-15, |z| df_counting 4.78e-12, |z| cox_rhogamma 1.07e-11 (limit 1e-8): PASS
+REQUIRED cell 14 D-400-null   FH(0,0): 1994 replicates without tied times (6 with); max relative difference from cox_robust(): sig_bhat_asy 2e-15, |z| df_counting 5.6e-12, |z| cox_rhogamma 4.12e-12 (limit 1e-8): PASS
+evidence cell 14 D-400-null         FH(0,0): max relative difference from coxph robust: z^2 against rscore 5.07e-11, sig_bhat_asy 3.21e-10
+REQUIRED cell 14 D-400-null   FH(0,1): 1994 replicates without tied times (6 with); max relative difference from cox_robust(): sig_bhat_asy 2.22e-15, |z| df_counting 1.17e-11, |z| cox_rhogamma 9.34e-12 (limit 1e-8): PASS
+REQUIRED cell 16 F-400-null   FH(0,0): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 2.22e-15, |z| df_counting 3.34e-12, |z| cox_rhogamma 2.35e-12 (limit 1e-8): PASS
+evidence cell 16 F-400-null         FH(0,0): max relative difference from coxph robust: z^2 against rscore 3.09e-11, sig_bhat_asy 1.26e-09
+REQUIRED cell 16 F-400-null   FH(0,1): 1998 replicates without tied times (2 with); max relative difference from cox_robust(): sig_bhat_asy 2.89e-15, |z| df_counting 7.29e-12, |z| cox_rhogamma 7.67e-12 (limit 1e-8): PASS
+REQUIRED cell 12 Dt-400       FH(0,0): 2000 replicates (2000 with tied times); max relative difference of sig_bhat_asy from coxph(robust = TRUE, ties = 'breslow') 1.41e-09 (limit 1e-6): PASS
+evidence cell 12 Dt-400             FH(0,0): max relative difference from coxph robust: z^2 against rscore 1.37e-12, sig_bhat_asy 1.41e-09
+REQUIRED cell 21 Dt-400-null  FH(0,0): 2000 replicates (2000 with tied times); max relative difference of sig_bhat_asy from coxph(robust = TRUE, ties = 'breslow') 3.4e-10 (limit 1e-6): PASS
+evidence cell 21 Dt-400-null        FH(0,0): max relative difference from coxph robust: z^2 against rscore 2.44e-10, sig_bhat_asy 3.4e-10
+evidence cell 22 D-400-null-strata  FH(0,0): max relative difference from coxph robust: z^2 against rscore 4.58e-10 (stratified)
+evidence cell 23 Dt-400-null-strata FH(0,0): max relative difference from coxph robust: z^2 against rscore 4.61e-11 (stratified)
+M6 required checks: PASS

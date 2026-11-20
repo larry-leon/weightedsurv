@@ -1,0 +1,489 @@
+Vignette numbers, before (START_SHA) -> after (HEAD). Times for SE / band read-off: 24, 60, 120 months.
+
+==== examples (vignettes/weightedsurv_examples.Rmd) ====
+
+-- chunk 'unnamed-chunk-4' (line 182), object dfcount_gbsg [dfcount]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-14' (line 310), object dfcount_rotterdam_unwtd [dfcount]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-14' (line 310), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'unnamed-chunk-17' (line 346), object temp [band]: CHANGED
+   c_alpha_band   3.539  ->  3.002
+   range          unchanged:     0 / 118.4
+   tab before:
+            [,1]      [,2]      [,3]
+t        24.0000 60.000000 120.00000
+dhat      0.1584  0.171818   0.08913
+se        0.0247  0.051189   0.06593
+lower     0.1100  0.071490  -0.04010
+upper     0.2068  0.272146   0.21836
+sb_lower  0.0710 -0.009345  -0.14422
+sb_upper  0.2459  0.352981   0.32248
+   tab after:
+             [,1]     [,2]      [,3]
+t        24.00000 60.00000 120.00000
+dhat      0.15843  0.17182   0.08913
+se        0.03476  0.04962   0.07535
+lower     0.09030  0.07457  -0.05855
+upper     0.22655  0.26906   0.23681
+sb_lower  0.05408  0.02287  -0.13707
+sb_upper  0.26277  0.32076   0.31532
+
+-- chunk 'unnamed-chunk-18' (line 369), object get_bands [rmst]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-18' (line 369), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-22' (line 476), object dfcount_CTC_unwtd [dfcount]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-22' (line 476), object dfcount_CTC_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  logrank (1-sided) p = <0.001  ->  logrank (1-sided) p = 0.02
+   z.score        3.656  ->   2.11
+   lr             unchanged: 37.25
+   sig2_lr        103.8  ->  311.5
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.66 (0.44, 0.98)
+   logrank_text_survdiff unchanged: Logrank p = <0.001
+
+-- chunk 'unnamed-chunk-24' (line 502), object temp [wlr_cumulative]: CHANGED
+   last           37.25 / 103.8 / 3.656  ->  37.25 / 311.5 /  2.11
+   z_range        0.07113 / 4.088  ->  0.04345 / 5.509
+   first_time_z_above_1.96 3.844  ->   2.53
+   time_of_max_z  64.82  ->   5.52
+   n_grid_points_z_above_5     0  ->     10
+   z_range_from_80 3.653 / 3.656  ->  2.108 /  2.11
+   tab before:
+             [,1]   [,2]    [,3]
+t          24.000 60.000 120.000
+score       8.518 39.794  37.248
+sig2.score 60.553 99.712 103.811
+z.score     1.095  3.985   3.656
+   tab after:
+               [,1]    [,2]   [,3]
+t           24.0000  60.000 120.00
+score        8.5179  39.794  37.25
+sig2.score 152.4776 298.529 311.54
+z.score      0.6898   2.303   2.11
+
+-- chunk 'unnamed-chunk-25' (line 520), object get_bands [rmst]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-25' (line 520), object temp [band]: CHANGED
+   c_alpha_band    3.63  ->  3.051
+   range          unchanged:     0 / 77.93
+   tab before:
+             [,1]     [,2]      [,3]
+t        24.00000 60.00000 120.00000
+dhat      0.03306  0.19377   0.13226
+se        0.06261  0.06384   0.08579
+lower    -0.08966  0.06864  -0.03587
+upper     0.15578  0.31890   0.30040
+sb_lower -0.19421 -0.03795  -0.17911
+sb_upper  0.26032  0.42550   0.44364
+   tab after:
+             [,1]     [,2]      [,3]
+t        24.00000 60.00000 120.00000
+dhat      0.03306  0.19377   0.13226
+se        0.05532  0.05891   0.07529
+lower    -0.07536  0.07831  -0.01530
+upper     0.14148  0.30924   0.27983
+sb_lower -0.13570  0.01405  -0.09743
+sb_upper  0.20182  0.37349   0.36195
+
+-- chunk 'unnamed-chunk-26' (line 578), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-27' (line 606), object temp [band]: IDENTICAL before/after
+
+-- chunk 'unnamed-chunk-28' (line 624), object dfcount [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'unnamed-chunk-28' (line 624), object get_rg [cox_rhogamma]: CHANGED
+   z.score        5.928  ->  3.547
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   bhat           unchanged: -0.4803
+   sig_bhat_asy   0.08179  ->  0.1372
+   sig_bhat_star  0.1342  ->  0.1329
+   bhat_debiased  -0.4696  ->  -0.4682
+   hr_ci_asy before:
+     beta sig_bhat     hr lower  upper
+1 -0.4803  0.08179 0.6186 0.527 0.7262
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4803   0.1372 0.6186 0.4728 0.8094
+   hr_ci_star before:
+     beta sig_bhat     hr  lower  upper
+1 -0.4696   0.1342 0.6253 0.4807 0.8134
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4682   0.1329 0.6261 0.4825 0.8125
+   cox_text_asy   HR = 0.6186 (0.527, 0.7262)  ->  HR = 0.6186 (0.4728, 0.8094)
+   cox_text_star  HR = 0.6186 (0.4807, 0.8134)  ->  HR = 0.6186 (0.4825, 0.8125)
+
+-- chunk 'unnamed-chunk-28' (line 624), object res [table]: CHANGED
+   tab before:
+     analysis     hr  lower  upper     z
+1 zero_one(6) 0.6186 0.4807 0.8134 5.928
+   tab after:
+     analysis     hr  lower  upper     z
+1 zero_one(6) 0.6186 0.4825 0.8125 3.547
+
+-- chunk 'unnamed-chunk-28' (line 624), object res_update [table]: CHANGED
+   tab before:
+     analysis     z     hr  lower  upper
+1     FH(0,0) 5.894 0.6319 0.4938 0.8244
+2     FH(0,1) 4.188 0.6935 0.5129 0.9541
+3     FH_exp2 5.502 0.6504 0.5041 0.8553
+4      MB(12) 5.893 0.6318 0.4936 0.8249
+5 zero_one(6) 5.928 0.6186 0.4807 0.8134
+   tab after:
+     analysis     z     hr  lower  upper
+1     FH(0,0) 3.474 0.6319 0.4945 0.8251
+2     FH(0,1) 2.308 0.6935 0.5154 0.9545
+3     FH_exp2 3.152 0.6504 0.5050 0.8566
+4      MB(12) 3.468 0.6318 0.4944 0.8255
+5 zero_one(6) 3.547 0.6186 0.4825 0.8125
+
+-- chunk 'unnamed-chunk-29' (line 702), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'unnamed-chunk-30' (line 711), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'unnamed-chunk-34' (line 743), object df_mine [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'unnamed-chunk-36' (line 787), object res [dfcount]: IDENTICAL before/after
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox FH(0,0) [cox_rhogamma]: CHANGED
+   z.score        5.894  ->  3.474
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   bhat           unchanged: -0.4591
+   sig_bhat_asy   0.07857  ->  0.133
+   sig_bhat_star  0.1307  ->  0.1306
+   bhat_debiased  -0.4493  ->  -0.4482
+   hr_ci_asy before:
+     beta sig_bhat     hr  lower  upper
+1 -0.4591  0.07857 0.6319 0.5417 0.7371
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4591    0.133 0.6319 0.4868 0.8201
+   hr_ci_star before:
+     beta sig_bhat    hr  lower  upper
+1 -0.4493   0.1307 0.638 0.4938 0.8244
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4482   0.1306 0.6388 0.4945 0.8251
+   cox_text_asy   HR = 0.6319 (0.5417, 0.7371)  ->  HR = 0.6319 (0.4868, 0.8201)
+   cox_text_star  HR = 0.6319 (0.4938, 0.8244)  ->  HR = 0.6319 (0.4945, 0.8251)
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox FH(0,1) [cox_rhogamma]: CHANGED
+   z.score        4.188  ->  2.308
+   zlogrank_text  logrank (1-sided) p = <0.001  ->  logrank (1-sided) p = 0.0105
+   bhat           unchanged: -0.3661
+   sig_bhat_asy   0.08784  ->  0.1638
+   sig_bhat_star  0.1584  ->  0.1572
+   bhat_debiased  -0.3574  ->  -0.3547
+   hr_ci_asy before:
+     beta sig_bhat     hr  lower  upper
+1 -0.3661  0.08784 0.6935 0.5838 0.8237
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.3661   0.1638 0.6935 0.5031 0.9559
+   hr_ci_star before:
+     beta sig_bhat     hr  lower  upper
+1 -0.3574   0.1584 0.6995 0.5129 0.9541
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.3547   0.1572 0.7014 0.5154 0.9545
+   cox_text_asy   HR = 0.6935 (0.5838, 0.8237)  ->  HR = 0.6935 (0.5031, 0.9559)
+   cox_text_star  HR = 0.6935 (0.5129, 0.9541)  ->  HR = 0.6935 (0.5154, 0.9545)
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox FH_exp2 [cox_rhogamma]: CHANGED
+   z.score        5.502  ->  3.152
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   bhat           unchanged: -0.4302
+   sig_bhat_asy   0.07882  ->  0.1382
+   sig_bhat_star  0.1348  ->  0.1348
+   bhat_debiased  -0.4206  ->  -0.419
+   hr_ci_asy before:
+     beta sig_bhat     hr  lower upper
+1 -0.4302  0.07882 0.6504 0.5573 0.759
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4302   0.1382 0.6504 0.4961 0.8528
+   hr_ci_star before:
+     beta sig_bhat     hr  lower  upper
+1 -0.4206   0.1348 0.6566 0.5041 0.8553
+   hr_ci_star after:
+    beta sig_bhat     hr lower  upper
+1 -0.419   0.1348 0.6577 0.505 0.8566
+   cox_text_asy   HR = 0.6504 (0.5573, 0.759)  ->  HR = 0.6504 (0.4961, 0.8528)
+   cox_text_star  HR = 0.6504 (0.5041, 0.8553)  ->  HR = 0.6504 (0.505, 0.8566)
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox MB(12) [cox_rhogamma]: CHANGED
+   z.score        5.893  ->  3.468
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   bhat           unchanged: -0.4592
+   sig_bhat_asy   0.07861  ->  0.1333
+   sig_bhat_star  0.131  ->  0.1308
+   bhat_debiased  -0.4493  ->  -0.4481
+   hr_ci_asy before:
+     beta sig_bhat     hr  lower upper
+1 -0.4592  0.07861 0.6318 0.5416 0.737
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4592   0.1333 0.6318 0.4865 0.8205
+   hr_ci_star before:
+     beta sig_bhat     hr  lower  upper
+1 -0.4493    0.131 0.6381 0.4936 0.8249
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4481   0.1308 0.6388 0.4944 0.8255
+   cox_text_asy   HR = 0.6318 (0.5416, 0.737)  ->  HR = 0.6318 (0.4865, 0.8205)
+   cox_text_star  HR = 0.6318 (0.4936, 0.8249)  ->  HR = 0.6318 (0.4944, 0.8255)
+
+-- chunk 'supplement-624 (cox_rhogamma on dfcount_rotterdam_wtd, draws = 1000, each scheme)' (line NA), object cox zero_one(6) [cox_rhogamma]: CHANGED
+   z.score        5.928  ->  3.547
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   bhat           unchanged: -0.4803
+   sig_bhat_asy   0.08179  ->  0.1372
+   sig_bhat_star  0.1342  ->  0.1329
+   bhat_debiased  -0.4696  ->  -0.4682
+   hr_ci_asy before:
+     beta sig_bhat     hr lower  upper
+1 -0.4803  0.08179 0.6186 0.527 0.7262
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4803   0.1372 0.6186 0.4728 0.8094
+   hr_ci_star before:
+     beta sig_bhat     hr  lower  upper
+1 -0.4696   0.1342 0.6253 0.4807 0.8134
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4682   0.1329 0.6261 0.4825 0.8125
+   cox_text_asy   HR = 0.6186 (0.527, 0.7262)  ->  HR = 0.6186 (0.4728, 0.8094)
+   cox_text_star  HR = 0.6186 (0.4807, 0.8134)  ->  HR = 0.6186 (0.4825, 0.8125)
+
+-- chunk 'supplement-502 (cross-trial data up to the time of the largest cumulative z)' (line NA), object ctc [note]: CHANGED
+   time_of_max_z  64.82  ->   5.52
+   n_by_arm_0_1   unchanged:  1207 /   246
+   events_to_that_time_arm_0_1   708 /    87  ->     44 /     0
+   weighted_events_to_that_time_arm_0_1 703.1 / 79.06  ->  41.04 /     0
+   weight_range   unchanged: 0.2152 / 12.98
+   weight_range_arm1 unchanged: 0.2152 / 12.98
+   effective_n_arm_0_1 unchanged:  1099 / 72.99
+
+-- chunk 'supplement-299 (Rotterdam weights)' (line NA), object rot [note]: IDENTICAL before/after
+
+==== martingale (vignettes/articles/martingale_resampling_applications.Rmd) ====
+
+-- chunk 'gbsg-dfcount' (line 114), object dfcount_gbsg [dfcount]: IDENTICAL before/after
+
+-- chunk 'rotterdam-km' (line 196), object dfcount_rotterdam_unwtd [dfcount]: IDENTICAL before/after
+
+-- chunk 'rotterdam-km' (line 196), object dfcount_rotterdam_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'rotterdam-bands' (line 274), object temp_rotterdam [band]: CHANGED
+   c_alpha_band   3.539  ->  3.002
+   range          unchanged:     0 / 118.4
+   tab before:
+            [,1]      [,2]      [,3]
+t        24.0000 60.000000 120.00000
+dhat      0.1584  0.171818   0.08913
+se        0.0247  0.051189   0.06593
+lower     0.1100  0.071490  -0.04010
+upper     0.2068  0.272146   0.21836
+sb_lower  0.0710 -0.009345  -0.14422
+sb_upper  0.2459  0.352981   0.32248
+   tab after:
+             [,1]     [,2]      [,3]
+t        24.00000 60.00000 120.00000
+dhat      0.15843  0.17182   0.08913
+se        0.03476  0.04962   0.07535
+lower     0.09030  0.07457  -0.05855
+upper     0.22655  0.26906   0.23681
+sb_lower  0.05408  0.02287  -0.13707
+sb_upper  0.26277  0.32076   0.31532
+
+-- chunk 'rmst-combined' (line 316), object get_bands_gbsg [rmst]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object get_bands_rotterdam [rmst]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object temp_gbsg [band]: IDENTICAL before/after
+
+-- chunk 'rmst-combined' (line 316), object temp_rotterdam2 [band]: CHANGED
+   c_alpha_band   3.539  ->  3.002
+   range          unchanged:     0 / 118.4
+   tab before:
+            [,1]      [,2]      [,3]
+t        24.0000 60.000000 120.00000
+dhat      0.1584  0.171818   0.08913
+se        0.0247  0.051189   0.06593
+lower     0.1100  0.071490  -0.04010
+upper     0.2068  0.272146   0.21836
+sb_lower  0.0710 -0.009345  -0.14422
+sb_upper  0.2459  0.352981   0.32248
+   tab after:
+             [,1]     [,2]      [,3]
+t        24.00000 60.00000 120.00000
+dhat      0.15843  0.17182   0.08913
+se        0.03476  0.04962   0.07535
+lower     0.09030  0.07457  -0.05855
+upper     0.22655  0.26906   0.23681
+sb_lower  0.05408  0.02287  -0.13707
+sb_upper  0.26277  0.32076   0.31532
+
+==== coxmeth (vignettes/articles/weightedcox_methodology.Rmd) ====
+
+-- chunk 'dfcount' (line 182), object dfcount_gbsg [dfcount]: IDENTICAL before/after
+
+-- chunk 'cox-standard' (line 200), object fit_cox [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_custom [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_fh01 [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_fh10 [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'cox-weighted' (line 225), object fit_mb [cox_rhogamma]: IDENTICAL before/after
+
+-- chunk 'rotterdam-ps' (line 315), object dfcount_wtd [dfcount]: CHANGED
+   quantiles      unchanged: (table)
+   se             unchanged: (table)
+   surv           unchanged: (table)
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   z.score        5.894  ->  3.474
+   lr             unchanged: 85.04
+   sig2_lr        208.2  ->  599.2
+   z.score_stratified unchanged: 
+   cox_text       unchanged: HR = 0.63 (0.49, 0.82)
+   logrank_text_survdiff unchanged: Logrank p = 0.03
+
+-- chunk 'rotterdam-ps' (line 315), object fit_ps_cox [cox_rhogamma]: CHANGED
+   z.score        5.894  ->  3.474
+   zlogrank_text  unchanged: logrank (1-sided) p = <0.001
+   bhat           unchanged: -0.4591
+   sig_bhat_asy   0.07857  ->  0.133
+   sig_bhat_star  0.1307  ->  0.1306
+   bhat_debiased  -0.4493  ->  -0.4482
+   hr_ci_asy before:
+     beta sig_bhat     hr  lower  upper
+1 -0.4591  0.07857 0.6319 0.5417 0.7371
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4591    0.133 0.6319 0.4868 0.8201
+   hr_ci_star before:
+     beta sig_bhat    hr  lower  upper
+1 -0.4493   0.1307 0.638 0.4938 0.8244
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.4482   0.1306 0.6388 0.4945 0.8251
+   cox_text_asy   HR = 0.6319 (0.5417, 0.7371)  ->  HR = 0.6319 (0.4868, 0.8201)
+   cox_text_star  HR = 0.6319 (0.4938, 0.8244)  ->  HR = 0.6319 (0.4945, 0.8251)
+
+-- chunk 'rotterdam-ps' (line 315), object fit_ps_fh01 [cox_rhogamma]: CHANGED
+   z.score        4.188  ->  2.308
+   zlogrank_text  logrank (1-sided) p = <0.001  ->  logrank (1-sided) p = 0.0105
+   bhat           unchanged: -0.3661
+   sig_bhat_asy   0.08784  ->  0.1638
+   sig_bhat_star  0.1584  ->  0.1572
+   bhat_debiased  -0.3574  ->  -0.3547
+   hr_ci_asy before:
+     beta sig_bhat     hr  lower  upper
+1 -0.3661  0.08784 0.6935 0.5838 0.8237
+   hr_ci_asy after:
+     beta sig_bhat     hr  lower  upper
+1 -0.3661   0.1638 0.6935 0.5031 0.9559
+   hr_ci_star before:
+     beta sig_bhat     hr  lower  upper
+1 -0.3574   0.1584 0.6995 0.5129 0.9541
+   hr_ci_star after:
+     beta sig_bhat     hr  lower  upper
+1 -0.3547   0.1572 0.7014 0.5154 0.9545
+   cox_text_asy   HR = 0.6935 (0.5838, 0.8237)  ->  HR = 0.6935 (0.5031, 0.9559)
+   cox_text_star  HR = 0.6935 (0.5129, 0.9541)  ->  HR = 0.6935 (0.5154, 0.9545)
+
+==== figures (PNG files byte-identical before/after?) ====
+  examples line 70 fig-unnamed-chunk-1-1.png: identical
+  examples line 320 fig-unnamed-chunk-15-1.png: identical
+  examples line 329 fig-unnamed-chunk-16-1.png: identical
+  examples line 346 fig-unnamed-chunk-17-1.png: DIFFERS
+  examples line 369 fig-unnamed-chunk-18-1.png: DIFFERS
+  examples line 485 fig-unnamed-chunk-23-1.png: DIFFERS
+  examples line 502 fig-unnamed-chunk-24-1.png: DIFFERS
+  examples line 520 fig-unnamed-chunk-25-1.png: DIFFERS
+  examples line 578 fig-unnamed-chunk-26-1.png: identical
+  examples line 606 fig-unnamed-chunk-27-1.png: identical
+  examples line 702 fig-unnamed-chunk-29-1.png: identical
+  examples line 711 fig-unnamed-chunk-30-1.png: identical
+  examples line 732 fig-unnamed-chunk-32-1.png: identical
+  examples line 737 fig-unnamed-chunk-33-1.png: identical
+  examples line 743 fig-unnamed-chunk-34-1.png: identical
+  examples line 203 fig-unnamed-chunk-6-1.png: identical
+  examples line 213 fig-unnamed-chunk-7-1.png: identical
+  examples line 233 fig-unnamed-chunk-8-1.png: identical
+  martingale line 241 fig-compare-km-1.png: identical
+  martingale line 132 fig-gbsg-km-1.png: identical
+  martingale line 316 fig-rmst-combined-1.png: DIFFERS
+  martingale line 274 fig-rotterdam-bands-1.png: DIFFERS
+  martingale line 274 fig-rotterdam-bands-2.png: DIFFERS
+  martingale line 196 fig-rotterdam-km-1.png: identical
+  coxmeth line 305 fig-weight-plot-1.png: identical
