@@ -228,7 +228,7 @@ The vignette demonstrates:
 - Subgroup analysis with overlaid ITT confidence bands
 - Weighted Cox models with multiple weighting schemes
 - Cross-trial comparisons with propensity score adjustment
-- Validation against the `survival` and `adjustedCurves` packages
+- Checks against the `survival` package (weighted Kaplan-Meier standard errors agree with `survfit()`) and a comparison with the `adjustedCurves` package (the curves agree; its `iptw_km` standard errors differ)
 
 You can also browse vignettes online at the [CRAN package page](https://CRAN.R-project.org/package=weightedsurv).
 
