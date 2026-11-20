@@ -1,0 +1,521 @@
+---
+title: "Estimated propensity-score weights: statistical details and properties"
+author: "Larry F. León"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    code_folding: hide
+    mathjax: default
+bibliography: ../weightedsurv_references.bib
+vignette: >
+  %\VignetteIndexEntry{Estimated propensity-score weights: statistical details and properties}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# The two options
+
+Propensity-score weights are estimated from the data.  The argument `weight_variance` of `df_counting()`, `KM_diff()`, `plotKM.band_subgroups()` and `cumulative_rmst_bands()` says how standard errors, intervals, bands and tests treat them.  `cox_rhogamma()`, `wlr_cumulative()` and `wlr_dhat_estimates()` take the option from the `df_counting()` result they are given.
+
+- `weight_variance = "known"` (the default).  The weights are treated as fixed constants.  The variance of each estimator is the sum of squared per-subject contributions computed with the weights held fixed.
+- `weight_variance = "estimated"`.  The weights come from a logistic regression for the treatment, supplied as `weight_model` (the object returned by `ps_weights()`).  The sampling variability of the fitted coefficients is carried into the variance by a linearization: each subject's contribution receives an added term, the subject's influence on the fitted coefficients times the derivative of the estimator in those coefficients.
+
+Three facts hold for every estimator in the package.
+
+1. No point estimate differs between the two options: survival curves, their difference, the RMST, the log-rank score, the hazard ratio, counts and risk tables are identical.
+2. Under `"estimated"` the correction is analytic.  The propensity model is fitted once.
+3. Resampling (`draws.band`, `draws_sb`, and `draws` in `cox_rhogamma()`) applies standard normal multipliers to the corrected per-subject contributions.  **The propensity model is not refitted within a draw**, and the weights, the influence values and the derivatives are the same in every draw.
+
+This article gives the derivation and the properties.  Each statement about large-sample behaviour is labelled as *proved here*, *cited*, or a *heuristic argument*.  Formulas labelled *background* are not computed by the package.
+
+# Setup and notation
+
+The notation is that of the `weightedkm_methodology` article.
+
+**Data.**  There are $n$ subjects, the rows analysed.  Subject $i$ has treatment indicator $A_i \in \{0, 1\}$, baseline covariates $X_i$, observed time $T_i = \min(\tilde{T}_i, C_i)$ and event indicator $\Delta_i = I(\tilde{T}_i \leq C_i)$.  The at-risk and counting processes are $Y_i(t) = I(T_i \geq t)$ and $N_i(t) = I(T_i \leq t, \Delta_i = 1)$.
+
+**Weights.**  With $\hat{e}_i$ the fitted probability of treatment (section 3), `ps_weights()` returns one of two weight types:
+
+$$\texttt{"ipw"}:\ \ w_i = \frac{A_i}{\hat{e}_i} + \frac{1 - A_i}{1 - \hat{e}_i}, \qquad
+\texttt{"stabilized"}:\ \ w_i = \hat{\pi}_{A_i} \left\{\frac{A_i}{\hat{e}_i} + \frac{1 - A_i}{1 - \hat{e}_i}\right\}, \qquad \hat{\pi}_1 = \frac{1}{n} \sum_{i=1}^{n} A_i, \quad \hat{\pi}_0 = 1 - \hat{\pi}_1 .$$
+
+The weights are never truncated or rescaled.
+
+**Weighted counts and curves.**  For arm $a$,
+
+$$\bar{Y}_a^w(s) = \sum_{i: A_i = a} w_i\, Y_i(s), \qquad d\bar{N}_a^w(s) = \sum_{i: A_i = a} w_i\, \Delta_i\, I(T_i = s), \qquad
+\hat{S}^a(t) = \prod_{s \leq t} \left\{1 - \frac{d\bar{N}_a^w(s)}{\bar{Y}_a^w(s)}\right\},$$
+
+the product running over the event times of the arm.  The survival difference is $\hat{\Delta}(t) = \hat{S}^1(t) - \hat{S}^0(t)$.
+
+**Estimand.**  Both weight types weight each arm to the covariate distribution of all $n$ subjects.  Under the identifying assumptions of the `weightedkm_methodology` article, $\hat{S}^a(t)$ estimates the counterfactual survival function $S^a(t) = P\{\tilde{T}(a) > t\}$ in the population the rows were sampled from, and $\hat{\Delta}(t)$ estimates $\Delta(t) = S^1(t) - S^0(t)$.  The two weight types give the same curves, because $\hat{S}^a(t)$ does not change when the weights of an arm are multiplied by a constant.  The weighted log-rank statistic and the weighted Cox estimate (section 4.4) are computed in the weighted sample of both arms together; the log hazard ratio estimates the root $\beta_w^*$ of the limit of the weighted score.  The two weight types weight the arms differently in the pooled risk set, so they give different log-rank and Cox results.  No other estimand (treated population, overlap population) is implemented by `ps_weights()`.
+
+# The propensity model
+
+**Model.**  `ps_weights()` fits, or takes, a logistic regression for the treatment, `stats::glm(formula, family = binomial(), data = data)` with the default control.  With $x_i$ the row of the model matrix of subject $i$ ($p$ columns, aliased columns dropped) and coefficients $\gamma$,
+
+$$e_i(\gamma) = \frac{\exp(x_i^\top \gamma)}{1 + \exp(x_i^\top \gamma)}, \qquad \hat{e}_i = e_i(\hat{\gamma}).$$
+
+**Score and information.**  The score of subject $i$ and the information are
+
+$$s_i(\gamma) = x_i\, \{A_i - e_i(\gamma)\}, \qquad \mathcal{I}_n(\gamma) = \sum_{j=1}^{n} x_j x_j^\top\, e_j(\gamma)\, \{1 - e_j(\gamma)\}.$$
+
+For the logistic model the observed and the expected information coincide, and $\mathcal{I}_n$ does not involve $A$.  The formulas $s_i$ and $\mathcal{I}_n$ are computed inside the expression for $IF_i$ below.
+
+**Influence of the coefficients.**  The estimate $\hat{\gamma}$ solves $\sum_i s_i(\gamma) = 0$.  With $\gamma^*$ its limit,
+
+$$\hat{\gamma} - \gamma^* = \sum_{i=1}^{n} IF_i + o_p(n^{-1/2}), \qquad IF_i = \mathcal{I}_n(\hat{\gamma})^{-1}\, x_i\, (A_i - \hat{e}_i).$$
+
+This is the linear representation of an M-estimator (*cited*: @LuncefordDavidian2004, section 3.1, apply it to the logistic propensity model through the theory of M-estimation).  It does not require the model to be correct: when the model is wrong, $\gamma^*$ is the limit of the fit and the representation still holds, because $\mathcal{I}_n$ does not involve $A$ (*heuristic argument*; not proved here).  `ps_weights()` returns the $n \times p$ matrix `IF` with rows $IF_i^\top$.
+
+**Derivative of the weights.**  For the `"ipw"` weights, differentiating $1 / e_i(\gamma)$ and $1 / \{1 - e_i(\gamma)\}$ with $\partial e_i / \partial \gamma = e_i (1 - e_i)\, x_i$ gives (*proved here*, by differentiation)
+
+$$dw_i = \frac{\partial w_i}{\partial \gamma}\bigg|_{\hat{\gamma}} = -\frac{1 - \hat{e}_i}{\hat{e}_i}\, x_i \ \ (A_i = 1), \qquad dw_i = \frac{\hat{e}_i}{1 - \hat{e}_i}\, x_i \ \ (A_i = 0).$$
+
+`ps_weights()` returns the $n \times p$ matrix `dw` with rows $dw_i^\top$.
+
+**Stabilized weights.**  With `type = "stabilized"`, $w_i$ and $dw_i$ are those of `"ipw"` multiplied by $\hat{\pi}_{A_i}$, and `IF` is the same.  The proportion $\hat{\pi}_a$ is treated as a fixed number: **its estimation is not included in the correction.**  For the Kaplan--Meier curves, their difference and the RMST this loses nothing: those estimators do not depend on $\hat{\pi}_a$ (section 4.1, *proved here*).  For the log-rank score and the Cox estimate the variability of $\hat{\pi}_a$ is not carried.
+
+# Linearization, estimator by estimator
+
+## Weighted Kaplan--Meier curve of one arm
+
+**Contribution under known weights.**  For subject $i$ of arm $a$,
+
+$$\psi_i(t) = \frac{\Delta_i\, I(T_i \leq t)}{\bar{Y}_a^w(T_i) - d\bar{N}_a^w(T_i)} - \sum_{s \leq \min(t,\, T_i)} \frac{d\bar{N}_a^w(s)}{\bar{Y}_a^w(s)\bigl\{\bar{Y}_a^w(s) - d\bar{N}_a^w(s)\bigr\}},$$
+
+the sum running over the event times of the arm; a term is 0 when $\bar{Y}_a^w(s) = 0$ or $\bar{Y}_a^w(s) - d\bar{N}_a^w(s) \leq 10^{-10}\, \bar{Y}_a^w(s)$.  Equivalently,
+
+$$\psi_i(t) = \sum_{s \leq t} \frac{dN_i(s) - Y_i(s)\, d\bar{N}_a^w(s) / \bar{Y}_a^w(s)}{\bar{Y}_a^w(s) - d\bar{N}_a^w(s)},$$
+
+a sum of the subject's residual increments (*proved here*: the two expressions are equal term by term).
+
+**Lemma 1** (*proved here*).  For a subject $i$ of arm $a$, and a time $t$ at which no excluded term occurs,
+
+$$\frac{\partial \hat{S}^a(t)}{\partial w_i} = -\hat{S}^a(t)\, \psi_i(t).$$
+
+*Proof.*  $\log \hat{S}^a(t) = \sum_{s \leq t} \log\{1 - d\bar{N}_a^w(s) / \bar{Y}_a^w(s)\}$, and $\partial \{d\bar{N}_a^w(s) / \bar{Y}_a^w(s)\} / \partial w_i = \Delta_i I(T_i = s) / \bar{Y}_a^w(s) - Y_i(s)\, d\bar{N}_a^w(s) / \bar{Y}_a^w(s)^2$.  Multiplying by $-\bar{Y}_a^w(s) / \{\bar{Y}_a^w(s) - d\bar{N}_a^w(s)\}$ and summing over $s \leq t$ gives $-\psi_i(t)$.  $\square$
+
+**Two consequences** (*proved here*).  $\hat{S}^a(t)$ is unchanged when all weights of the arm are multiplied by a constant, so by Euler's relation for homogeneous functions
+
+$$\sum_{i: A_i = a} w_i\, \psi_i(t) = 0 .$$
+
+The contributions are centred, and the curve does not depend on $\hat{\pi}_a$: the derivative of $\hat{S}^a(t)$ in a common factor of the arm's weights is $-\hat{S}^a(t) \sum_{i: A_i = a} w_i \psi_i(t) / \hat{\pi}_a = 0$.
+
+**Representation under known weights** (*cited*; *background*).  With the weights evaluated at the true propensity score, the weighted estimator has the martingale representation of @DengWang2025 (see also @FH1991 for the unweighted case),
+
+$$\hat{S}^a(t) - S^a(t) = -S^a(t) \sum_{i: A_i = a} w_i\, \psi_i^{0}(t) + o_p(n^{-1/2}), \qquad \psi_i^{0}(t) = \int_0^t \frac{dN_i(s) - Y_i(s)\, d\Lambda^a(s)}{n\, y_a(s)},$$
+
+with $\Lambda^a$ the cumulative hazard of $S^a$ and $y_a(s)$ the limit of $\bar{Y}_a^w(s) / n$.  $\psi_i(t)$ is $\psi_i^{0}(t)$ with $\Lambda^a$ and $n\, y_a$ replaced by their estimates; by Lemma 1, $-\hat{S}^a(t)\, w_i\, \psi_i(t)$ is also the infinitesimal-jackknife value of subject $i$, the derivative of $\hat{S}^a(t)$ in a case weight multiplying $w_i$.  The variance $\hat{S}^a(t)^2 \sum_{i: A_i = a} w_i^2 \psi_i(t)^2$ is the robust variance of `survival::survfit(weights = w, robust = TRUE)`.
+
+**Added term under estimated weights.**  Write $\hat{S}^a(t; \gamma)$ for the curve computed with the weights $w_i(\gamma)$.  By the chain rule and Lemma 1 (*proved here*),
+
+$$\frac{\partial \hat{S}^a(t; \gamma)}{\partial \gamma}\bigg|_{\hat{\gamma}} = \sum_{k: A_k = a} \frac{\partial \hat{S}^a(t)}{\partial w_k}\, dw_k = -\hat{S}^a(t)\, D_a(t), \qquad D_a(t) = \sum_{k: A_k = a} \psi_k(t)\, dw_k .$$
+
+A first-order expansion of $\hat{S}^a(t; \hat{\gamma})$ around $\gamma^*$, with the representation of $\hat{\gamma} - \gamma^*$ of section 3, gives (*heuristic argument*: the remainder is not bounded here)
+
+$$\hat{S}^a(t; \hat{\gamma}) - S^a(t) \approx -S^a(t) \sum_{i=1}^{n} \Phi_i^a(t), \qquad \Phi_i^a(t) = I(A_i = a)\, w_i\, \psi_i(t) + IF_i^\top D_a(t) \quad (i = 1, \ldots, n).$$
+
+$\Phi_i^a(t)$ is the corrected contribution.  Every subject contributes, also those in the other arm, through the model.  The same construction applies to any group $g$ of subjects (an arm within a stratum; all subjects, for the pooled curve), with $g$ in place of the arm.
+
+## Survival difference
+
+$$\hat{\Delta}(t) - \Delta(t) \approx -\sum_{i=1}^{n} \xi_i(t), \qquad \xi_i(t) = \hat{S}^1(t)\, \Phi_i^1(t) - \hat{S}^0(t)\, \Phi_i^0(t).$$
+
+Under `"known"`, $\xi_i(t)$ involves subject $i$'s own arm only; the two curves are sums over disjoint sets of independent subjects, and the variance of the difference is the sum of the two arm variances.  Under `"estimated"` each subject enters both $\Phi_i^1$ and $\Phi_i^0$ through $IF_i$, because one fitted model supplies the weights of both arms.  The two curves are then correlated, and the variance of the difference is **not** the sum of the arm variances.  The cross term is (*proved here*, by expanding the product and using $I(A_i = 1)\, I(A_i = 0) = 0$)
+
+$$\sum_{i=1}^{n} \Phi_i^1(t)\, \Phi_i^0(t) = E_1(t)^\top D_0(t) + E_0(t)^\top D_1(t) + D_1(t)^\top M\, D_0(t), \qquad E_a(t) = \sum_{i: A_i = a} w_i\, \psi_i(t)\, IF_i, \quad M = \sum_{i=1}^{n} IF_i\, IF_i^\top .$$
+
+## RMST and cumulative RMST difference
+
+The cumulative RMST difference is the integral of the survival difference over the time grid $t_0 < t_1 < \cdots < t_m$ of the `KM_diff()` fit,
+
+$$\hat{R}(t_j) = \sum_{k \leq j} h_k\, (t_k - t_{k-1}), \qquad h_k = \tfrac{1}{2}\{\hat{\Delta}(t_{k-1}) + \hat{\Delta}(t_k)\} \ \text{(trapezoid, the default)} \quad \text{or} \quad h_k = \hat{\Delta}(t_{k-1}) \ \text{(rectangle)},$$
+
+with $\hat{R}(t_0) = 0$.  The map from the difference curve to $\hat{R}$ is linear, so the linearization of section 4.2 carries over: $\hat{R}(t_j) - R(t_j) \approx -\sum_i \mathcal{L}_j(\xi_i)$, with $\mathcal{L}_j$ the same rule applied to $\xi_i$ (*heuristic argument*, as in section 4.1).  The package does not form $\mathcal{L}_j(\xi_i)$ for each subject (*background*); it applies the rule to the resampled difference curves (section 6).
+
+## Weighted log-rank and Cox score
+
+**Notation.**  $\kappa(s)$ is the time weight of the scheme (written $w(t)$ in the `weightedcox_methodology` article, where the subject weight is $a_i$ and the arm $Z_i$).  For a log hazard ratio $\beta$,
+
+$$S_0(s, \beta) = \sum_j w_j\, Y_j(s)\, e^{\beta A_j}, \qquad \bar{A}(s, \beta) = \frac{\sum_j w_j\, Y_j(s)\, A_j\, e^{\beta A_j}}{S_0(s, \beta)}, \qquad d\hat{\Lambda}(s, \beta) = \frac{\sum_j w_j\, \Delta_j\, I(T_j = s)}{S_0(s, \beta)} .$$
+
+**Contribution under known weights.**
+
+$$\psi_i(\beta) = w_i \left[ \Delta_i\, \kappa(T_i) \bigl\{A_i - \bar{A}(T_i, \beta)\bigr\} - e^{\beta A_i} \sum_{s \le T_i} \kappa(s) \bigl\{A_i - \bar{A}(s, \beta)\bigr\}\, d\hat{\Lambda}(s, \beta) \right],$$
+
+the sum running over the distinct event times.  The score, in the sign convention of the package, and the information are
+
+$$U_w(\beta) = -\sum_{i=1}^{n} \psi_i(\beta) = -\sum_{i=1}^{n} w_i\, \Delta_i\, \kappa(T_i) \bigl\{A_i - \bar{A}(T_i, \beta)\bigr\}, \qquad
+I_w(\beta) = \frac{\partial U_w(\beta)}{\partial \beta} = \sum_{s} \kappa(s)\, \bar{A}(s, \beta) \bigl\{1 - \bar{A}(s, \beta)\bigr\}\, S_0(s, \beta)\, d\hat{\Lambda}(s, \beta) .$$
+
+The second expression for $U_w$ holds because the compensator terms sum to zero: $\sum_i w_i Y_i(s) e^{\beta A_i} \{A_i - \bar{A}(s, \beta)\} = 0$ for every $s$ (*proved here*).  $U_w(0)$ is the weighted log-rank statistic and $\hat{\beta}_w$ solves $U_w(\beta) = 0$.
+
+**Lemma 2** (*proved here*).  With the time weights $\kappa(s)$ held fixed,
+
+$$\frac{\partial U_w(\beta)}{\partial w_j} = -\frac{\psi_j(\beta)}{w_j} .$$
+
+*Proof.*  Differentiate the second expression for $U_w$.  The term $j$ gives $-\Delta_j \kappa(T_j) \{A_j - \bar{A}(T_j, \beta)\}$.  Through $\bar{A}$, with $\partial \bar{A}(s, \beta) / \partial w_j = Y_j(s)\, e^{\beta A_j} \{A_j - \bar{A}(s, \beta)\} / S_0(s, \beta)$, the other terms give $\sum_s \kappa(s)\, d\hat{\Lambda}(s, \beta)\, Y_j(s)\, e^{\beta A_j} \{A_j - \bar{A}(s, \beta)\}$.  The sum of the two is $-\psi_j(\beta) / w_j$.  $\square$
+
+**Corrected contribution.**  By the chain rule and Lemma 2, $\partial U_w(\beta) / \partial \gamma = -B(\beta)$ with
+
+$$B(\beta) = \sum_{j=1}^{n} \frac{\psi_j(\beta)}{w_j}\, dw_j, \qquad \psi_i^{ew}(\beta) = \psi_i(\beta) + IF_i^\top B(\beta),$$
+
+and the first-order expansion in $\gamma$ gives $U_w(\beta; \hat{\gamma}) \approx -\sum_i \psi_i^{ew, 0}(\beta)$, a sum of independent mean-zero terms that $\psi_i^{ew}(\beta)$ estimates (*heuristic argument*).
+
+**Test, standard error, interval.**
+
+$$z = \frac{U_w(0)}{\bigl\{\sum_{i} \psi_i^{ew}(0)^2\bigr\}^{1/2}}, \qquad
+\widehat{\text{se}}(\hat{\beta}_w) = \frac{\bigl\{\sum_{i} \psi_i^{ew}(\hat{\beta}_w)^2\bigr\}^{1/2}}{I_w(\hat{\beta}_w)}, \qquad
+\exp\bigl\{\hat{\beta}_w \pm z_{1 - \alpha/2}\, \widehat{\text{se}}(\hat{\beta}_w)\bigr\} .$$
+
+The standard error follows from expanding $0 = U_w(\hat{\beta}_w; \hat{\gamma})$ in $\beta$: $\hat{\beta}_w - \beta_w^* \approx -U_w(\beta_w^*; \hat{\gamma}) / I_w(\beta_w^*)$ (*heuristic argument*).  Under `"known"` the same formulas hold with $\psi_i$ in place of $\psi_i^{ew}$; for FH(0, 0) they are then the robust score test and robust standard error of `survival::coxph(weights = , robust = TRUE, ties = "breslow")` [@LW89].
+
+**Time-weight schemes.**  The scheme enters only through $\kappa(s)$, evaluated at the observed times.  As coded in `wt.rg.S()`, with $\hat{S}(s-)$ the pooled weighted Kaplan--Meier curve just before $s$, $\hat{G}$ the same for the censoring distribution and $\bar{Y}^w$ the pooled weighted risk set:
+
+| `scheme` | $\kappa(s)$ | depends on the subject weights |
+|---|---|---|
+| `"fh"` | $\hat{S}(s-)^{\rho}\, \{1 - \hat{S}(s-)\}^{\gamma}$ | yes, unless $\rho = \gamma = 0$ |
+| `"MB"` | $1 / \max\{\hat{S}(s-), \hat{S}(t^*)\}$ | yes |
+| `"schemper"` | $\hat{S}(s-) / \hat{G}(s-)$ | yes |
+| `"XO"` | $\hat{S}(s-) / \bar{Y}^w(s)$ | yes |
+| `"custom_time"` | $w_0$ for $s \leq t_\tau$, $w_1$ after | no |
+| `"fh_exp1"`, `"fh_exp2"` | exponential variants of the FH weight | yes |
+
+`"estimated"` runs for every scheme, with the formulas above.  **The dependence of $\kappa(s)$ on the estimated subject weights is ignored**: Lemma 2 holds $\kappa$ fixed.  For FH(0, 0) and `"custom_time"` nothing is ignored.  For the other schemes the omitted term is not derived here and its size is not bounded here.
+
+**Strata.**  In a stratified `df_counting()` call, $\psi_i(\beta)$ is computed within the subject's stratum, $B(\beta)$ is the sum over all subjects of all strata, and the variance is the single sum $\sum_{i=1}^n \psi_i^{ew}(0)^2$ over all subjects.  It is not a sum of per-stratum variances: the strata share the coefficients of the model.
+
+**Outputs of `df_counting()` from the `survival` package.**  `logrank_results`, `cox_results$score`, `$se`, `$hr_ci` and `$pval` carry the same correction, applied to a vector $r$ of weighted score or dfbeta residuals of the `coxph()` fit:
+
+$$r_i^{ew} = r_i + IF_i^\top \sum_{j=1}^{n} \frac{r_j}{w_j}\, dw_j .$$
+
+**Cumulative statistic and covariance with the survival difference.**  With $c_i(t)$ the contribution of subject $i$ to the score up to $t$ ($\psi_i(0)$ when $T_i \leq t$, the compensator part accumulated up to $t$ otherwise), `wlr_cumulative(return_cumulative = TRUE)` returns
+
+$$V^{ew}(t) = \sum_{i=1}^{n} \bigl\{c_i(t) + IF_i^\top B(t)\bigr\}^2, \qquad B(t) = \sum_{j=1}^{n} \frac{c_j(t)}{w_j}\, dw_j ,$$
+
+and `wlr_dhat_estimates()` returns, at the grid point read for `tzero`, the variance $\sum_i \xi_i(t)^2$ of the survival difference and the covariance $\sum_i \psi_i^{ew}(0)\, \xi_i(t)$ of the log-rank score with it.
+
+# Variance
+
+**Sum of squared corrected contributions.**
+
+$$\widehat{\text{Var}}\bigl[\hat{S}^a(t)\bigr] = \hat{S}^a(t)^2 \sum_{i=1}^{n} \Phi_i^a(t)^2, \qquad
+\widehat{\text{Var}}\bigl[\hat{\Delta}(t)\bigr] = \sum_{i=1}^{n} \xi_i(t)^2, \qquad
+\widehat{\text{Var}}\bigl[U_w(\beta)\bigr] = \sum_{i=1}^{n} \psi_i^{ew}(\beta)^2 .$$
+
+The variance of the RMST difference is taken over resampling draws (section 6).  That each sum estimates the variance of its estimator follows from the linearizations of section 4, the contributions being independent across subjects (*heuristic argument*).
+
+**Relation to the `"known"` variance** (*proved here*, by expanding the square).  For contributions $c_i$ under known weights and a derivative vector $b$ (for the score, $c_i = \psi_i(\beta)$ and $b = B(\beta)$; for the survival difference, $c_i = \hat{S}^1 I(A_i = 1) w_i \psi_i - \hat{S}^0 I(A_i = 0) w_i \psi_i$ and $b = \hat{S}^1 D_1 - \hat{S}^0 D_0$),
+
+$$\sum_{i=1}^{n} \bigl(c_i + IF_i^\top b\bigr)^2 = \underbrace{\sum_{i=1}^{n} c_i^2}_{\text{"known"}} + 2\, b^\top C + b^\top M\, b, \qquad C = \sum_{i=1}^{n} c_i\, IF_i, \quad M = \sum_{i=1}^{n} IF_i\, IF_i^\top .$$
+
+The last term is non-negative.  The middle term can have either sign, so in a given sample the `"estimated"` variance can be smaller or larger than the `"known"` one.
+
+**Why `"known"` tends to be conservative when the propensity model is correct** (*heuristic argument*; the result for inverse-probability-weighted means is *cited*).  Let $m_i(\gamma)$ be the population version of the known-weight contribution, computed with the weights $w_i(\gamma)$, and let $P_\gamma$ be the distribution of the data when the treatment follows the model with coefficients $\gamma$.  When the model is correct, weighting by the true propensity score removes the dependence of the weighted sample on the treatment mechanism, so $E_\gamma\{m_i(\gamma)\} = 0$ for every $\gamma$.  Differentiating this identity in $\gamma$ under the integral sign gives
+
+$$E\Bigl\{\frac{\partial m_i}{\partial \gamma}\Bigr\} = -E\bigl\{m_i\, s_i\bigr\},$$
+
+with $s_i$ the score of the propensity model.  The derivative $b$ estimates $n\, E\{\partial m_i / \partial \gamma\}$ and $IF_i$ estimates $\{n\, E(s_i s_i^\top)\}^{-1} s_i$, so
+
+$$c_i + IF_i^\top b \ \approx\ m_i - E\bigl\{m_i\, s_i^\top\bigr\}\, \bigl\{E(s_i s_i^\top)\bigr\}^{-1} s_i ,$$
+
+the residual of the projection of the known-weight contribution on the space spanned by the score of the propensity model.  A residual has variance no larger than the variable projected:
+
+$$\text{Var}\bigl(m_i - \Pi[m_i \mid s_i]\bigr) = \text{Var}(m_i) - E\bigl\{m_i\, s_i^\top\bigr\}\, \bigl\{E(s_i s_i^\top)\bigr\}^{-1} E\bigl\{s_i\, m_i\bigr\} \ \leq\ \text{Var}(m_i) .$$
+
+The estimator computed with estimated weights therefore has a large-sample variance no larger than the `"known"` formula estimates, and the `"known"` intervals are too wide by the projected part.  The two agree when the known-weight contribution is uncorrelated with the score of the propensity model.  For inverse-probability-weighted means with a logistic propensity model this is the result of @LuncefordDavidian2004 (section 3.1): the variance with the estimated propensity score is the variance with the known one minus a quadratic form of this kind.  @HiranoImbensRidder2003 show that weighting by an estimated propensity score, in place of the true one, leads to an efficient estimate of the average treatment effect.  The steps not proved here are the interchange of differentiation and expectation for the survival contributions, and the convergence of $b / n$ and of the estimated contributions.
+
+The argument uses the correctness of the model at one point only, the identity $E_\gamma\{m_i(\gamma)\} = 0$.  When the model is wrong, the linearization of section 4 still describes the variability of the estimator around its limit, but the ordering of the two variances is not implied, and the limit is not the causal quantity.
+
+The sample counterpart of the projected variance, $\sum_i c_i^2 - C^\top M^{-1} C$, is *background*: the package does not compute it.  Section 8 shows it beside the package value.
+
+# Multiplier resampling with corrected contributions
+
+**Resampled survival difference.**  Let $G_1, \ldots, G_n$ be independent standard normal multipliers, independent of the data (generated by `KM_diff()` as one matrix for the controls and one for the treated, one row per subject).  One resampled deviation of the curve of arm $a$, and of the difference, is
+
+$$\hat{S}^{a*}(t) - \hat{S}^a(t) = -\hat{S}^a(t) \sum_{i=1}^{n} G_i\, \Phi_i^a(t) = -\hat{S}^a(t) \Bigl\{\sum_{i: A_i = a} G_i\, w_i\, \psi_i(t) + D_a(t)^\top \sum_{i=1}^{n} G_i\, IF_i\Bigr\}, \qquad
+\hat{\Delta}^{*}(t) = -\sum_{i=1}^{n} G_i\, \xi_i(t).$$
+
+The same multiplier $G_i$ multiplies the subject's own-arm term and its term through the model, in both arms.  Conditionally on the data, $\hat{\Delta}^{*}$ is a mean-zero Gaussian process with covariance $\sum_i \xi_i(s)\, \xi_i(t)$; its variance at $t$ is exactly $\widehat{\text{Var}}[\hat{\Delta}(t)]$ of section 5 (*proved here*: the $G_i$ are independent with variance 1).
+
+**Band for the survival difference.**  With $B$ draws (`draws.band`) and $\widehat{\text{se}}(t) = \widehat{\text{Var}}[\hat{\Delta}(t)]^{1/2}$,
+
+$$c_{1 - \alpha} = \text{the } (1 - \alpha) \text{ quantile over } b = 1, \ldots, B \text{ of } \max_{t} \frac{|\hat{\Delta}^{*(b)}(t)|}{\widehat{\text{se}}(t)}, \qquad \hat{\Delta}(t) \pm c_{1 - \alpha}\, \widehat{\text{se}}(t),$$
+
+the maximum over the time grid of the fit (points where the ratio is undefined are skipped).
+
+**RMST.**  Each resampled difference curve is integrated with the rule of section 4.3, $\hat{R}^{*(b)}(t_j) = \mathcal{L}_j(\hat{\Delta}^{*(b)})$.  `cumulative_rmst_bands()` uses two sets of draws.  The pointwise variance $\hat{\sigma}_R^2(t_j)$ is the sample variance over the draws of the `KM_diff()` fit it is given.  A second, independent set (`draws_sb` draws, its own seed) is standardized by $\hat{\sigma}_R(t_j)$ and gives the critical value:
+
+$$\hat{R}(t_j) \pm 1.96\, \hat{\sigma}_R(t_j) \ \text{(pointwise)}, \qquad \hat{R}(t_j) \pm c_R\, \hat{\sigma}_R(t_j), \quad c_R = \text{the } 0.95 \text{ quantile of } \max_j \frac{|\hat{R}^{*(b)}(t_j)|}{\hat{\sigma}_R(t_j)} .$$
+
+Both sets are built from the corrected contributions when the fit and the call use `"estimated"`; a fit made with the other option is an error.
+
+**Resampled score in `cox_rhogamma()`.**  With `draws > 0`,
+
+$$U_w^{\dagger}(\hat{\beta}_w) = -\sum_{i=1}^{n} G_i\, \psi_i^{ew}(\hat{\beta}_w), \qquad U_w^{\dagger}(0) = -\sum_{i=1}^{n} G_i\, \psi_i^{ew}(0), \qquad \hat{\beta}^{\dagger} = \frac{U_w^{\dagger}(\hat{\beta}_w)}{I_w(\hat{\beta}_w)} .$$
+
+The resampling standard error is the standard deviation of $\hat{\beta}^{\dagger}$ over the draws, the de-biased estimate is $\hat{\beta}_w$ minus their mean, and the resampling interval is the de-biased estimate plus and minus the normal quantile times the resampling standard error.
+
+**What is and is not resampled.**  $\hat{\gamma}$, $IF_i$, $dw_i$, $D_a(t)$, $B(\beta)$, the curves and the information are computed once from the data.  Only the multipliers change between draws.  The estimation of the weights enters each draw through the term $IF_i^\top D_a(t)$ or $IF_i^\top B(\beta)$ of the contribution, not through a new fit.
+
+**Justification.**  For the unweighted estimators, replacing the martingale increments by normal multipliers times observed increments is justified by the results of @LinWeiYing1993 and @DBP2017 (*cited*).  For the corrected contributions the argument is the conditional multiplier central limit theorem applied to the linear representation $-\sum_i \xi_i(t)$, with the estimated contributions in place of the true ones (*heuristic argument*; not proved here).  It needs:
+
+1. the linear representations of section 4 to hold uniformly in $t$ over the time range of the grid, which requires the weighted risk set of each arm to stay away from zero at the end of the range;
+2. the estimated contributions to converge to the true ones, in the sense that $\sum_i \sup_t \{\xi_i(t) - \xi_i^{0}(t)\}^2 \to 0$ in probability;
+3. contributions with finite second moments, which needs weights with finite second moments (overlap, section 7);
+4. $\hat{\gamma}$ to be asymptotically linear (section 3).
+
+Under these conditions the conditional distribution of $\hat{\Delta}^{*}$ given the data and the distribution of $\hat{\Delta} - \Delta$ have the same Gaussian limit, and the same holds for continuous functionals: the standardized supremum and the integral.
+
+**Pointwise resampling variance (`draws > 0`) under `"estimated"`.**  In `df_counting()`, `KM_diff()` and `plotKM.band_subgroups()`, `draws > 0` replaces the analytic pointwise variance of a curve by the variance over draws of $\sum_{i \in g} G_i\, w_i\, \psi_i(t)$.  In the source that route draws multipliers for the members of one group at a time and uses that group's contributions only; $\Phi_i^a(t)$ needs the multipliers and the influence values of all $n$ subjects together.  With `weight_variance = "estimated"` the argument check stops with an error unless `draws` is 0.  The Stage 2e record (`dev/tasks/TASK_km_fixes_stage2e.md`) lists `draws = 0` as a validation rule and gives no further reason.  The analytic variance $\hat{S}^a(t)^2 \sum_i \Phi_i^a(t)^2$ is the quantity such a resampling variance would estimate.
+
+# Conditions and properties
+
+**Correct propensity model.**  The estimand of section 2 requires it.  The variance formulas of section 5 describe the variability of the estimator around its limit whether or not the model is correct; the ordering of `"known"` and `"estimated"` in section 5 requires a correct model.  The model must be a logistic `glm` fitted on exactly the rows analysed.
+
+**Overlap.**  The fitted probabilities must stay away from 0 and 1.  `ps_weights()` stops when a fitted probability is numerically 0 or 1; it does not otherwise restrict them.
+
+**Sample size relative to the concentration of the weights.**  The linearizations are first-order.  When a few subjects carry most of the weight of an arm, the sums of section 5 are dominated by a few terms and the normal approximation is poor.  The diagnostic is the effective sample size by arm,
+
+$$\text{ESS}_a = \frac{\bigl(\sum_{i: A_i = a} w_i\bigr)^2}{\sum_{i: A_i = a} w_i^2},$$
+
+returned with its ratio to the arm size as `df_counting()$ess`.  A ratio near 1 means evenly spread weights.  The package sets no threshold on it, and no warning depends on it.
+
+**Evaluation evidence.**  The table below is copied from `dev/audit/REPORT_km_fixes_stage2e.md` in the package repository (Monte Carlo study M7 of this version of the package): a selection of rows and columns of "Table M7", and, for the rows marked "first 500", of the table "Bootstrap benchmark on the same first 500 replicates".  Nothing is recomputed here.  Entries are the coverage of nominal 0.95 intervals for the survival difference at month 18 and for the log hazard ratio under FH(0, 0), and the rejection rate of the two-sided 5% log-rank test under the null.  "ESS ratio" is the mean of ESS / $n$, control / treated.  "boot" is a bootstrap of subjects in which the propensity model is refitted and the weights rebuilt in every resample (normal interval from the bootstrap standard deviation).  Rows without a mark have 2,000 replicates (Monte Carlo error $\pm 0.005$); rows marked "first 500" have 500 ($\pm 0.010$).  A dash means not evaluated.
+
+| Cell | Regime | ESS ratio c / t | Option | Survival difference, month 18 | Log HR, FH(0,0) | Null rejection, FH(0,0) |
+|---|---|---|---|---|---|---|
+| 31 Es-400 | moderate confounding, proportional hazards | 0.83 / 0.69 | known | 0.970 | 0.976 | --- |
+| | | | estimated | 0.941 | 0.944 | --- |
+| 32 Es-400-null | moderate confounding, null | 0.83 / 0.69 | known | 0.971 | 0.968 | 0.035 |
+| | | | estimated | 0.943 | 0.943 | 0.060 |
+| 35 Fe-400 | strong confounding, proportional hazards | 0.50 / 0.39 | known | 0.959 | 0.933 | --- |
+| | | | estimated | 0.916 | 0.901 | --- |
+| 37 Fe-400-null | strong confounding, null | 0.51 / 0.37 | known | 0.942 | 0.914 | 0.095 |
+| | | | estimated | 0.905 | 0.871 | 0.136 |
+| 38 V-1450-null | few treated, concentrated treated-arm weights, null | 0.95 / 0.36 | known | 0.943 | 0.906 | 0.103 |
+| | | | estimated | 0.925 | 0.889 | 0.117 |
+| | | | known (first 500) | 0.930 | 0.898 | --- |
+| | | | estimated (first 500) | 0.912 | 0.884 | --- |
+| | | | boot (first 500) | 0.906 | 0.882 | --- |
+| 39 V-1450-ph | few treated, concentrated treated-arm weights, proportional hazards | 0.95 / 0.35 | known | 0.948 | 0.920 | --- |
+| | | | estimated | 0.931 | 0.902 | --- |
+| | | | known (first 500) | 0.948 | 0.914 | --- |
+| | | | estimated (first 500) | 0.932 | 0.890 | --- |
+| | | | boot (first 500) | 0.932 | 0.892 | --- |
+
+Source: `dev/audit/REPORT_km_fixes_stage2e.md`, section C.
+
+Reading.
+
+- With the more evenly spread weights (the moderate-confounding cells), `"estimated"` is close to the nominal level and `"known"` is above it: intervals that are too wide and a test that rejects a true null less often than its level.  This is the direction section 5 predicts.
+- With concentrated weights (the strong-confounding cells and the cells with few treated subjects), both options are below the nominal coverage and above the nominal test level, and `"estimated"` is further from nominal than `"known"`.
+- In those cells the shortfall is largest late in follow-up (time profile in `dev/audit/stage2e/m7_summary.csv` in the repository; not shown in the table).
+- On the same replicates, `"estimated"` agrees with the bootstrap that refits the propensity model, within Monte Carlo error.  The linearization therefore reproduces what refitting gives, and the shortfall under concentrated weights comes from the weights, not from the way their estimation is carried.
+- Neither option is the better one in general.  `"known"` is conservative when the weights are even, and that margin partly offsets the shortfall when they are concentrated; it does not remove it.
+
+# Numerical illustration
+
+The restricted Rotterdam population of the `weightedsurv_examples` vignette: node-positive, postmenopausal women without chemotherapy, with stabilized weights from the model `treat ~ age + size + grade3 + nodes + pgr + er`.  The `"estimated"` standard error is rebuilt from the formulas of sections 3 to 5 and shown beside the package value, for the survival difference at one time point and for the log hazard ratio under FH(0, 0).  Only exported functions and the objects they return are used.
+
+```{r data}
+library(survival)
+library(weightedsurv)
+
+fmt <- function(x, digits = 2) formatC(x, format = "f", digits = digits)
+
+df_rott <- within(rotterdam, {
+  rfstime <- ifelse(recur == 1, rtime, dtime)
+  tte <- rfstime / 30.4375
+  ignore <- (recur == 0 & death == 1 & rtime < dtime)
+  event <- ifelse(recur == 1 | ignore, recur, death)
+  grade3 <- ifelse(grade == "3", 1, 0)
+  treat <- hormon
+})
+df_rott <- subset(df_rott, nodes > 0 & meno == 1 & chemo == 0)
+
+pw <- ps_weights(treat ~ age + size + grade3 + nodes + pgr + er,
+                 data = df_rott, type = "stabilized")
+df_rott$sw.weights <- pw$weights
+
+dc_est <- df_counting(df_rott, "tte", "event", "treat", weight.name = "sw.weights",
+                      weight_variance = "estimated", weight_model = pw)
+dc_known <- df_counting(df_rott, "tte", "event", "treat", weight.name = "sw.weights")
+```
+
+The population has `r nrow(df_rott)` women, `r sum(df_rott$treat == 1)` treated.  Effective sample size by arm (`df_counting()$ess`):
+
+```{r ess}
+knitr::kable(dc_est$ess, digits = c(0, 0, 1, 3))
+```
+
+The pieces.  `df_counting()` returns the time-fixed data sorted by time (`time`, `delta`, `z`, `w_hat`) and, under `"estimated"`, `ew_parts`: the matrices `IF` and `dw` of the `ps_weights()` object with their rows in that order.
+
+```{r pieces}
+U <- dc_est$time; D <- dc_est$delta; A <- dc_est$z; w <- dc_est$w_hat
+IF <- dc_est$ew_parts$IF; dw <- dc_est$ew_parts$dw
+
+# the same matrices as pw$IF and pw$dw, rows reordered
+ord <- order(aeqSurv(Surv(df_rott$tte, df_rott$event))[, "time"])
+c(IF = max(abs(IF - pw$IF[ord, ])), dw = max(abs(dw - pw$dw[ord, ])))
+```
+
+## Survival difference at one time point
+
+```{r km-by-hand}
+t_star <- 60    # months
+
+# psi_i(t_star) of section 4.1 for the subjects of arm a (0 for the others), and S^a(t_star)
+km_contrib <- function(a) {
+  i <- which(A == a)
+  s <- sort(unique(U[i][D[i] == 1 & U[i] <= t_star]))            # event times of the arm up to t_star
+  Y <- sapply(s, function(x) sum(w[i] * (U[i] >= x)))            # weighted risk set
+  dN <- sapply(s, function(x) sum(w[i] * D[i] * (U[i] == x)))    # weighted events
+  psi <- numeric(length(U))
+  psi[i] <- sapply(i, function(k) {
+    own <- if (D[k] == 1 && U[k] <= t_star) 1 / (Y[s == U[k]] - dN[s == U[k]]) else 0
+    own - sum((dN / (Y * (Y - dN)))[s <= U[k]])
+  })
+  list(S = prod(1 - dN / Y), psi = psi)
+}
+k1 <- km_contrib(1); k0 <- km_contrib(0)
+
+# corrected contributions Phi_i^a = 1(A_i = a) w_i psi_i + IF_i' D_a, with D_a = sum_k psi_k dw_k
+Phi <- function(k) w * k$psi + as.numeric(IF %*% colSums(k$psi * dw))
+xi <- k1$S * Phi(k1) - k0$S * Phi(k0)
+se_diff_hand <- sqrt(sum(xi^2))
+
+fit_est <- KM_diff(df_rott, "tte", "event", "treat", weight.name = "sw.weights", at_points = t_star,
+                   weight_variance = "estimated", weight_model = pw)
+fit_known <- KM_diff(df_rott, "tte", "event", "treat", weight.name = "sw.weights", at_points = t_star)
+se_diff_pkg <- sqrt(fit_est$sig2_dhat)
+```
+
+The contributions are centred (section 4.1): $\sum_{i: A_i = a} w_i \psi_i(t)$ is `r formatC(sum(w * k1$psi), format = "e", digits = 1)` in the treated arm and `r formatC(sum(w * k0$psi), format = "e", digits = 1)` in the control arm.
+
+## Log hazard ratio, FH(0, 0)
+
+```{r cox-by-hand}
+cox_est <- cox_rhogamma(dc_est, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))
+cox_known <- cox_rhogamma(dc_known, scheme = "fh", scheme_params = list(rho = 0, gamma = 0))
+bhat <- cox_est$fit$bhat
+
+# psi_i(beta) and the information I_w(beta) of section 4.4, time weight kappa = 1
+score_contrib <- function(beta) {
+  s <- sort(unique(U[D == 1])); eb <- exp(beta * A)
+  S0 <- sapply(s, function(x) sum(w * eb * (U >= x)))
+  Abar <- sapply(s, function(x) sum(w * eb * A * (U >= x))) / S0
+  dL <- sapply(s, function(x) sum(w * D * (U == x))) / S0
+  psi <- sapply(seq_along(U), function(k) {
+    own <- if (D[k] == 1) A[k] - Abar[s == U[k]] else 0
+    w[k] * (own - eb[k] * sum(((A[k] - Abar) * dL)[s <= U[k]]))
+  })
+  list(psi = psi, info = sum(Abar * (1 - Abar) * S0 * dL))
+}
+sc_bhat <- score_contrib(bhat); sc_zero <- score_contrib(0)
+
+# corrected contributions psi_i^ew = psi_i + IF_i' B, with B = sum_j (psi_j / w_j) dw_j
+psi_ew <- function(psi) psi + as.numeric(IF %*% colSums((psi / w) * dw))
+se_loghr_hand <- sqrt(sum(psi_ew(sc_bhat$psi)^2)) / sc_bhat$info
+z_hand <- -sum(sc_zero$psi) / sqrt(sum(psi_ew(sc_zero$psi)^2))
+```
+
+The known-weight contributions computed here from the formula equal those the package uses: `cox_rhogamma_resample()` returns $-\sum_i G_i\, \psi_i$ for supplied multipliers, so unit multipliers return the contributions one by one.
+
+```{r contributions-check}
+n <- length(U)
+unit <- cox_rhogamma_resample(cox_known$fit, i_bhat = sc_bhat$info, K_wt_rg = NULL, i_zero = NULL, K_zero = NULL,
+                              G0.draws = diag(n)[A == 0, ], G1.draws = diag(n)[A == 1, ], draws = n)
+c(psi_at_bhat = max(abs(-unit$score_star - sc_bhat$psi)), psi_at_zero = max(abs(-unit$score_star_null - sc_zero$psi)))
+```
+
+## By hand against the package
+
+```{r comparison}
+cmp <- data.frame(
+  quantity = c(paste0("SE of the survival difference at ", t_star, " months"),
+               "SE of the log hazard ratio, FH(0,0)",
+               "Log-rank z, FH(0,0)"),
+  by_hand = c(se_diff_hand, se_loghr_hand, z_hand),
+  package = c(se_diff_pkg, cox_est$fit$sig_bhat_asy, cox_est$z.score),
+  known = c(sqrt(fit_known$sig2_dhat), cox_known$fit$sig_bhat_asy, cox_known$z.score)
+)
+cmp$difference <- cmp$by_hand - cmp$package
+knitr::kable(
+  data.frame(cmp$quantity, fmt(cmp$by_hand, 10), fmt(cmp$package, 10),
+             formatC(cmp$difference, format = "e", digits = 1), fmt(cmp$known, 10)),
+  col.names = c("Quantity", "By hand, estimated", "Package, estimated", "Difference", "Package, known"),
+  align = "lrrrr")
+stopifnot(all(abs(cmp$difference) < 1e-8))
+```
+
+The estimates are the same under the two options: the survival difference at `r t_star` months is `r fmt(fit_est$dhat, 4)` (by hand `r fmt(k1$S - k0$S, 4)`) and the hazard ratio is `r fmt(exp(bhat), 4)`.  In this example the standard error of the survival difference under `"estimated"` is `r fmt(100 * (1 - se_diff_pkg / sqrt(fit_known$sig2_dhat)), 1)`% smaller than under `"known"`, and that of the log hazard ratio `r fmt(100 * (1 - cox_est$fit$sig_bhat_asy / cox_known$fit$sig_bhat_asy), 1)`% smaller.
+
+## The three terms of the variance
+
+The decomposition of section 5, and the sample counterpart of the projected variance (*background*: not computed by the package).
+
+```{r decomposition}
+M <- crossprod(IF)
+terms <- function(c0, b) {
+  C <- colSums(c0 * IF)
+  c(known = sum(c0^2), cross = 2 * sum(b * C), quadratic = as.numeric(b %*% M %*% b),
+    projected = sum(c0^2) - as.numeric(C %*% solve(M, C)))
+}
+dec <- rbind(
+  terms(w * (k1$S * k1$psi - k0$S * k0$psi), k1$S * colSums(k1$psi * dw) - k0$S * colSums(k0$psi * dw)),
+  terms(sc_bhat$psi, colSums((sc_bhat$psi / w) * dw)))
+dec <- cbind(dec, estimated = dec[, "known"] + dec[, "cross"] + dec[, "quadratic"])
+dec_tab <- data.frame(
+  c(paste0("Survival difference at ", t_star, " months"), "Score at the estimate, FH(0,0)"),
+  formatC(dec[, "known"], format = "g", digits = 6), formatC(dec[, "cross"], format = "g", digits = 6),
+  formatC(dec[, "quadratic"], format = "g", digits = 6), formatC(dec[, "estimated"], format = "g", digits = 6),
+  formatC(dec[, "projected"], format = "g", digits = 6))
+knitr::kable(dec_tab, align = "lrrrrr",
+             col.names = c("Variance of", "Known: $\\sum c_i^2$", "$2\\, b^\\top C$", "$b^\\top M\\, b$",
+                           "Estimated (sum)", "Projected: $\\sum c_i^2 - C^\\top M^{-1} C$"))
+```
+
+In both rows the cross term is negative and larger in absolute value than the quadratic term, so the `"estimated"` variance is below the `"known"` one, and it is close to the projected value (ratio `r fmt(dec[1, "estimated"] / dec[1, "projected"], 3)` for the survival difference and `r fmt(dec[2, "estimated"] / dec[2, "projected"], 3)` for the score).
+
+# Limits and summary
+
+**Covered by `weight_variance = "estimated"`.**
+
+- Model class: a logistic `glm` for a binary treatment (family binomial, logit link, no prior weights, no offset), fitted on exactly the rows analysed.
+- Weight types: `"ipw"` and `"stabilized"`.
+- Estimators: the weighted Kaplan--Meier curve of an arm, of an arm within a stratum and of all subjects; the survival difference with its pointwise limits and simultaneous band; the cumulative RMST difference with its limits and band; the weighted log-rank test, stratified or not, cumulative or not; the weighted Cox estimate of `cox_rhogamma()` with its asymptotic and resampling intervals; the `survival`-based outputs of `df_counting()`.
+- Time-weight schemes: all of them run.
+
+**Not covered.**
+
+- Weights from any other model, and weights truncated or modified after `ps_weights()`: use `"known"`.
+- A subgroup analysed with weights from a model fitted on the full sample: the model's rows are not the rows analysed; use `"known"`.
+- The estimation of the arm proportion in stabilized weights (no effect on the Kaplan--Meier quantities; ignored for the log-rank and Cox score).
+- The dependence of the time weights on the estimated subject weights (every scheme other than FH(0, 0) and `"custom_time"`).
+- The resampling-based pointwise variance, `draws > 0` in `df_counting()`, `KM_diff()` and `plotKM.band_subgroups()`: an error under `"estimated"`.  `draws.band`, `draws_sb` and `draws` in `cox_rhogamma()` are available.
+- Stratified results: `cox_rhogamma()`, `wlr_cumulative()` and `wlr_dhat_estimates()` compute unstratified statistics under both options; the stratified correction is in `df_counting()` only.
+- Concentrated weights: the correction does not repair them.
+
+**Summary.**
+
+1. `"estimated"` adds to each subject's contribution the term $IF_i^\top \times$ (derivative of the estimator in the coefficients of the propensity model).  The derivative is exact (Lemmas 1 and 2); the resulting variance rests on a first-order expansion.
+2. The variance is the sum of squared corrected contributions over all $n$ subjects.  The two arms, and the strata, are no longer independent.
+3. With a correct model the large-sample variance is no larger than under `"known"`, by a projection argument.
+4. Resampling multiplies the corrected contributions; nothing is refitted.
+5. In the evaluation, `"estimated"` reproduces a refitting bootstrap, is close to nominal with evenly spread weights, and falls short, as `"known"` does, with concentrated weights.
+
+Related articles: `weightedkm_methodology` (weighted Kaplan--Meier curves and bands), `weightedcox_methodology` (weighted Cox estimation), `weightedrmst_methodology` (RMST), and the `weightedsurv_examples` vignette (the worked analyses).  The IPTW-weighted Kaplan--Meier estimator and log-rank test go back to @XieLiu2005.
+
+
+# References {-}
+
+::: {#refs}
+:::
