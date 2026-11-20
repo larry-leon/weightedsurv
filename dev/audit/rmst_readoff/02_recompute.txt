@@ -1,0 +1,17 @@
+02_recompute.R  2026-11-20 12:00:21  R 4.5.2  write=TRUE
+CSV: 481 rows, 111 RMST rows (estimand R), 370 other rows
+recomputed 111 RMST rows; replicates with evaluable month but no finite estimate: 0; failed RMST calls among evaluable: 0; non-finite intervals: 0
+'estimated' bias identical to 'known' bias (estimates identical under the two options) in 89 of 89 rows with an 'estimated' option
+bootstrap benchmark rows: per-replicate checksums of boot_cell*.rds equal those of the main files in all 3 rows
+  cell 39: known_bootreps stored 0.9360, R(t) 0.9360, R(t_j) 0.9380; estimated_bootreps stored 0.9200, R(t) 0.9200, R(t_j) 0.9220; lengths unchanged TRUE/TRUE; boot normal stored 0.9200, R(36) 0.9200, R(t_j) 0.9180; boot percentile stored 0.9220, R(36) 0.9220, R(t_j) 0.9200; boot length reproduced TRUE
+  cell 38: known_bootreps stored 0.9260, R(t) 0.9260, R(t_j) 0.9260; estimated_bootreps stored 0.9000, R(t) 0.9000, R(t_j) 0.9000; lengths unchanged TRUE/TRUE; boot normal stored 0.8980, R(36) 0.8980, R(t_j) 0.8980; boot percentile stored 0.9060, R(36) 0.9060, R(t_j) 0.9060; boot length reproduced TRUE
+  cell 8: known_bootreps stored 0.9760, R(t) 0.9760, R(t_j) 0.9740; estimated_bootreps stored 0.9340, R(t) 0.9340, R(t_j) 0.9400; lengths unchanged TRUE/TRUE; boot normal stored 0.9420, R(36) 0.9420, R(t_j) 0.9380; boot percentile stored 0.9360, R(36) 0.9360, R(t_j) 0.9340; boot length reproduced TRUE
+  coverage_boot, coverage_boot_mcse, coverage_boot_pct, boot_se_over_sd: left unchanged (est.R36 of oc_boot.R is survfit(..., rmean = 36), integrated to 36 itself, not read at t_j; stored values reproduced against R(36): TRUE)
+G3 OC cells 5, 10 (22 rows): 176 comparisons (bias, mean_estimate - mean_truth_readoff, bias MCSE, coverage, coverage MCSE; against oc_summary.csv and the stored CSV); largest |difference| 6.11e-16: PASS
+G4 OC cell 8 against M7 cell 31, RMST month 36: mean_estimate 0; bias 1.82e-16; bias_mcse 2.08e-17; coverage_known 0; coverage_estimated 0: PASS
+   values: mean_estimate 3.96267744035892 / 3.96267744035892; bias -0.0122641185681805 / -0.0122641185681803; bias_mcse 0.0297311700875105 / 0.0297311700875105; coverage_known 0.98 / 0.98; coverage_estimated 0.947 / 0.947
+G5 111 RMST rows, 1443 values (mean_estimate against the mean of the stored per-replicate estimates over evaluable replicates; empirical SD, mean SEs, mean lengths, counts, true_value, bootreps lengths against the stored CSV): 0 differ beyond 1e-12: PASS
+G6 non-RMST rows: 370 of 370 byte-identical to before apart from the added empty field (write.csv round trip also identical in 370 of 370): PASS
+RMST rows: the 26 columns not recomputed keep their text in 111 of 111 rows
+RMST rows, columns whose text changed (rows): mean_estimate 22; bias 45; bias_mcse 45; coverage_known 38; coverage_known_mcse 38; coverage_estimated 35; coverage_estimated_mcse 35; coverage_known_bootreps 2; coverage_estimated_bootreps 2
+written: /Users/larryleon/Documents/GitHub/weightedsurv/vignettes/articles/sim_results/ps_weight_results_by_time.csv (482 lines)
