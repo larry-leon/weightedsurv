@@ -106,16 +106,19 @@ A list with the following components:
 \describe{
 \item{cox_results}{List with Cox model results including hazard ratio, confidence interval, p-value, and formatted text}
 \item{logrank_results}{List with log-rank test chi-square statistic, p-value, and formatted text}
-\item{z.score}{Standardized weighted log-rank test statistic}
+\item{z.score}{Standardized weighted log-rank test statistic (with subject weights that are not
+all equal, standardized by the score-residual variance; see the section on subject weights)}
 \item{at_points}{Vector of all time points used in calculations}
 \item{surv0, surv1}{Kaplan-Meier survival estimates for control and treatment groups}
 \item{sig2_surv0, sig2_surv1}{Variance estimates for survival curves}
 \item{survP}{Pooled survival estimates}
 \item{survG}{Censoring distribution estimates}
 \item{quantile_results}{Data frame with median survival and confidence intervals by group}
-\item{lr, sig2_lr}{Weighted log-rank statistic and its variance}
+\item{lr, sig2_lr}{Weighted log-rank statistic and its variance (\code{get_score} holds the same as
+returned by \code{\link{wlr_cumulative}}; \code{zlogrank_text} is the one-sided p-value of \code{z.score})}
 \item{riskpoints0, riskpoints1}{Risk set counts at specified time points}
-\item{z.score_stratified}{Stratified z-score (if stratified analysis)}
+\item{z.score_stratified}{Stratified z-score (if stratified analysis), with \code{lr_stratified} and
+\code{sig2_lr_stratified}}
 }
 }
 \description{
@@ -164,6 +167,36 @@ contributions (see \code{\link{resampling_survival}}).
 The weights are treated as fixed and known: with estimated propensity-score weights the standard
 error is conservative (it ignores the estimation of the weights), and when the weights are
 extreme (low effective sample size) it is too small.
+}
+
+\section{Variance of the log-rank and Cox score with subject weights}{
+
+With no subject weights, or with all subject weights equal, the weighted log-rank test and the
+weighted Cox estimate are computed as before, and their results are unchanged. When the subject
+weights are not all equal, the variance of the weighted score is the sum of squared per-subject
+score contributions,
+\deqn{\widehat{Var}\{U(\beta)\} = \sum_i \psi_i(\beta)^2,}{Var(U(b)) = sum_i psi_i(b)^2,}
+\deqn{\psi_i(\beta) = a_i \Big( D_i K(U_i) \{Z_i - \bar z(U_i, \beta)\} - e^{\beta Z_i} \sum_{s \le U_i} K(s) \{Z_i - \bar z(s, \beta)\} d\hat\Lambda(s, \beta) \Big),}{psi_i(b) = a_i ( D_i K(U_i) (Z_i - zbar(U_i, b)) - exp(b Z_i) sum_{s <= U_i} K(s) (Z_i - zbar(s, b)) dL(s, b) ),}
+where \eqn{U_i}, \eqn{D_i}, \eqn{Z_i} and \eqn{a_i} are subject \eqn{i}'s time, event indicator,
+arm (0/1) and subject weight, \eqn{K(s)} is the time weight of the scheme,
+\eqn{S_0(s, \beta) = \sum_j a_j 1(U_j \ge s) e^{\beta Z_j}}{S0(s, b) = sum_j a_j 1(U_j >= s) exp(b Z_j)},
+\eqn{\bar z(s, \beta) = \sum_j a_j 1(U_j \ge s) Z_j e^{\beta Z_j} / S_0(s, \beta)}{zbar(s, b) = sum_j a_j 1(U_j >= s) Z_j exp(b Z_j) / S0(s, b)} and
+\eqn{d\hat\Lambda(s, \beta) = \sum_j a_j D_j 1(U_j = s) / S_0(s, \beta)}{dL(s, b) = sum_j a_j D_j 1(U_j = s) / S0(s, b)}.
+Sums over \eqn{s} run over distinct times (events at a tied time are added up), and a term whose
+\eqn{S_0} is 0 is 0. The score itself, \eqn{-\sum_i \psi_i(\beta)}{-sum_i psi_i(b)}, is the one
+computed before and does not change, and neither does any point estimate. The log-rank z-score
+is the score at \eqn{\beta = 0} over \eqn{\sqrt{\sum_i \psi_i(0)^2}}{sqrt(sum_i psi_i(0)^2)}; the
+variance of the log hazard ratio estimate is
+\eqn{\sum_i \psi_i(\hat\beta)^2 / i(\hat\beta)^2}{sum_i psi_i(bhat)^2 / i(bhat)^2} with
+\eqn{i(\hat\beta)}{i(bhat)} the information (unchanged); in a stratified analysis the
+contributions are computed within each stratum and the score and its variance are sums over
+strata. For Fleming-Harrington (0, 0) weights this is the robust variance of
+\code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
+and the same robust standard error. Results no longer depend on how the weights are scaled
+(weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
+The weights are treated as fixed and known: with estimated propensity-score weights the
+intervals are conservative (the estimation of the weights is ignored), and when the weights are
+extreme (low effective sample size) the intervals are too short.
 }
 
 \section{Weighting Schemes}{

@@ -420,6 +420,13 @@ KM_plot_2sample_weighted_counting <- function(
 #' @param qtau Quantile for time range in simultaneous bands (default: 0.025).
 #' @param show_resamples Logical; whether to plot resampled curves (default: FALSE).
 #' @param modify_tau Logical; restrict time range for bands.
+#' @details The pointwise standard error of the difference, the pointwise limits and the
+#'   standardisation of the simultaneous band come from \code{\link{KM_diff}} with the \code{draws} and
+#'   \code{draws.band} given here. Since version 0.2.0 the default is \code{draws = 0}: the pointwise
+#'   variance is the analytic one (Greenwood's formula, or the robust variance when the weights are
+#'   not all equal). Before, the default \code{draws = 20} made the pointwise standard error of a
+#'   weighted plot, and with it the band, a 20-draw resampling variance. Plots without weights, or
+#'   with all weights equal, are numerically unaffected by \code{draws}.
 #' @return (Invisible) list containing KM_diff results, time points, subgroup curves, risk tables, and confidence intervals.
 #' @importFrom graphics plot lines legend title axis box polygon matplot
 #' @export

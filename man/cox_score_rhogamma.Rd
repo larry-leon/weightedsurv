@@ -30,8 +30,49 @@ cox_score_rhogamma(
 \item{score_only}{Logical; if TRUE, returns only the score.}
 }
 \value{
-Numeric value of the score or a list with additional results.
+Numeric value of the score or, with \code{score_only = FALSE}, a list with \code{score},
+\code{sig2_score} (variance of the score at \code{beta}), \code{sig2_beta_asy}
+(\code{sig2_score / i_bhat^2}), \code{K_wt_rg} and \code{i_bhat} (the information).
 }
 \description{
 Calculates the Cox score statistic for weighted log-rank tests.
 }
+\details{
+With \code{w_hat} absent or all equal, \code{sig2_score} and \code{sig2_beta_asy} are the
+formulas used before (\code{\link{score_calculation}}) and are unchanged. When \code{w_hat} is not all
+equal, \code{sig2_score} is the sum of squared per-subject score contributions
+\eqn{\sum_i \psi_i(\beta)^2}{sum_i psi_i(beta)^2} described below and \code{sig2_beta_asy} is that
+sum over \code{i_bhat^2}. The score, \code{K_wt_rg} and \code{i_bhat} are unchanged. \code{time} is
+taken to be sorted, as \code{\link{df_counting}} returns it; the time weight of a tied time is
+the one at its first observation.
+}
+\section{Variance of the log-rank and Cox score with subject weights}{
+
+With no subject weights, or with all subject weights equal, the weighted log-rank test and the
+weighted Cox estimate are computed as before, and their results are unchanged. When the subject
+weights are not all equal, the variance of the weighted score is the sum of squared per-subject
+score contributions,
+\deqn{\widehat{Var}\{U(\beta)\} = \sum_i \psi_i(\beta)^2,}{Var(U(b)) = sum_i psi_i(b)^2,}
+\deqn{\psi_i(\beta) = a_i \Big( D_i K(U_i) \{Z_i - \bar z(U_i, \beta)\} - e^{\beta Z_i} \sum_{s \le U_i} K(s) \{Z_i - \bar z(s, \beta)\} d\hat\Lambda(s, \beta) \Big),}{psi_i(b) = a_i ( D_i K(U_i) (Z_i - zbar(U_i, b)) - exp(b Z_i) sum_{s <= U_i} K(s) (Z_i - zbar(s, b)) dL(s, b) ),}
+where \eqn{U_i}, \eqn{D_i}, \eqn{Z_i} and \eqn{a_i} are subject \eqn{i}'s time, event indicator,
+arm (0/1) and subject weight, \eqn{K(s)} is the time weight of the scheme,
+\eqn{S_0(s, \beta) = \sum_j a_j 1(U_j \ge s) e^{\beta Z_j}}{S0(s, b) = sum_j a_j 1(U_j >= s) exp(b Z_j)},
+\eqn{\bar z(s, \beta) = \sum_j a_j 1(U_j \ge s) Z_j e^{\beta Z_j} / S_0(s, \beta)}{zbar(s, b) = sum_j a_j 1(U_j >= s) Z_j exp(b Z_j) / S0(s, b)} and
+\eqn{d\hat\Lambda(s, \beta) = \sum_j a_j D_j 1(U_j = s) / S_0(s, \beta)}{dL(s, b) = sum_j a_j D_j 1(U_j = s) / S0(s, b)}.
+Sums over \eqn{s} run over distinct times (events at a tied time are added up), and a term whose
+\eqn{S_0} is 0 is 0. The score itself, \eqn{-\sum_i \psi_i(\beta)}{-sum_i psi_i(b)}, is the one
+computed before and does not change, and neither does any point estimate. The log-rank z-score
+is the score at \eqn{\beta = 0} over \eqn{\sqrt{\sum_i \psi_i(0)^2}}{sqrt(sum_i psi_i(0)^2)}; the
+variance of the log hazard ratio estimate is
+\eqn{\sum_i \psi_i(\hat\beta)^2 / i(\hat\beta)^2}{sum_i psi_i(bhat)^2 / i(bhat)^2} with
+\eqn{i(\hat\beta)}{i(bhat)} the information (unchanged); in a stratified analysis the
+contributions are computed within each stratum and the score and its variance are sums over
+strata. For Fleming-Harrington (0, 0) weights this is the robust variance of
+\code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
+and the same robust standard error. Results no longer depend on how the weights are scaled
+(weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
+The weights are treated as fixed and known: with estimated propensity-score weights the
+intervals are conservative (the estimation of the weights is ignored), and when the weights are
+extreme (low effective sample size) the intervals are too short.
+}
+

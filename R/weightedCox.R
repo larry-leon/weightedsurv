@@ -119,7 +119,17 @@ return(list(score = score, sig2U = sig2U, sig2_beta_asy = sig2_beta_asy, i_bhat 
 #' @param w_hat Numeric vector of weights.
 #' @param wt_rg Numeric vector of rho-gamma weights.
 #' @param score_only Logical; if TRUE, returns only the score.
-#' @return Numeric value of the score or a list with additional results.
+#' @return Numeric value of the score or, with \code{score_only = FALSE}, a list with \code{score},
+#'   \code{sig2_score} (variance of the score at \code{beta}), \code{sig2_beta_asy}
+#'   (\code{sig2_score / i_bhat^2}), \code{K_wt_rg} and \code{i_bhat} (the information).
+#' @details With \code{w_hat} absent or all equal, \code{sig2_score} and \code{sig2_beta_asy} are the
+#'   formulas used before (\code{\link{score_calculation}}) and are unchanged. When \code{w_hat} is not all
+#'   equal, \code{sig2_score} is the sum of squared per-subject score contributions
+#'   \eqn{\sum_i \psi_i(\beta)^2}{sum_i psi_i(beta)^2} described below and \code{sig2_beta_asy} is that
+#'   sum over \code{i_bhat^2}. The score, \code{K_wt_rg} and \code{i_bhat} are unchanged. \code{time} is
+#'   taken to be sorted, as \code{\link{df_counting}} returns it; the time weight of a tied time is
+#'   the one at its first observation.
+#' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
 #' @export
 
 cox_score_rhogamma <- function(beta, time, delta, z, w_hat = rep(1,length(time)), wt_rg = rep(1,length(time)), score_only = TRUE) {
@@ -222,6 +232,19 @@ cox_score_rhogamma <- function(beta, time, delta, z, w_hat = rep(1,length(time))
 #' }
 #'
 #' The score test at \eqn{\beta=0} corresponds to the weighted log-rank test.
+#'
+#' With subject weights that are not all equal (\code{dfcount$w_hat}), the variance of the score at 0
+#' and at \eqn{\hat\beta}{bhat} is the sum of squared per-subject score contributions (section below),
+#' so \code{fit$sig2_score}, \code{fit$z.score}, \code{fit$sig_bhat_asy}, \code{hr_ci_asy},
+#' \code{zlogrank_text} and \code{cox_text_asy} differ from versions before 0.2.0; with
+#' \code{draws > 0} the resampled scores are built from the same contributions
+#' (\code{\link{cox_rhogamma_resample}}), so the resampling standard error estimates the same
+#' quantity as \code{sig_bhat_asy}. The estimate \code{bhat}, the scores \code{u.beta} and \code{u.zero}
+#' and the time weights \code{wt_rg} do not change. \code{fit$z.score} equals
+#' \code{df_counting()$z.score} for the same scheme. With no weights or all weights equal, every
+#' result is as before.
+#'
+#' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
 #'
 #' @note The treatment variable in \code{dfcount} must be coded as 0=control, 1=experimental.
 #'
@@ -405,6 +428,18 @@ ans
 #' @param draws Number of resampling iterations (default: 100).
 #' @param seedstart Random seed for reproducibility (default: 8316951).
 #' @return List with resampling results (score, beta, standard error, etc.).
+#' @details The multipliers are standard normal, one row per subject (\code{G0.draws} for controls,
+#'   \code{G1.draws} for treated, in the order of \code{fit_rhogamma$time}), drawn under
+#'   \code{set.seed(seedstart)}; the caller's random-number stream is restored afterwards. With
+#'   \code{w_hat} absent or all equal, the multipliers perturb the events only, as before, and these
+#'   results are unchanged. When \code{w_hat} is not all equal, each resampled score is built from the
+#'   per-subject score contributions described below:
+#'   \code{score_star} is \eqn{-\sum_i G_i \psi_i(\hat\beta)}{-sum_i G_i psi_i(bhat)} and
+#'   \code{score_star_null} is \eqn{-\sum_i G_i \psi_i(0)}{-sum_i G_i psi_i(0)}, so their variance over
+#'   draws is the variance of the score used for \code{sig_bhat_asy} and the log-rank z-score
+#'   (\code{K_wt_rg} and \code{K_zero} are then not used). \code{bhat_center_star}, \code{Z_bstar} and
+#'   \code{sig_bhat_star} are formed from \code{score_star} as before.
+#' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
 #' @importFrom stats var rnorm
 #' @export
 

@@ -12,7 +12,10 @@ wlr_cumulative(
 )
 }
 \arguments{
-\item{df_weights}{Data frame with weights and risk/event counts.}
+\item{df_weights}{Data frame with the time grid, risk and event counts and pooled survival
+(\code{at_points}, \code{nbar0}, \code{nbar1}, \code{ybar0}, \code{ybar1}, \code{survP}, and
+\code{survG} for Schemper weights), or a \code{\link{df_counting}} result, which holds the same
+elements together with the subject-level data (\code{time}, \code{delta}, \code{z}, \code{w_hat}).}
 
 \item{scheme}{Weighting scheme.}
 
@@ -21,8 +24,56 @@ wlr_cumulative(
 \item{return_cumulative}{Logical; whether to return cumulative statistics.}
 }
 \value{
-List with score and variance.
+List with \code{z.score}, \code{time} (the grid), \code{score} and \code{sig2.score} (the
+variance of the score); with \code{return_cumulative = TRUE} each is a vector along the grid.
 }
 \description{
 Calculates cumulative weighted log-rank statistics for survival data.
 }
+\details{
+With no subject weights, with all subject weights equal, and for a bare table of counts
+(a data frame without the subject-level data) the variance of the score is the formula used
+before, computed from the counts; these results are unchanged. When \code{df_weights} is a
+\code{\link{df_counting}} result whose subject weights are not all equal (and inside
+\code{df_counting()} itself, unstratified and per stratum), \code{sig2.score} is the sum of squared
+per-subject score contributions \eqn{\sum_i \psi_i(0)^2}{sum_i psi_i(0)^2} described below, and
+\code{z.score} follows; \code{score} is unchanged. With \code{return_cumulative = TRUE} the variance
+at grid time \eqn{t} is the sum of squared contributions to the score up to \eqn{t}: a subject with
+\eqn{U_i \le t}{U_i <= t} contributes \eqn{\psi_i(0)}{psi_i(0)}, a subject still at risk contributes
+\eqn{-a_i \{Z_i c_K(t) - c_{Kz}(t)\}}{-a_i (Z_i cK(t) - cKz(t))}, with
+\eqn{c_K(t) = \sum_{s \le t} K(s) d\hat\Lambda(s)}{cK(t) = sum_{s <= t} K(s) dL(s)} and
+\eqn{c_{Kz}(t) = \sum_{s \le t} K(s) \bar z(s) d\hat\Lambda(s)}{cKz(t) = sum_{s <= t} K(s) zbar(s) dL(s)};
+its last value is the non-cumulative variance. A table of counts taken from a weighted analysis
+does not carry the subject-level data, so it gets the earlier formula: pass the
+\code{df_counting()} result itself to get the variance described below.
+}
+\section{Variance of the log-rank and Cox score with subject weights}{
+
+With no subject weights, or with all subject weights equal, the weighted log-rank test and the
+weighted Cox estimate are computed as before, and their results are unchanged. When the subject
+weights are not all equal, the variance of the weighted score is the sum of squared per-subject
+score contributions,
+\deqn{\widehat{Var}\{U(\beta)\} = \sum_i \psi_i(\beta)^2,}{Var(U(b)) = sum_i psi_i(b)^2,}
+\deqn{\psi_i(\beta) = a_i \Big( D_i K(U_i) \{Z_i - \bar z(U_i, \beta)\} - e^{\beta Z_i} \sum_{s \le U_i} K(s) \{Z_i - \bar z(s, \beta)\} d\hat\Lambda(s, \beta) \Big),}{psi_i(b) = a_i ( D_i K(U_i) (Z_i - zbar(U_i, b)) - exp(b Z_i) sum_{s <= U_i} K(s) (Z_i - zbar(s, b)) dL(s, b) ),}
+where \eqn{U_i}, \eqn{D_i}, \eqn{Z_i} and \eqn{a_i} are subject \eqn{i}'s time, event indicator,
+arm (0/1) and subject weight, \eqn{K(s)} is the time weight of the scheme,
+\eqn{S_0(s, \beta) = \sum_j a_j 1(U_j \ge s) e^{\beta Z_j}}{S0(s, b) = sum_j a_j 1(U_j >= s) exp(b Z_j)},
+\eqn{\bar z(s, \beta) = \sum_j a_j 1(U_j \ge s) Z_j e^{\beta Z_j} / S_0(s, \beta)}{zbar(s, b) = sum_j a_j 1(U_j >= s) Z_j exp(b Z_j) / S0(s, b)} and
+\eqn{d\hat\Lambda(s, \beta) = \sum_j a_j D_j 1(U_j = s) / S_0(s, \beta)}{dL(s, b) = sum_j a_j D_j 1(U_j = s) / S0(s, b)}.
+Sums over \eqn{s} run over distinct times (events at a tied time are added up), and a term whose
+\eqn{S_0} is 0 is 0. The score itself, \eqn{-\sum_i \psi_i(\beta)}{-sum_i psi_i(b)}, is the one
+computed before and does not change, and neither does any point estimate. The log-rank z-score
+is the score at \eqn{\beta = 0} over \eqn{\sqrt{\sum_i \psi_i(0)^2}}{sqrt(sum_i psi_i(0)^2)}; the
+variance of the log hazard ratio estimate is
+\eqn{\sum_i \psi_i(\hat\beta)^2 / i(\hat\beta)^2}{sum_i psi_i(bhat)^2 / i(bhat)^2} with
+\eqn{i(\hat\beta)}{i(bhat)} the information (unchanged); in a stratified analysis the
+contributions are computed within each stratum and the score and its variance are sums over
+strata. For Fleming-Harrington (0, 0) weights this is the robust variance of
+\code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
+and the same robust standard error. Results no longer depend on how the weights are scaled
+(weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
+The weights are treated as fixed and known: with estimated propensity-score weights the
+intervals are conservative (the estimation of the weights is ignored), and when the weights are
+extreme (low effective sample size) the intervals are too short.
+}
+

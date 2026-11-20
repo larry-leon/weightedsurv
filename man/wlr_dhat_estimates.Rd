@@ -42,4 +42,48 @@ The weighting scheme is selected via the \code{scheme} argument and is calculate
 \details{
 The weighting scheme is selected via the \code{scheme} argument and calculated using \code{wt.rg.S}.
 Supports standard Fleming-Harrington, Schemper, XO (Xu & O'Quigley), MB (Maggir-Burman), custom time-based, and custom code weights.
+
+With no subject weights or all subject weights equal the three variances are the formulas used
+before, and these results are unchanged. When \code{dfcounting} is a \code{\link{df_counting}} result
+whose subject weights are not all equal, the log-rank statistic, the survival difference and their
+covariance rest on the same per-subject contributions: \code{sig2.score} is
+\eqn{\sum_i \psi_i(0)^2}{sum_i psi_i(0)^2} (below; the same as \code{df_counting()$sig2_lr}),
+\code{sig2_dhat} is \eqn{\sum_i d_i^2}{sum_i d_i^2} and \code{cov_wlr_dhat} is
+\eqn{\sum_i \{-\psi_i(0)\} d_i}{sum_i (-psi_i(0)) d_i}, where \eqn{d_i} is subject \eqn{i}'s
+contribution to the survival difference at the grid point read for \code{tzero}:
+\eqn{d_i = -\hat S_1 a_i \psi^{KM}_i}{d_i = -S1 a_i psiKM_i} in the treatment arm and
+\eqn{d_i = \hat S_0 a_i \psi^{KM}_i}{d_i = S0 a_i psiKM_i} in the control arm, with
+\eqn{\psi^{KM}_i}{psiKM_i} the Kaplan-Meier influence contribution of that arm (see
+\code{\link{KM_diff}}, section "Variance of the Kaplan-Meier estimate"). \code{sig2_dhat} then
+equals \code{KM_diff(draws = 0)$sig2_dhat} at that grid point. \code{score} and \code{dhat} are unchanged.
 }
+\section{Variance of the log-rank and Cox score with subject weights}{
+
+With no subject weights, or with all subject weights equal, the weighted log-rank test and the
+weighted Cox estimate are computed as before, and their results are unchanged. When the subject
+weights are not all equal, the variance of the weighted score is the sum of squared per-subject
+score contributions,
+\deqn{\widehat{Var}\{U(\beta)\} = \sum_i \psi_i(\beta)^2,}{Var(U(b)) = sum_i psi_i(b)^2,}
+\deqn{\psi_i(\beta) = a_i \Big( D_i K(U_i) \{Z_i - \bar z(U_i, \beta)\} - e^{\beta Z_i} \sum_{s \le U_i} K(s) \{Z_i - \bar z(s, \beta)\} d\hat\Lambda(s, \beta) \Big),}{psi_i(b) = a_i ( D_i K(U_i) (Z_i - zbar(U_i, b)) - exp(b Z_i) sum_{s <= U_i} K(s) (Z_i - zbar(s, b)) dL(s, b) ),}
+where \eqn{U_i}, \eqn{D_i}, \eqn{Z_i} and \eqn{a_i} are subject \eqn{i}'s time, event indicator,
+arm (0/1) and subject weight, \eqn{K(s)} is the time weight of the scheme,
+\eqn{S_0(s, \beta) = \sum_j a_j 1(U_j \ge s) e^{\beta Z_j}}{S0(s, b) = sum_j a_j 1(U_j >= s) exp(b Z_j)},
+\eqn{\bar z(s, \beta) = \sum_j a_j 1(U_j \ge s) Z_j e^{\beta Z_j} / S_0(s, \beta)}{zbar(s, b) = sum_j a_j 1(U_j >= s) Z_j exp(b Z_j) / S0(s, b)} and
+\eqn{d\hat\Lambda(s, \beta) = \sum_j a_j D_j 1(U_j = s) / S_0(s, \beta)}{dL(s, b) = sum_j a_j D_j 1(U_j = s) / S0(s, b)}.
+Sums over \eqn{s} run over distinct times (events at a tied time are added up), and a term whose
+\eqn{S_0} is 0 is 0. The score itself, \eqn{-\sum_i \psi_i(\beta)}{-sum_i psi_i(b)}, is the one
+computed before and does not change, and neither does any point estimate. The log-rank z-score
+is the score at \eqn{\beta = 0} over \eqn{\sqrt{\sum_i \psi_i(0)^2}}{sqrt(sum_i psi_i(0)^2)}; the
+variance of the log hazard ratio estimate is
+\eqn{\sum_i \psi_i(\hat\beta)^2 / i(\hat\beta)^2}{sum_i psi_i(bhat)^2 / i(bhat)^2} with
+\eqn{i(\hat\beta)}{i(bhat)} the information (unchanged); in a stratified analysis the
+contributions are computed within each stratum and the score and its variance are sums over
+strata. For Fleming-Harrington (0, 0) weights this is the robust variance of
+\code{survival::coxph(weights = w, robust = TRUE, ties = "breslow")}: the same robust score test
+and the same robust standard error. Results no longer depend on how the weights are scaled
+(weights \code{w}, \code{10 * w} and \code{w / sum(w)} give the same z-score and standard error).
+The weights are treated as fixed and known: with estimated propensity-score weights the
+intervals are conservative (the estimation of the weights is ignored), and when the weights are
+extreme (low effective sample size) the intervals are too short.
+}
+

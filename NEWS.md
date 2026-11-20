@@ -69,8 +69,9 @@
   quantiles. **Unweighted results do not change**, and neither do results with all weights equal
   (both use Greenwood's formula; all weights equal to a constant give the unweighted standard
   error, where in 0.1.0 a constant weight c gave the standard error of the data with every row
-  repeated c times). Survival estimates, differences, risk tables, log-rank, Cox and the RMST
-  point estimate do not change. The standard error does not depend on the scale of the weights
+  repeated c times). Survival estimates, differences, risk tables and the RMST point estimate do
+  not change (the log-rank test and Cox estimate with subject weights change separately, see L1-L4
+  below). The standard error does not depend on the scale of the weights
   (weights `w` and `10 * w` give the same answer), so weights are not frequency weights: a weight
   of 2 is not two copies of the row. Weights are treated as fixed and known: with estimated
   propensity-score weights the standard error is conservative, and with extreme weights (low
@@ -87,6 +88,58 @@
   agrees with the robust standard error. **Unweighted results, and results with all weights
   equal, do not change**: they keep the events-only perturbation, with the same seeds and draws.
   (R2)
+
+* Log-rank test with subject weights: when the subject weights are not all equal, the variance of
+  the weighted log-rank score is now the sum of squared per-subject score contributions,
+  `sum_i psi_i(0)^2` (the formula is in `?df_counting`), in `df_counting()` (unstratified and per
+  stratum) and in `wlr_cumulative()` when it is given a `df_counting()` result. For
+  Fleming-Harrington (0, 0) weights the z-score squared is the robust score test of
+  `survival::coxph(weights = w, robust = TRUE, ties = "breslow")`. **z-scores and p-values of
+  subject-weighted log-rank tests change** (`z.score`, `sig2_lr`, `get_score`, `zlogrank_text`,
+  `z.score_stratified`, `sig2_lr_stratified`; the cumulative `sig2.score` and `z.score` of
+  `wlr_cumulative()`); the score itself (`lr`, `score`, `lr_stratified`) does not. They no longer
+  depend on how the weights are scaled: `w`, `10 * w` and `w / sum(w)` give the same z-score
+  (before, multiplying the weights by 10 multiplied z by about 3.2, and normalised weights gave
+  `NaN`). **Unweighted results, and results with all weights equal, do not change.**
+  `wlr_cumulative()` on a bare table of counts (no subject-level data) is unchanged too. Weights
+  are treated as fixed and known: with estimated propensity-score weights the test is
+  conservative, and with extreme weights (low effective sample size) it rejects too often. (L1)
+
+* `cox_rhogamma()` with subject weights: when the weights are not all equal, the standard error of
+  the log hazard ratio is now `sqrt(sum_i psi_i(bhat)^2) / i_bhat`, from the same per-subject score
+  contributions; for Fleming-Harrington (0, 0) weights it is the robust standard error of
+  `survival::coxph(weights = w, robust = TRUE, ties = "breslow")`. **Standard errors, confidence
+  intervals, z-scores and p-values of subject-weighted fits change** (`fit$sig_bhat_asy`,
+  `hr_ci_asy`, `cox_text_asy`, `fit$sig2_score`, `fit$z.score`, `zlogrank_text`, and `sig2_score`
+  and `sig2_beta_asy` of `cox_score_rhogamma(score_only = FALSE)`), and no longer depend on how
+  the weights are scaled. The estimate (`bhat`), the scores (`u.beta`, `u.zero`), the information
+  and the time weights do not change. **Unweighted fits, and fits with all weights equal, do not
+  change.** (L2)
+
+* `cox_rhogamma(draws > 0)` with subject weights: when the weights are not all equal, the
+  resampled scores of `cox_rhogamma_resample()` are now `-sum_i G_i psi_i(bhat)` and
+  `-sum_i G_i psi_i(0)`, built from the same per-subject contributions with the same multipliers
+  `G_i` as before (before, the multipliers perturbed the events only). **The resampling standard
+  error, the de-biased estimate and the resampling interval of subject-weighted fits change**
+  (`fit_resamples`, `fit$sig_bhat_star`, `fit$bhat_debiased`, `fit$wald_debiased1`,
+  `fit$wald_debiased2`, `hr_ci_star`, `sig2_score_star`, `z.score_debiased`, `cox_text_star`); the
+  resampling standard error now agrees with `sig_bhat_asy`. **Unweighted fits, and fits with all
+  weights equal, do not change**, with the same seeds and draws. (L3)
+
+* `wlr_dhat_estimates()` with subject weights: on a `df_counting()` result whose weights are not
+  all equal, the variance of the log-rank statistic (as L1), the variance of the survival
+  difference at `tzero` and their covariance are now computed from the same per-subject
+  contributions; `sig2_dhat` equals `KM_diff(draws = 0)$sig2_dhat` at that time point.
+  **`sig2.score`, `z.score`, `sig2_dhat`, `cov_wlr_dhat` and `cor_wlr_dhat` of subject-weighted
+  calls change**; `score` and `dhat` do not. **Unweighted results, and results with all weights
+  equal, do not change.** (L4)
+
+* `plotKM.band_subgroups()`: the default of `draws` is now 0 (it was 20). With weights that are not
+  all equal and `draws` not supplied, the pointwise standard error, the pointwise limits and the
+  standardisation of the simultaneous band now use the analytic (robust) variance instead of a
+  variance from 20 resampling draws, so **weighted band plots that do not pass `draws` change**.
+  Plots without weights, or with all weights equal, are numerically unaffected. Pass `draws = 20`
+  for the earlier behaviour. (B12)
 
 * `cumulative_rmst_bands()` has a new last argument `mean_rule`. The default, `"trapezoid"`, gives
   the same results as before. `"rectangle"` integrates the survival difference as a step function;

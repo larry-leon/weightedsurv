@@ -146,3 +146,12 @@ times; it must be supplied when an arm has no events.}
 \description{
 Plots the difference in Kaplan-Meier survival curves between two groups, optionally including simultaneous confidence bands and subgroup curves. Also displays risk tables for the overall population and specified subgroups.
 }
+\details{
+The pointwise standard error of the difference, the pointwise limits and the
+standardisation of the simultaneous band come from \code{\link{KM_diff}} with the \code{draws} and
+\code{draws.band} given here. Since version 0.2.0 the default is \code{draws = 0}: the pointwise
+variance is the analytic one (Greenwood's formula, or the robust variance when the weights are
+not all equal). Before, the default \code{draws = 20} made the pointwise standard error of a
+weighted plot, and with it the band, a 20-draw resampling variance. Plots without weights, or
+with all weights equal, are numerically unaffected by \code{draws}.
+}

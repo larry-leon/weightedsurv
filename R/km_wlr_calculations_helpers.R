@@ -182,6 +182,21 @@ km_quantile_table <- function(time_points, surv0, se0, surv1, se1, arms = c("tre
 #' The weighting scheme is selected via the \code{scheme} argument and calculated using \code{wt.rg.S}.
 #' Supports standard Fleming-Harrington, Schemper, XO (Xu & O'Quigley), MB (Maggir-Burman), custom time-based, and custom code weights.
 #'
+#' With no subject weights or all subject weights equal the three variances are the formulas used
+#' before, and these results are unchanged. When \code{dfcounting} is a \code{\link{df_counting}} result
+#' whose subject weights are not all equal, the log-rank statistic, the survival difference and their
+#' covariance rest on the same per-subject contributions: \code{sig2.score} is
+#' \eqn{\sum_i \psi_i(0)^2}{sum_i psi_i(0)^2} (below; the same as \code{df_counting()$sig2_lr}),
+#' \code{sig2_dhat} is \eqn{\sum_i d_i^2}{sum_i d_i^2} and \code{cov_wlr_dhat} is
+#' \eqn{\sum_i \{-\psi_i(0)\} d_i}{sum_i (-psi_i(0)) d_i}, where \eqn{d_i} is subject \eqn{i}'s
+#' contribution to the survival difference at the grid point read for \code{tzero}:
+#' \eqn{d_i = -\hat S_1 a_i \psi^{KM}_i}{d_i = -S1 a_i psiKM_i} in the treatment arm and
+#' \eqn{d_i = \hat S_0 a_i \psi^{KM}_i}{d_i = S0 a_i psiKM_i} in the control arm, with
+#' \eqn{\psi^{KM}_i}{psiKM_i} the Kaplan-Meier influence contribution of that arm (see
+#' \code{\link{KM_diff}}, section "Variance of the Kaplan-Meier estimate"). \code{sig2_dhat} then
+#' equals \code{KM_diff(draws = 0)$sig2_dhat} at that grid point. \code{score} and \code{dhat} are unchanged.
+#'
+#' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
 #' @export
 
 wlr_dhat_estimates <- function(dfcounting,
@@ -633,11 +648,31 @@ KM_diff <- function(df, tte.name = "tte", event.name = "event", treat.name = "tr
 #'
 #' Calculates cumulative weighted log-rank statistics for survival data.
 #'
-#' @param df_weights Data frame with weights and risk/event counts.
+#' @param df_weights Data frame with the time grid, risk and event counts and pooled survival
+#'   (\code{at_points}, \code{nbar0}, \code{nbar1}, \code{ybar0}, \code{ybar1}, \code{survP}, and
+#'   \code{survG} for Schemper weights), or a \code{\link{df_counting}} result, which holds the same
+#'   elements together with the subject-level data (\code{time}, \code{delta}, \code{z}, \code{w_hat}).
 #' @param scheme Weighting scheme.
 #' @param scheme_params List of scheme parameters.
 #' @param return_cumulative Logical; whether to return cumulative statistics.
-#' @return List with score and variance.
+#' @return List with \code{z.score}, \code{time} (the grid), \code{score} and \code{sig2.score} (the
+#'   variance of the score); with \code{return_cumulative = TRUE} each is a vector along the grid.
+#' @details With no subject weights, with all subject weights equal, and for a bare table of counts
+#'   (a data frame without the subject-level data) the variance of the score is the formula used
+#'   before, computed from the counts; these results are unchanged. When \code{df_weights} is a
+#'   \code{\link{df_counting}} result whose subject weights are not all equal (and inside
+#'   \code{df_counting()} itself, unstratified and per stratum), \code{sig2.score} is the sum of squared
+#'   per-subject score contributions \eqn{\sum_i \psi_i(0)^2}{sum_i psi_i(0)^2} described below, and
+#'   \code{z.score} follows; \code{score} is unchanged. With \code{return_cumulative = TRUE} the variance
+#'   at grid time \eqn{t} is the sum of squared contributions to the score up to \eqn{t}: a subject with
+#'   \eqn{U_i \le t}{U_i <= t} contributes \eqn{\psi_i(0)}{psi_i(0)}, a subject still at risk contributes
+#'   \eqn{-a_i \{Z_i c_K(t) - c_{Kz}(t)\}}{-a_i (Z_i cK(t) - cKz(t))}, with
+#'   \eqn{c_K(t) = \sum_{s \le t} K(s) d\hat\Lambda(s)}{cK(t) = sum_{s <= t} K(s) dL(s)} and
+#'   \eqn{c_{Kz}(t) = \sum_{s \le t} K(s) \bar z(s) d\hat\Lambda(s)}{cKz(t) = sum_{s <= t} K(s) zbar(s) dL(s)};
+#'   its last value is the non-cumulative variance. A table of counts taken from a weighted analysis
+#'   does not carry the subject-level data, so it gets the earlier formula: pass the
+#'   \code{df_counting()} result itself to get the variance described below.
+#' @inheritSection df_counting Variance of the log-rank and Cox score with subject weights
 #' @export
 
 wlr_cumulative <- function(df_weights, scheme, scheme_params = list(rho = 0, gamma = 0), return_cumulative = FALSE) {
