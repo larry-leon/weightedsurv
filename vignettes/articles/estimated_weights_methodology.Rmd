@@ -32,7 +32,7 @@ Three facts hold for every estimator in the package.
 2. Under `"estimated"` the correction is analytic.  The propensity model is fitted once.
 3. Resampling (`draws.band`, `draws_sb`, and `draws` in `cox_rhogamma()`) applies standard normal multipliers to the corrected per-subject contributions.  **The propensity model is not refitted within a draw**, and the weights, the influence values and the derivatives are the same in every draw.
 
-This article gives the derivation and the properties.  Each statement about large-sample behaviour is labelled as *proved here*, *cited*, or a *heuristic argument*.  Formulas labelled *background* are not computed by the package.
+This article gives the derivation and the properties.  Each statement about large-sample behaviour is labelled as *proved here*, *cited*, or a *heuristic argument*.  Formulas labelled *background* are not computed by the package.  The displayed steps of a derivation (the two lemmas, the expansions written with $\approx$ or $o_p$, and the projection argument of section 5) are statements about the computed quantities; they are background in the same sense.
 
 # Setup and notation
 
